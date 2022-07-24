@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>初试MD5 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="由于c的小巧，运行速度比较快，所以用来写一些加密程序非常适合。今天就来讲讲我们生活中比较常见的MD5吧。 什么是MD5?  MD5消息摘要算法（英语：MD5 Message-Digest Algorithm），一种被广泛使用的密码散列函数，可以产生出一个128位 （16字节）的散列值（hash value），用于确保信息传输完整一致。  以上摘自wikipedia，贴个链接我是链接 MD5加密原理">
+<meta name="keywords" content="MD5">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初试MD5">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2016&#x2F;0329&#x2F;%E5%88%9D%E8%AF%95MD5&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="由于c的小巧，运行速度比较快，所以用来写一些加密程序非常适合。今天就来讲讲我们生活中比较常见的MD5吧。 什么是MD5?  MD5消息摘要算法（英语：MD5 Message-Digest Algorithm），一种被广泛使用的密码散列函数，可以产生出一个128位 （16字节）的散列值（hash value），用于确保信息传输完整一致。  以上摘自wikipedia，贴个链接我是链接 MD5加密原理">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;md5_1.jpg">
+<meta property="og:updated_time" content="2019-11-23T05:43:42.085Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;md5_1.jpg">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">初试MD5</h2>
+  <p class="sub">Mar 29, 2016</p>
+  <article class="content">
+    <p>由于c的小巧，运行速度比较快，所以用来写一些加密程序非常适合。今天就来讲讲我们生活中比较常见的MD5吧。</p>
+<p><strong>什么是MD5?</strong></p>
+<blockquote>
+<p>MD5消息摘要算法（英语：MD5 Message-Digest Algorithm），一种被广泛使用的密码散列函数，可以产生出一个128位 （16字节）的散列值（hash value），用于确保信息传输完整一致。</p>
+</blockquote>
+<p>以上摘自wikipedia，贴个链接<a href="https://zh.wikipedia.org/wiki/MD5" target="_blank" rel="noopener">我是链接</a></p>
+<h1 id="MD5加密原理"><a href="#MD5加密原理" class="headerlink" title="MD5加密原理"></a>MD5加密原理</h1><p>MD5以512位分组来处理输入的信息，且每一分组又被划分为16个32位子分组，经过了一系列的处理后，算法的输出由四个32位分组组成，将这四个32位分组级联后将生成一个128位散列值。</p>
+<p>在MD5算法中，首先需要对信息进行填充，使其字节长度对512求余数的结果等于448。因此，信息的字节长度（Bits Length）将被扩展至N512+448，即N64+56个字节（Bytes），N为一个正整数。填充的方法如下，在信息的后面填充一个1和无数个0，直到满足上面的条件时才停止用0对信息的填充。然后再在这个结果后面附加一个以64位二进制表示的填充前的信息长度。经过这两步的处理，现在的信息字节长度=N512+448+64=(N+1)512，即长度恰好是512的整数倍数。这样做的原因是为满足后面处理中对信息长度的要求。MD5中有四个32位被称作链接变量（Chaining Variable）的整数参数，他们分别为：A=0x01234567，B=0x89abcdef，C=0xfedcba98，D=0x76543210。 当设置好这四个链接变量后，就开始进入算法的四轮循环运算，循环的次数是信息中512位信息分组的数目。</p>
+<p>将上面四个链接变量复制到另外四个变量中：A到a，B到b，C到c，D到d。 主循环有四轮（MD4只有三轮），每轮循环都很相似。第一轮进行16次操作。每次操作对a、b、c和d中的其中三个作一次非线性函数运算，然后将所得结果加上第四个变量（文本中的一个子分组和一个常数）。</p>
+<p>再将所得结果向右环移一个不定的数，并加上a、b、c或d中之一。最后用该结果取代a、b、c或d中之一。 以一下是每次操作中用到的四个非线性函数（每轮一个）。</p>
+<p>F(x, y, z) (((x) &amp; (y)) | ((~x) &amp; (z)))</p>
+<p>G(x, y, z) (((x) &amp; (z)) | ((y) &amp; (~z)))</p>
+<p>H(x, y, z) ((x) ^ (y) ^ (z))</p>
+<p>I(x, y, z) ((y) ^ ((x) | (~z)))</p>
+<p>注：&amp;为位运算的与，|为位运算的或，～为位运算的取反，^为位运算的按位异或</p>
+<p>如果X、Y和Z的对应位是独立和均匀的，那么结果的每一位也应是独立和均匀的。F是一个逐位运算的函数。即，如果X，那么Y，否则Z。函数H是逐位奇偶操作符。所有这些完成之后，将A，B，C，D分别加上a，b，c，d。然后用下一分组数据继续运行算法，最后的输出是A，B，C和D的级联。最后得到的A，B，C，D就是输出结果，A是低位，D为高位，DCBA组成128位输出结果</p>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>说完原理，我们就直接来上代码吧，代码部分我就不解说了，详情请看注释，哈哈我就是这么懒。。。。。</p>
+<pre><code class="C">#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+
+#define F(x, y, z) (((x) &amp; (y)) | ((~x) &amp; (z)))
+#define G(x, y, z) (((x) &amp; (z)) | ((y) &amp; (~z)))
+#define H(x, y, z) ((x) ^ (y) ^ (z))
+#define I(x, y, z) ((y) ^ ((x) | (~z)))
+
+#define RL(x, y) (((x) &lt;&lt; (y)) | ((x) &gt;&gt; (32 - (y))))  //x向左循环移y位
+
+#define PP(x) (x&lt;&lt;24)|((x&lt;&lt;8)&amp;0xff0000)|((x&gt;&gt;8)&amp;0xff00)|(x&gt;&gt;24)  //将x高低位互换,例如PP(aabbccdd)=ddccbbaa
+
+#define FF(a, b, c, d, x, s, ac) a = b + (RL((a + F(b,c,d) + x + ac),s))
+#define GG(a, b, c, d, x, s, ac) a = b + (RL((a + G(b,c,d) + x + ac),s))
+#define HH(a, b, c, d, x, s, ac) a = b + (RL((a + H(b,c,d) + x + ac),s))
+#define II(a, b, c, d, x, s, ac) a = b + (RL((a + I(b,c,d) + x + ac),s))
+
+ //i临时变量,len文件长,flen[2]为64位二进制表示的文件初始长度
+unsigned A,B,C,D,a,b,c,d,i,len,flen[2],x[16];  
+
+void md5()
+{                
+//MD5核心算法,共64轮
+  a=A,b=B,c=C,d=D;
+  /**//* Round 1 */
+  FF (a, b, c, d, x[ 0],  7, 0xd76aa478); /**//* 1 */
+  FF (d, a, b, c, x[ 1], 12, 0xe8c7b756); /**//* 2 */
+  FF (c, d, a, b, x[ 2], 17, 0x242070db); /**//* 3 */
+  FF (b, c, d, a, x[ 3], 22, 0xc1bdceee); /**//* 4 */
+  FF (a, b, c, d, x[ 4],  7, 0xf57c0faf); /**//* 5 */
+  FF (d, a, b, c, x[ 5], 12, 0x4787c62a); /**//* 6 */
+  FF (c, d, a, b, x[ 6], 17, 0xa8304613); /**//* 7 */
+  FF (b, c, d, a, x[ 7], 22, 0xfd469501); /**//* 8 */
+  FF (a, b, c, d, x[ 8],  7, 0x698098d8); /**//* 9 */
+  FF (d, a, b, c, x[ 9], 12, 0x8b44f7af); /**//* 10 */
+  FF (c, d, a, b, x[10], 17, 0xffff5bb1); /**//* 11 */
+  FF (b, c, d, a, x[11], 22, 0x895cd7be); /**//* 12 */
+  FF (a, b, c, d, x[12],  7, 0x6b901122); /**//* 13 */
+  FF (d, a, b, c, x[13], 12, 0xfd987193); /**//* 14 */
+  FF (c, d, a, b, x[14], 17, 0xa679438e); /**//* 15 */
+  FF (b, c, d, a, x[15], 22, 0x49b40821); /**//* 16 */
+
+ /**//* Round 2 */
+  GG (a, b, c, d, x[ 1],  5, 0xf61e2562); /**//* 17 */
+  GG (d, a, b, c, x[ 6],  9, 0xc040b340); /**//* 18 */
+  GG (c, d, a, b, x[11], 14, 0x265e5a51); /**//* 19 */
+  GG (b, c, d, a, x[ 0], 20, 0xe9b6c7aa); /**//* 20 */
+  GG (a, b, c, d, x[ 5],  5, 0xd62f105d); /**//* 21 */
+  GG (d, a, b, c, x[10],  9, 0x02441453); /**//* 22 */
+  GG (c, d, a, b, x[15], 14, 0xd8a1e681); /**//* 23 */
+  GG (b, c, d, a, x[ 4], 20, 0xe7d3fbc8); /**//* 24 */
+  GG (a, b, c, d, x[ 9],  5, 0x21e1cde6); /**//* 25 */
+  GG (d, a, b, c, x[14],  9, 0xc33707d6); /**//* 26 */
+  GG (c, d, a, b, x[ 3], 14, 0xf4d50d87); /**//* 27 */
+  GG (b, c, d, a, x[ 8], 20, 0x455a14ed); /**//* 28 */
+  GG (a, b, c, d, x[13],  5, 0xa9e3e905); /**//* 29 */
+  GG (d, a, b, c, x[ 2],  9, 0xfcefa3f8); /**//* 30 */
+  GG (c, d, a, b, x[ 7], 14, 0x676f02d9); /**//* 31 */
+  GG (b, c, d, a, x[12], 20, 0x8d2a4c8a); /**//* 32 */
+
+  /**//* Round 3 */
+  HH (a, b, c, d, x[ 5],  4, 0xfffa3942); /**//* 33 */
+  HH (d, a, b, c, x[ 8], 11, 0x8771f681); /**//* 34 */
+  HH (c, d, a, b, x[11], 16, 0x6d9d6122); /**//* 35 */
+  HH (b, c, d, a, x[14], 23, 0xfde5380c); /**//* 36 */
+  HH (a, b, c, d, x[ 1],  4, 0xa4beea44); /**//* 37 */
+  HH (d, a, b, c, x[ 4], 11, 0x4bdecfa9); /**//* 38 */
+  HH (c, d, a, b, x[ 7], 16, 0xf6bb4b60); /**//* 39 */
+  HH (b, c, d, a, x[10], 23, 0xbebfbc70); /**//* 40 */
+  HH (a, b, c, d, x[13],  4, 0x289b7ec6); /**//* 41 */
+  HH (d, a, b, c, x[ 0], 11, 0xeaa127fa); /**//* 42 */
+  HH (c, d, a, b, x[ 3], 16, 0xd4ef3085); /**//* 43 */
+  HH (b, c, d, a, x[ 6], 23, 0x04881d05); /**//* 44 */
+  HH (a, b, c, d, x[ 9],  4, 0xd9d4d039); /**//* 45 */
+  HH (d, a, b, c, x[12], 11, 0xe6db99e5); /**//* 46 */
+  HH (c, d, a, b, x[15], 16, 0x1fa27cf8); /**//* 47 */
+  HH (b, c, d, a, x[ 2], 23, 0xc4ac5665); /**//* 48 */
+
+  /**//* Round 4 */
+  II (a, b, c, d, x[ 0],  6, 0xf4292244); /**//* 49 */
+  II (d, a, b, c, x[ 7], 10, 0x432aff97); /**//* 50 */
+  II (c, d, a, b, x[14], 15, 0xab9423a7); /**//* 51 */
+  II (b, c, d, a, x[ 5], 21, 0xfc93a039); /**//* 52 */
+  II (a, b, c, d, x[12],  6, 0x655b59c3); /**//* 53 */
+  II (d, a, b, c, x[ 3], 10, 0x8f0ccc92); /**//* 54 */
+  II (c, d, a, b, x[10], 15, 0xffeff47d); /**//* 55 */
+  II (b, c, d, a, x[ 1], 21, 0x85845dd1); /**//* 56 */
+  II (a, b, c, d, x[ 8],  6, 0x6fa87e4f); /**//* 57 */
+  II (d, a, b, c, x[15], 10, 0xfe2ce6e0); /**//* 58 */
+  II (c, d, a, b, x[ 6], 15, 0xa3014314); /**//* 59 */
+  II (b, c, d, a, x[13], 21, 0x4e0811a1); /**//* 60 */
+  II (a, b, c, d, x[ 4],  6, 0xf7537e82); /**//* 61 */
+  II (d, a, b, c, x[11], 10, 0xbd3af235); /**//* 62 */
+  II (c, d, a, b, x[ 2], 15, 0x2ad7d2bb); /**//* 63 */
+  II (b, c, d, a, x[ 9], 21, 0xeb86d391); /**//* 64 */
+
+  A += a;
+  B += b;
+  C += c;
+  D += d;
+}
+void file_md5(char *filename)
+{   //计算文件的MD5值
+     //char filename[200]=&quot;lx1.txt&quot;;   //文件名
+     FILE *fp;
+     if (!(fp=fopen(filename,&quot;rb&quot;))) {printf(&quot;Can not open this file!\n&quot;);exit(0);}  //以二进制打开文件
+    fseek(fp, 0, SEEK_END);  //文件指针转到文件末尾
+    len=ftell(fp);
+    rewind(fp);  //文件指针复位到文件头
+    A=0x67452301,B=0xefcdab89,C=0x98badcfe,D=0x10325476; //初始化链接变量
+    flen[1]=len/0x20000000;     //flen单位是bit
+    flen[0]=(len%0x20000000)*8;
+    memset(x,0,64);   //初始化x数组为0
+    fread(&amp;x,4,16,fp);  //以4字节为一组,读取16组数据
+    for(i=0;i&lt;len/64;i++){    //循环运算直至文件结束
+      md5();
+      memset(x,0,64);
+      fread(&amp;x,4,16,fp);
+    }
+    ((char*)x)[len%64]=128;  //文件结束补1,补0操作,128二进制即10000000
+    if(len%64&gt;55) md5(),memset(x,0,64);
+    memcpy(x+14,flen,8);    //文件末尾加入原文件的bit长度
+    md5();
+    fclose(fp);
+    printf(&quot;MD5 Code(32):%08x%08x%08x%08x\n&quot;,PP(A),PP(B),PP(C),PP(D));  //32位高低位逆反输出
+    printf(&quot;MD5 Code(16):%08x%08x\n&quot;,PP(B),PP(C));  //16位输出
+}
+void string_md5(char *string)
+{        //计算字符串的MD5值
+   len=strlen(string);
+    A=0x67452301,B=0xefcdab89,C=0x98badcfe,D=0x10325476; //初始化链接变量
+    flen[1]=len/0x20000000;     //flen单位是bit
+    flen[0]=(len%0x20000000)*8;
+    memset(x,0,64);   //初始化x数组为0
+    memcpy(x,string,64);  //从string 复制64字节数据到x数组
+    for(i=0;i&lt;len/64;i++){    //循环运算直至字符串结束
+      md5();
+      memset(x,0,64);
+      memcpy(x,&amp;string[(i+1)*64],64);
+    }
+    memset((char *)x+len%64,0,64-len%64);//排除后面非string内的数据的干扰
+    ((char *)x)[len%64]=128;  //字符串结束补1,补0操作,128二进制即10000000
+    if(len%64&gt;55) md5(),memset(x,0,64);
+    memcpy(x+14,flen,8);    //字串末尾加入原文件的bit长度
+    md5();
+    printf(&quot;MD5 Code(32):%08x%08x%08x%08x\n&quot;,PP(A),PP(B),PP(C),PP(D));  //32位高低位逆反输出
+    printf(&quot;MD5 Code(16):%08x%08x\n&quot;,PP(B),PP(C));  //16位输出
+}
+void main(int arg,char **argv){
+    if(arg&lt;=1)
+    {
+        printf(&quot;Usage:choose one argument\n&quot;);
+        printf(&quot;-f  &lt;filename&gt;        the  MD5 of file.\n&quot;);
+        printf(&quot;-s  &lt;string&gt;            the MD5 of string.\n&quot;);
+        exit(0);
+    }
+    if(!strcmp(argv[1],&quot;-f&quot;))
+       file_md5(argv[2]);
+   else  if(!strcmp(argv[1],&quot;-s&quot;))
+        string_md5(argv[2]);
+    else
+        printf(&quot;the argument is error!!\n&quot;);
+
+/*
+两个栗子：
+md5(admin)= 21232f297a57a5a743894a0e4a801fc3
+md5(hello world !)=905138a85e85e74344e90d25dba7299e
+*/
+}</code></pre>
+<p>代码比较长，看的话就耐心点看吧，哈哈</p>
+<p>有了代码，我们来编译吧<br>一条命令解决一切，linux就是这么方便快捷，但是为了更加方（zhuang）便（bi）快捷，我写了个makefile,内容很简单</p>
+<pre><code class="bash">md5: lx1.c
+    gcc lx1.c -o md5</code></pre>
+<p>好了，我们在终端敲下下面这条装逼的命令</p>
+<pre><code class="bash">make</code></pre>
+<p>好了，编译完了，我们就来运行一下吧！</p>
+<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p>依然是一条命令</p>
+<pre><code class="bash">./md5</code></pre>
+<p>咦，什么鬼？？？<br><img src="/images/md5_2.png" alt=""></p>
+<p>没有权限是什么鬼？？可能是没有执行权限吧，好吧来加权限吧</p>
+<pre><code class="bash">chmod +x ./md5
+./md5</code></pre>
+<p>这回总能运行了吧！</p>
+<p><img src="/images/md5_3.png" alt=""><br>我艹，难道是加权限的姿势不对？？？</p>
+<p>那我换个姿势来吧，泪奔。。。</p>
+<pre><code class="bash">chmod +777 ./md5
+./md5</code></pre>
+<p><strong>给你加满总行了吧</strong></p>
+<p>到这我要发飙了啊！！！！！<br><img src="/images/md5_4.png" alt=""></p>
+<p>还是老实的来google一下吧，不要再挣扎了</p>
+<p>这里看看外国网友给出的解决方法：</p>
+<blockquote>
+<p>chmod u+x program_name. Then execute it.<br>If that does not work, copy the program from the USB device to a native volume on the system. Then chmod u+x program_name on the local copy and  execute that.</p>
+</blockquote>
+<blockquote>
+<p>Unix and Unix-like systems generally will not execute a program unless it is marked with permission to execute. The way you copied the file from one system to another (or mounted an external volume) may have turned off execute permission (as a safety feature). The command chmod u+x name adds permission for the user that owns the file to execute it.</p>
+</blockquote>
+<blockquote>
+<p>That command only changes the permissions associated with the file; it does not change the security controls associated with the entire volume. If it is security controls on the volume that are interfering with execution, then you can remount the volume with options to allow execution. However, copying the file to a local volume may be a quicker and easier solution.</p>
+</blockquote>
+<p>贴个网址：<a href="http://stackoverflow.com/questions/18960689/ubuntu-says-bash-program-permission-denied" target="_blank" rel="noopener">http://stackoverflow.com/questions/18960689/ubuntu-says-bash-program-permission-denied</a></p>
+<p>原来编译后的这个破程序是在windows分区下，然后windows分区权限设置对于ubuntu来说它也无能为力。好，我这就把你从万恶的windows中拖出来</p>
+<pre><code class="bash">cp md5 /home/tylor/c
+cd /home/tylor/c
+chmod +x ./md5</code></pre>
+<p>好行了，我们来再次来运行一下吧！</p>
+<pre><code class="bash">./md5</code></pre>
+<p><img src="/images/md5_5.png" alt=""><br>这次行了，耶耶耶！！！</p>
+<p>我们来试试个简单的字符串吧，比如  “admin”</p>
+<p><img src="/images/md5_6.png" alt="admin"></p>
+<p>八错八错，可以正常运行了！！</p>
+<p>MD5加密就是这样了，拜了个拜嘞</p>
+
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2016/0527/2016-5-27%E9%9A%8F%E6%83%B3/" class="link f-fl">⟵2016-5-27随想</a>
+    
+    
+      <a href="/2016/0327/Base64%E7%BC%96%E8%A7%A3%E7%A0%81/" class="link f-fr">Base64编解码⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>

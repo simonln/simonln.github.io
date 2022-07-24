@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>MATLAB中mex的使用说明 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.说明关于MEX文件，官方的解释是：  A MEX file is a function, created in MATLAB, that calls a C&#x2F;C++ program or a Fortran subroutine. A MEX function behaves just like a MATLAB script or function. To call a MEX functi">
+<meta name="keywords" content="使用教程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MATLAB中mex的使用说明">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2020&#x2F;0519&#x2F;hexo_MATLAB_mex_usage&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="1.说明关于MEX文件，官方的解释是：  A MEX file is a function, created in MATLAB, that calls a C&#x2F;C++ program or a Fortran subroutine. A MEX function behaves just like a MATLAB script or function. To call a MEX functi">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;matlab_mex_0.png">
+<meta property="og:updated_time" content="2022-07-24T08:26:35.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;matlab_mex_0.png">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">MATLAB中mex的使用说明</h2>
+  <p class="sub">May 19, 2020</p>
+  <article class="content">
+    <h2 id="1-说明"><a href="#1-说明" class="headerlink" title="1.说明"></a>1.说明</h2><p>关于MEX文件，官方的解释是：</p>
+<blockquote>
+<p>A MEX file is a function, created in MATLAB, that calls a C/C++ program or a Fortran subroutine. A MEX function behaves just like a MATLAB script or function. To call a MEX function, use the name of the MEX file, without the file extension. The MEX file contains only one function or subroutine. The calling syntax depends on the input and output arguments defined by the MEX function. The MEX file must be on your MATLAB path.</p>
+</blockquote>
+<p>本质上MEX文件是一个动态链接库文件，在MATLAB中调用该方法时，MATLAB会加载该动态链接库文件，然后调用指定入口方法，然后按照既定的格式去处理输入和输出。</p>
+<h2 id="2-API说明"><a href="#2-API说明" class="headerlink" title="2.API说明"></a>2.API说明</h2><h3 id="2-1-MEX-C"><a href="#2-1-MEX-C" class="headerlink" title="2.1 MEX C"></a>2.1 MEX C</h3><p>在C中，入口方法为</p>
+<pre><code class="C">// nls： 输出数组的数量
+// plhs：输出数组
+// nrhs: 输入数组的数量
+// prhs: 输入数组 
+void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]);</code></pre>
+<p>使用MEX C时，实测MATLAB的开销比较小，大概在十几个微秒，猜测是MATLAB的矩阵底层数据结构和<strong>mxArray</strong>基本一致，所以在转换上不会花费太大的开销。</p>
+<p>对于传进来的矩阵首先第一步当然是获取它的维度信息了，使用<strong>mxGetDimensions</strong>可以获取每个维度的大小，不过这个函数有个小瑕疵无法获取具体有多少个维度，要想获取具体维度信息就只能曲线救国，先使用<strong>mxGetNumberOfElements</strong>获取矩阵中元素总数，然后根据每个维度的大小间接算出有多少个维度。对于常用的二维矩阵，使用<strong>mxGetM</strong>函数获取行数量，使用<strong>mxGetN</strong>获取列数量就足矣。</p>
+<p>有了矩阵的维度信息，现在就可以开始处理数据了。除非特别声明不然MATLAB传到MEX C中的矩阵都是<strong>double</strong>类型，使用<strong>mxGetDoubles</strong>函数即可获取内存指针，此时虽然获取的是一个<strong>double</strong>类型的指针，但它其实是可以处理多维数据的，因为多维数据在内存中的分布是顺序的，按列存储，行号低的排列在前，高的在后，列号低的排在列号高的前面。由于该数据是MATLAB以共享内存的方式传进来，所以在C函数内修改该数据，MATLAB中的数据也会被修改，除非特别需要，否则不建议直接对该数据进行修改操作，而是使用<strong>mxMalloc</strong>函数重新分配一块内存，将数据复制到新内存中后进行修改操作。修改完数据后如果需要将数据传回到MATLAB中时，则需要使用<strong>mxCreate</strong>系列函数先给plhs[x]先创建指针，然后使用<strong>mxSet</strong>系列函数将数据指针赋给plhs[x]，此时绝对不可将数据指针使用<strong>mexFree</strong>释放掉，否则MATLAB运行会出错，因为它将访问已经释放的内存。</p>
+<p>对于<strong>mxMalloc</strong>等动态分配内存的函数分配的动态内存，MATLAB会统一释放，所以无需担心内存会泄漏。</p>
+<p>常用的API就以上几个，详细参考 <a href="https://www.mathworks.com/help/matlab/cc-mx-matrix-library.html" target="_blank" rel="noopener">MEX C API</a></p>
+<h3 id="2-2-MEX-C"><a href="#2-2-MEX-C" class="headerlink" title="2.2 MEX C++"></a>2.2 MEX C++</h3><p>在C++中，入口方法为:</p>
+<pre><code class="C++">class MexFunction:public matlab::mex::Function
+{
+public:
+    // outputs: 输出数组
+    // inputs: 输入数组
+    void operator()(matlab::mex::ArgumentList outputs,matlab::mex::ArgumentList inputs)
+    {
+
+    }
+}</code></pre>
+<p>在MATLAB环境中调用使用MEX C++ API编写的函数时，基本开销大约是50几个微秒，底层数据转换开销相比MEX C 来说比较大，大概是MATLAB中矩阵数据结构和<strong>ArgumentList</strong>数据结构相差较大，故转换开销也比较大。</p>
+<p><strong>ArgumentList</strong>其实是<strong>Array</strong>的一个子类，但是<strong>ArgumentsList</strong>类可进行的操作太少(仅限于获取维度信息，迭代器)，不适合常规使用，所以一般将<strong>ArgumentList</strong>类型的输入参数转换成<strong>Array</strong>的另外一个子类<strong>TypeArray</strong>，这样可以使用各个维度索引来获取具体元素。当需要将矩阵数据输出回MATLAB时，此时需要一个名为<strong>ArrayFactory</strong>的工厂类，其中的<strong>createArray</strong>方法可以根据数据集及其维度信息，创建指定维度的 <strong>Array</strong> 变量。</p>
+<p>数据类型说明参考 <a href="https://www.mathworks.com/help/matlab/matlab-data-array.html?s_tid=srchbrcm" target="_blank" rel="noopener">类型说明</a></p>
+<p>其他API说明参考 <a href="https://www.mathworks.com/help/matlab/matlab_external/cpp-mex-api.html" target="_blank" rel="noopener">API说明</a></p>
+<h2 id="3-例子"><a href="#3-例子" class="headerlink" title="3.例子"></a>3.例子</h2><h3 id="3-1-MEX-c-获取数据-操作完后返回"><a href="#3-1-MEX-c-获取数据-操作完后返回" class="headerlink" title="3.1 MEX c 获取数据 操作完后返回"></a>3.1 MEX c 获取数据 操作完后返回</h3><pre><code class="C">#include &quot;mex.h&quot;
+#include &quot;matrix.h&quot;
+#include &lt;stdlib.h&gt;
+
+void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[])
+{
+    // get number of rows
+    size_t size = mxGetM(prhs[0]);
+
+    // get data pointer of array
+    mxComplexDouble *input = mxGetComplexDoubles(prhs[0]);    
+
+    // new some memory, it is n-by-1 Matrix
+    mxComplexDouble *temp = (mxComplexDouble*)mxMalloc(size * sizeof(mxComplexDouble));
+    memcpy(temp,input,size * sizeof(mxComplexDouble));
+
+    // real = real * 2, image = -1 * image
+    for(size_t i = 0; i &lt; size; ++i)
+    {
+        temp[i].real = temp[i].real * 2;
+        temp[i].imag = -1 * temp[i].imag;
+    }
+
+    //create the pointer
+    plhs[0] = mxCreateDoubleMatrix(0,0,mxCOMPLEX);
+
+    //set the pointer of outputting
+    mxSetComplexDoubles(plhs[0],temp);        
+    mxSetM(plhs[0],size);
+    mxSetN(plhs[0],1);
+
+}</code></pre>
+<h3 id="3-2-MEX-c-获取数据-操作并返回"><a href="#3-2-MEX-c-获取数据-操作并返回" class="headerlink" title="3.2 MEX c++ 获取数据 操作并返回"></a>3.2 MEX c++ 获取数据 操作并返回</h3><pre><code class="C++">#include &quot;mex.hpp&quot;
+#include &quot;mexAdapter.hpp&quot;
+#include &lt;complex&gt;
+
+using namespace std;
+using namespace matlab::data;
+using matlab::mex::ArgumentList;
+typedef std::complex&lt;double&gt; Complex;
+
+
+class MexFunction:public matlab::mex::Function
+{
+public:
+    void operator()(matlab::mex::ArgumentList outputs,matlab::mex::ArgumentList inputs)
+    {
+        ArrayFactory factory;
+        // create TypedArray
+        TypedArray&lt;Complex&gt; input = std::move(inputs[0]);
+        // get dimensions
+        ArrayDimensions dims =  input.getDimensions();
+        // cache the data of inputting
+        std::vector&lt;Complex&gt; items(input.begin(),input.end());
+        // real = real * 2 , image = image * -1
+        for(auto &amp;item: items)
+        {
+            item.real(item.real() * 2 );
+            item.imag(item.imag() * -1);
+        }
+        // create the output Array from cache vector
+        outputs[0] = factory.createArray(dims,items.begin(),items.end());
+    }
+};</code></pre>
+
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2020/0520/hexo_FFTW_usage/" class="link f-fl">⟵使用FFTW库</a>
+    
+    
+      <a href="/2020/0412/hexo_build_tv_system/" class="link f-fr">点播或直播系统搭建⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>

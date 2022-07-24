@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用FFTW库 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1. 前言在需要加速计算的场景下，将部分MATLAB代码替换成C代码，此时就碰到需要使用FFT（fast fourier transform）的场景。在C中能使用的FFT库其实挺多，FFTW,MKL,GSL,KISSFFT等等，甚至也可以基于Cooley-Tukey算法自己实现一个。至于性能，那当然是FFTW库最强了，详情参考这个链接。首页有云：   Hence the name, “FFTW,”">
+<meta name="keywords" content="使用教程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用FFTW库">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2020&#x2F;0520&#x2F;hexo_%E4%BD%BF%E7%94%A8FFTW%E5%BA%93&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="1. 前言在需要加速计算的场景下，将部分MATLAB代码替换成C代码，此时就碰到需要使用FFT（fast fourier transform）的场景。在C中能使用的FFT库其实挺多，FFTW,MKL,GSL,KISSFFT等等，甚至也可以基于Cooley-Tukey算法自己实现一个。至于性能，那当然是FFTW库最强了，详情参考这个链接。首页有云：   Hence the name, “FFTW,”">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;fftw_0.jpg">
+<meta property="og:updated_time" content="2020-05-21T12:40:25.696Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;fftw_0.jpg">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">使用FFTW库</h2>
+  <p class="sub">May 20, 2020</p>
+  <article class="content">
+    <h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h2><p>在需要加速计算的场景下，将部分MATLAB代码替换成C代码，此时就碰到需要使用FFT（fast fourier transform）的场景。在C中能使用的FFT库其实挺多，FFTW,MKL,GSL,KISSFFT等等，甚至也可以基于<a href="https://en.wikipedia.org/wiki/Cooley%E2%80%93Tukey_FFT_algorithm" target="_blank" rel="noopener">Cooley-Tukey算法</a>自己实现一个。至于性能，那当然是FFTW库最强了，详情参考这个<a href="http://www.fftw.org/speed/" target="_blank" rel="noopener">链接</a>。<br>首页有云：</p>
+<blockquote>
+<p> Hence the name, “FFTW,” which stands for the somewhat whimsical title of “Fastest Fourier Transform in the West.”</p>
+</blockquote>
+<h2 id="2-准备"><a href="#2-准备" class="headerlink" title="2. 准备"></a>2. 准备</h2><p>从FFTW官网下载完windows预编译包后，压缩包里包含需要使用的头文件和动态运行库，以及导出函数定义文件。当我们需要在C中编译链接时还需要编译链接库，此库由导出函数定义文件生成。<br>当使用MinGW编译套件作为C的编译环境时，使用套件中的<strong>dlltool</strong>工具生成lib编译链接库。</p>
+<pre><code class="bash">dlltool --intput-def libfftw3-3.def --output-lib libfftw3-3.lib</code></pre>
+<p>当使用Visual Studio作为C编译环境时，则使用LIB命令工具生成lib编译链接库。二者生成的lib链接库不可混用，不然会造成在链接时找不到函数定义。</p>
+<pre><code class="cmd">LIB /def:libfftw3-3.def</code></pre>
+<h2 id="3-计算复数"><a href="#3-计算复数" class="headerlink" title="3. 计算复数"></a>3. 计算复数</h2><p>FFTW库默认的复数定义如下:</p>
+<pre><code class="C">typedef double fftw_complex[2];</code></pre>
+<p>如果你的编译器支持ANSI C99标准或者以上，那么就可以使用标准中的复数类型，只需要在fftw3.h前包含头文件complex.h即可。<a href="http://www.fftw.org/fftw3_doc/Complex-numbers.html#Complex-numbers" target="_blank" rel="noopener">参考</a></p>
+<p>常用的函数如下:</p>
+<pre><code class="C"> //分配或销毁内存，类似于标准库中的malloc或free
+void *fftw_malloc(size_t n);  
+void fftw_free(void *ptr);
+
+// 创建执行计划，计划可以多次运行
+// n : 计算的规模，即in的大小
+// in: 需要计算的复数数组
+// out: 计算结果存储数组
+// sign： 取值有FORWARD和BACKWARD，分别表示傅里叶和逆傅里叶变换
+// flags: 通常用来指定计算方法的选定方式。FFTW_EASTIMATE表示创建时随机指定一个，可能不是最优；
+//                                    FFTW_MEASURE表示测量，在首次创建执行时通过尝试计算对比选出当前环境下最优解
+fftw_plan  fftw_plan_dft_1d(int n, fftw_complex *in, fftw_complex *out, int sign,unsigned flags);
+
+// 执行指定的计划
+void fftw_exxcute(fftw_plan plan);
+// 对不同的输入输出数组执行指定的计划
+void fftw_execute_dft(const fftw_plan p, fftw_complex *in, fftw_complex *out);
+// 销毁计划，回收内存
+void fftw_plan_destroy(fftw_plan plan);
+</code></pre>
+<p>所有的输入数组数据的初始化，都应在创建计划之后执行，因为有的创建方式会破坏输入数据。在多次连续的转换中，输入数据总是在执行<strong>fftw_execute</strong>之前被初始化。<br>当使用<strong>FFTW_MEASURE</strong>方式创建执行计划时，需要先将计划执行一遍，测算出该转换规模在当前硬件环境下的最优的转换方式，这个步骤可能会花费大约好几秒，之后的执行就比较快速。</p>
+<p>当计算规模大到一定量级(大约10e7)后，测算的速度就慢得出奇，基本无法接受。其实当执行环境不变时，以及执行的规模不变时，转换方式也应该是不变的，那么有没有一种方式可以把当前计算环境下最优的转换方式记录下来？下一次进行类似转换的时候直接复用上一次的计划即可，这样创建计划的速度就大大加快了。<br>FFTW的wisdom机制应运而生，在计划创建时会往全局计划结构体中写入一些关键信息，wisdom把这些信息导出为字符或者是文件的形式以备复用。</p>
+<pre><code class="C">// 将已创建的计划全部导出到指定文件，成功返回1否则返回0
+int fftw_export_wisdom_to_filename(const char *filename);
+
+// 将已创建的计划全部导出成字符串
+char *fftw_export_wisdom_to_string(void);
+
+// 从文件中导入wisdom配置
+int fftw_import_wisdom_from_filename(const char *filename);
+
+// 从字符串中导入wisdom配置
+int fftw_import_wisdom_from_string(const char *input_string);
+
+// 释放由以上方法产生的内存占用
+void fftw_forget_wisdom(void);
+</code></pre>
+<h2 id="4-多线程"><a href="#4-多线程" class="headerlink" title="4. 多线程"></a>4. 多线程</h2><p>其实官方不推荐多线程，因为在小规模(小于2^21)下单线程可以工作的很好，并且得益于极致的优化，单线程性能也很优秀。多线程计算的时候涉及到数据同步问题，这就必须用到线程锁，在创建和使用锁的时候开销比较大，得不偿失。但是当计算规模特别大的时候，多线程的引入就有必要，因为同步带来的开销相较于本身计算的开销基本可以忽略。</p>
+<pre><code class="C">// 初始化多线程运行环境，此方法必须在其他FFTW库方法之前调用
+int fftw_init_threads(void);
+// 配置使用的最大线程数量，可以多次使用配置多个计划，每次调用对前面创建的计划不影响
+void fftw_plan_with_nthreads(int nthreads);
+// 清除多线程运行环境
+void fftw_cleanup_threads(void);</code></pre>
+<p>在创建完计划执行的时候推荐只使用 <strong>fftw_execute</strong> 这个函数执行计划，因为所有的计划执行函数中只有这个是保证线程执行安全的。这样的话就不需要自己去保证线程间数据的同步。</p>
+<p>使用多多线程时还有一点需要注意的是，结合使用wisdom机制时，在多线程环境中导出的wisdom不能用于单线程环境。</p>
+
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2020/0703/hexo_%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93%E4%BA%8C/" class="link f-fl">⟵设计模式总结二</a>
+    
+    
+      <a href="/2020/0519/hexo_MATLAB%E4%B8%ADmex%E7%9A%84%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/" class="link f-fr">MATLAB中mex的使用说明⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>

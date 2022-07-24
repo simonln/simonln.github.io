@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>LUA开发那些事 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言lua是一门很小巧的脚本语言，完全是由C实现。正因为它的小巧，所以现在很多项目拿它来做嵌入执行的脚本，这中操作在游戏行业中非常普遍。 1. lua 开发过程中的坑1.1 薛定谔的table长度local t1 = {     [&amp;quot;key1&amp;quot;] = &amp;quot;value1&amp;quot;,     [&amp;quot;key2&amp;quot;] = &amp;quot;value2&amp;quot;,">
+<meta name="keywords" content="基础知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LUA开发那些事">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2022&#x2F;0717&#x2F;hexo_lua_dev&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="前言lua是一门很小巧的脚本语言，完全是由C实现。正因为它的小巧，所以现在很多项目拿它来做嵌入执行的脚本，这中操作在游戏行业中非常普遍。 1. lua 开发过程中的坑1.1 薛定谔的table长度local t1 = {     [&amp;quot;key1&amp;quot;] = &amp;quot;value1&amp;quot;,     [&amp;quot;key2&amp;quot;] = &amp;quot;value2&amp;quot;,">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;lua_dev_0.png">
+<meta property="og:updated_time" content="2022-07-24T08:26:35.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;lua_dev_0.png">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">LUA开发那些事</h2>
+  <p class="sub">Jul 17, 2022</p>
+  <article class="content">
+    <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>lua是一门很小巧的脚本语言，完全是由C实现。正因为它的小巧，所以现在很多项目拿它来做嵌入执行的脚本，这中操作在游戏行业中非常普遍。</p>
+<h1 id="1-lua-开发过程中的坑"><a href="#1-lua-开发过程中的坑" class="headerlink" title="1. lua 开发过程中的坑"></a>1. lua 开发过程中的坑</h1><h2 id="1-1-薛定谔的table长度"><a href="#1-1-薛定谔的table长度" class="headerlink" title="1.1 薛定谔的table长度"></a>1.1 薛定谔的table长度</h2><pre><code class="LUA">local t1 = {
+    [&quot;key1&quot;] = &quot;value1&quot;,
+    [&quot;key2&quot;] = &quot;value2&quot;,
+    [&quot;key3&quot;] = &quot;value3&quot;
+}
+local t2 = {
+    &quot;value1&quot;,
+    &quot;value2&quot;,
+    &quot;value3&quot;
+}
+local t3 = {
+    [&quot;key1&quot;] = &quot;value1&quot;,
+    &quot;value2&quot;
+}
+local t4 = {}
+local t5 = {nil, nil}</code></pre>
+<p>上面的5个table， 如果使用 <strong>#</strong> 或者 table.getn 运算计算table长度的话各为多少呢？<br>结果是：</p>
+<blockquote>
+<p>t1 size: 0,  t2 size: 3, t3 size: 1, t4 size: 0, t5 size: 0</p>
+</blockquote>
+<p>读到这你时候可能有疑问了，t1中明明有三个值，为啥它的长度就为0呢。还有t3它不是有两个值么，为啥它的长度又为1呢</p>
+<p><strong>直接结论</strong> 就是，<strong>#</strong> 运算只计算数组值的个数，像key-value这种map形式的元素不参与长度计算</p>
+<h2 id="1-2-空与不空"><a href="#1-2-空与不空" class="headerlink" title="1.2 空与不空"></a>1.2 空与不空</h2><p>对于最后两个table， 如果如果使用判空操作又会得到什么结果呢？</p>
+<pre><code class="LUA">if t4 == nil then
+    print(&quot;t4 is nil&quot;)
+else
+    print(&quot;t4 is not nil&quot;)
+end
+if t5 == nil then
+    print(&quot;t5 is nil&quot;)
+else
+    print(&quot;t5 is not nil&quot;)
+end</code></pre>
+<p>执行结果是：</p>
+<blockquote>
+<p>t4 is not nil</p>
+</blockquote>
+<blockquote>
+<p>t5 is not nil</p>
+</blockquote>
+<p>t4 明明没有任何值，它为啥就不为空呢</p>
+<p>原因就是：t4是个空table它有地址所以它不等于nil，类似于C中的分配了地址但是内容为空的情况，这时候判断此地址是否为空，那肯定不为空嘛</p>
+<h2 id="1-3-table比较"><a href="#1-3-table比较" class="headerlink" title="1.3 table比较"></a>1.3 table比较</h2><pre><code class="LUA">t6 = {}
+t7 = {}
+if t6 == t7 then
+    print(&quot;t6 is equal t7&quot;)
+else
+    print(&quot;t6 is not equal t7&quot;)
+end</code></pre>
+<p>执行结果是：</p>
+<blockquote>
+<p>t6 is not equal t7</p>
+</blockquote>
+<p>为啥明明 t6 和 t7 都是空它两就不相等呢？</p>
+<p>原因就是： lua中如果是table比较的话，比较的两个table的地址，并不是内容</p>
+<h1 id="2-lua-与-C-的互相调用"><a href="#2-lua-与-C-的互相调用" class="headerlink" title="2. lua 与 C 的互相调用"></a>2. lua 与 C 的互相调用</h1><p>因为lua是由C实现的，所以其和C的交互非常方便</p>
+<h2 id="2-1-C-中运行lua代码"><a href="#2-1-C-中运行lua代码" class="headerlink" title="2.1 C 中运行lua代码"></a>2.1 C 中运行lua代码</h2><p>在常用的C 开发中，都会将lua嵌入做脚本语言，方便相关业务快速开发或迭代。<br>查看lua doc 我们会发现有好几个接口都能执行lua脚本。</p>
+<p><a href="https://www.lua.org/manual/5.1/manual.html#3" target="_blank" rel="noopener">lua c doc</a></p>
+<p><a href="https://simion.com/info/lua_capi.html" target="_blank" rel="noopener">lua c api</a></p>
+<table>
+<thead>
+<tr>
+<th align="left">函数名</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">lua_load</td>
+<td align="left">Loads a Lua chunk, it does not run it</td>
+</tr>
+<tr>
+<td align="left">luaL_dofile</td>
+<td align="left">Loads and runs the given file</td>
+</tr>
+<tr>
+<td align="left">luaL_dostring</td>
+<td align="left">Loads and runs the given string</td>
+</tr>
+<tr>
+<td align="left">luaL_loadfile</td>
+<td align="left">Loads a file as a Lua chunk, it does not run it</td>
+</tr>
+<tr>
+<td align="left">luaL_loadstring</td>
+<td align="left">Loads a string as a Lua chunk, it does not run it</td>
+</tr>
+<tr>
+<td align="left">luaL_loadbuffer</td>
+<td align="left">Loads a buffer as a Lua chunk, same as lua_load</td>
+</tr>
+</tbody></table>
+<p>C 中运行lua的简单例子如下：</p>
+<pre><code class="C">const char *lua_str = &quot; \
+local a = 1234      \n \
+local b = \&quot;xxyy\&quot;      \n \
+print(string.format(\&quot;a is %d, b is %s\&quot;, a, b)) \
+&quot;;
+int main()
+{
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+    if (luaL_dostring(L, lua_str) != 0)
+    {
+        printf(&quot;luaL_dostring failed, %s\n&quot;, lua_tostring(L, -1));
+    }
+    return 0;
+}</code></pre>
+<p>执行结果:</p>
+<blockquote>
+<p>a is 1234, b is xxyy</p>
+</blockquote>
+<h2 id="2-2-C-导出接口给lua中使用"><a href="#2-2-C-导出接口给lua中使用" class="headerlink" title="2.2 C 导出接口给lua中使用"></a>2.2 C 导出接口给lua中使用</h2><p>在平常的开发过程中，我们可能需要导出一些C函数给到业务层的lua调用。C 函数导出后是以动态库的形态被lua加载，然后在lua中以module的形式存在</p>
+<h3 id="2-2-1-C-导出普通函数"><a href="#2-2-1-C-导出普通函数" class="headerlink" title="2.2.1 C 导出普通函数"></a>2.2.1 C 导出普通函数</h3><p>C 导出函数给到lua调用有两种方式，一种是普通的导出方式，另一种也是“普通”的导出方式</p>
+<p>普通的导出方式就是使用lua 的CAPI, <strong>luaL_register</strong></p>
+<p>例如导出一个简单的hello_world接口：</p>
+<pre><code class="C">int hello_world(lua_State *L)
+{
+    const char *name = luaL_checkstring(L, -1);
+    printf(&quot;from c function, %s tell hello world\n&quot;, name);
+    lua_pushinteger(L, 18);     // 返回一个整数
+    return 1; 
+}
+/* 导出函数列表及函数调用入口 */
+static luaL_Reg func_list[] = {
+    {&quot;hello_world&quot;, hello_world},
+    {NULL, NULL}
+};
+LUALIB_API int luaopen_test(lua_State *L)
+{
+    luaL_register(L, &quot;test&quot;, func_list);
+    return 1;
+}</code></pre>
+<p>调用上述C库的lua脚本如下：</p>
+<pre><code class="LUA">local test = require(&quot;test&quot;)
+local output = test.hello_world(&quot;zhangshan&quot;)
+print(string.format(&quot;hello_world output is %d&quot;, output))</code></pre>
+<p>执行结果：</p>
+<blockquote>
+<p>from c function, zhangshan tell hello world<br>hello_world output is 18</p>
+</blockquote>
+<p><em>另一种“普通”的导出方法参考导出类部分，(●’◡’●)</em></p>
+<h3 id="2-2-2-C中导出lua类"><a href="#2-2-2-C中导出lua类" class="headerlink" title="2.2.2 C中导出lua类"></a>2.2.2 C中导出lua类</h3><p>有些操作是附加在某些对象上的，所以我们可能需要在C中导出lua的类</p>
+<p>下面就是一个简单的读写文件的操作类的导出：</p>
+<pre><code class="C">/* key name in registry */
+#define TEST_CALSS_ID  &quot;test.class&quot;
+typedef struct file_udata {
+    FILE *fp;
+}file_udata_t;
+int open_file(lua_State *L) {
+    const char *file = luaL_checkstring(L, 1);
+    FILE *fp = fopen(file, &quot;a+&quot;);
+    if (!fp) {
+        lua_pushnil(L);
+        return 1;
+    }
+    else {
+        file_udata_t *ui = lua_newuserdata(L, sizeof(file_udata_t));
+        ui-&gt;fp = fp;
+        luaL_getmetatable(L, TEST_CALSS_ID);
+        lua_setmetatable(L, -2);
+    }
+    return 1;
+}
+int close_file(lua_State *L) {
+    file_udata_t *ud = (file_udata_t *)luaL_checkudata(L, 1, TEST_CALSS_ID);
+    luaL_argcheck(L, ud != NULL, 1, &quot;unexpected object class&quot;);
+    int ret = fclose(ud-&gt;fp);
+    lua_pushboolean(L, ret?0:1);
+    return 1;
+}
+int append_file(lua_State *L)
+{
+    file_udata_t *ud = (file_udata_t *)luaL_checkudata(L, 1, TEST_CALSS_ID);
+    luaL_argcheck(L, ud != NULL, 1, &quot;unexpected object class&quot;);
+    const char *str = luaL_checkstring(L, 2);
+    size_t size = strlen(str);
+    if (fwrite(str, 1, size, ud-&gt;fp) == size) {
+        lua_pushboolean(L, 1);
+    }
+    else {
+        lua_pushboolean(L, 0);
+    }
+    return 1;
+}
+int readall_file(lua_State *L)
+{
+    file_udata_t *ud = (file_udata_t *)luaL_checkudata(L, 1, TEST_CALSS_ID);
+    luaL_argcheck(L, ud != NULL, 1, &quot;unexpected object class&quot;);
+        // get file size
+    fseek(ud-&gt;fp, 0, SEEK_END);
+    size_t size = ftell(ud-&gt;fp);
+    rewind(ud-&gt;fp);
+    if (size == 0) {
+        lua_pushnil(L);
+        return 1;
+    }
+    char *out = malloc(size);
+    if (size != fread(out, 1, size, ud-&gt;fp)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushstring(L, out);
+    free(out);
+    return 1;
+}
+static void make_namespace(lua_State *L, const char *name)
+{
+    lua_getglobal(L, name);
+    if (lua_isnoneornil(L, -1)) {
+        lua_pop(L, 1);
+        lua_newtable(L);
+        lua_setglobal(L, name);
+        lua_getglobal(L, name);
+    }
+    assert(lua_istable(L, -1));
+}
+static void register_function(lua_State *L, const char *name, lua_CFunction func)
+{
+    lua_pushstring(L, name);
+    lua_pushcfunction(L, func);
+    lua_settable(L, -3);  
+}
+LUALIB_API int luaopen_testclass(lua_State *L) {
+    // regist module private function
+    luaL_newmetatable(L, TEST_CALSS_ID);
+    lua_pushstring(L, &quot;__index&quot;);
+    lua_pushvalue(L, -2);
+    lua_settable(L, -3);            /* metatable.__index = metatable */
+
+    register_function(L, &quot;appendfile&quot;, append_file);
+    register_function(L, &quot;readallfile&quot;, readall_file);
+    register_function(L, &quot;closefile&quot;, close_file);
+    lua_pop(L, 1);
+
+    // registe module global function 
+    make_namespace(L, &quot;testclass&quot;);
+    register_function(L, &quot;openfile&quot;, open_file);
+
+    lua_pushliteral(L, &quot;__META__&quot;);
+    luaL_getmetatable(L, TEST_CALSS_ID);
+    lua_rawset(L, -3);
+    lua_pop(L, 1);
+
+    lua_getglobal(L, &quot;testclass&quot;);
+    return 1;
+}</code></pre>
+<p>测试的lua脚本如下：</p>
+<pre><code class="LUA">local tc = require(&quot;testclass&quot;)
+local file = tc.openfile(&quot;test.txt&quot;)
+if file then
+    file:appendfile(&quot;this is a test txt in file&quot;)
+    local str = file:readallfile()
+    print(&quot;test.txt: &quot; .. tostring(str))
+    file:closefile()
+else
+    print(&quot;openfile test.txt failed&quot;)
+end</code></pre>
+<p>执行结果：</p>
+<blockquote>
+<p>test.txt: this is a test txt in file</p>
+</blockquote>
+<h3 id="2-2-3-C中执行lua的闭包函数"><a href="#2-2-3-C中执行lua的闭包函数" class="headerlink" title="2.2.3 C中执行lua的闭包函数"></a>2.2.3 C中执行lua的闭包函数</h3><p>在业务层写lua脚本的过程中，我们会经常使用到lua的闭包函数，特别是在异步执行的过程中 例如：</p>
+<pre><code class="LUA">local func = function(param, callback)
+    local str = &quot;param: &quot; .. tostring(param)
+    callback(1, str)
+end
+func(123, function(code, msg)
+    print(string.format(&quot;from callback: code is %d msg is %d&quot;, code, msg))
+end)</code></pre>
+<p>上面例子中调用的是本地实现的<strong>func</strong>, lua中参数获取或返回还是比较简单，但是如果此 <strong>func</strong> 是在C中实现的话，参数传递又该如何操作呢？</p>
+<p>依然是实现一个简单的例子：</p>
+<pre><code class="C">int function_from_c(lua_State *L)
+{
+    int code = luaL_checkint(L, 1);
+    lua_pushvalue(L, 2);            /* copy closure to top */
+    lua_pushinteger(L, code);
+    lua_pushstring(L, &quot;c function&quot;);
+    //call the c function， two paramter, no return value
+    if (lua_pcall(L, 2, 0, 0)) {
+        printf(&quot;error executing callback, error: %s\n&quot;, lua_tostring(L, -1));
+    }
+    return 0; 
+}
+static luaL_Reg func_list[] = {
+    {&quot;func&quot;, function_from_c},
+    {NULL, NULL}
+};
+LUALIB_API int luaopen_testclosure(lua_State *L)
+{
+    luaL_register(L, &quot;testclosure&quot;, func_list);
+    return 1;
+}</code></pre>
+<p>测试的lua脚本：</p>
+<pre><code class="LUA">local ts = require(&quot;testclosure&quot;)
+local func = function(param, callback)
+    callback(param, &quot;lua function&quot;)
+end
+func(123, function(code, msg)
+    print(string.format(&quot;from callback: code is %d msg is %s&quot;, code, msg))
+end)
+ts.func(123, function(code, msg)
+    print(string.format(&quot;from callback: code is %d msg is %s&quot;, code, msg))
+end)</code></pre>
+<p>结果：</p>
+<blockquote>
+<p>from callback: code is 123 msg is lua function</p>
+</blockquote>
+<blockquote>
+<p>from callback: code is 123 msg is c function</p>
+</blockquote>
+<h3 id="2-2-4-C中的lua栈平衡"><a href="#2-2-4-C中的lua栈平衡" class="headerlink" title="2.2.4 C中的lua栈平衡"></a>2.2.4 C中的lua栈平衡</h3><p>由于lua调用C时传参是通过lua的 <em>虚拟栈</em> 实现的，所以这其中就必然涉及到栈平衡的问题。</p>
+<p>每当 Lua 调用 C 时，被调用的函数都会获得一个新的堆栈，该堆栈独立于先前的堆栈和仍处于活动状态的 C 函数堆栈。此堆栈包含C函数的参数，并且是C函数将其结果返回给调用者的地方。</p>
+<p>栈结构示意图如下：</p>
+<p><img src="/images/lua_dev_01.png" alt="调用栈示意图"></p>
+<p>可以通过 <strong>luaL_check*</strong> 系列接口获取传递给C函数的参数, 这时候需要确保只获取指定数量的参数，不然后会引发panic。在使用完参数后可以将参数丢弃或者弹出到全局变量等其他地方，这时候也需要确保只从栈中弹出了指定数量的参数，否则也会造成panic。</p>
+<p>处理完成后可以使用 <strong>luaL_push*</strong> 系列接口将返回值放入栈中。这时候C函数的返回值表示需要返回的参数个数，这时候就需要确保栈中有指定数量的值，否则就会引发panic错误。</p>
+<h3 id="2-2-5-C中栈交换的问题"><a href="#2-2-5-C中栈交换的问题" class="headerlink" title="2.2.5 C中栈交换的问题"></a>2.2.5 C中栈交换的问题</h3><p>a. 在一些特殊的场景我们需要交换两个栈中的值，这时候可以使用 <strong>lua_xmove</strong> 接口来交换两个栈中的数据</p>
+<p>依然是举个栗子：</p>
+<pre><code class="C">const char *lua_func_str = &quot; \
+local gen_table = function(value1, value2) \n \
+    return {[\&quot;item1\&quot;] = value1, [\&quot;item2\&quot;] = value2} \n \
+end \n \
+local gen_int = function(value) \n \
+    return value + 1 \n \
+end \n \
+local gen_string = function(value) \n \
+    return \&quot;value is \&quot; .. tostring(value) \n \
+end \n \
+return gen_table, gen_int, gen_string \n \
+&quot;;
+static lua_State *lua_func_state = NULL;
+static void init_lua_func(void)
+{
+    if (!lua_func_state) {
+        lua_func_state = luaL_newstate();
+    }
+    luaL_openlibs(lua_func_state);
+    if (luaL_dostring(lua_func_state, lua_func_str) != 0) {
+        printf(&quot;luaL_dostring failed, %s\n&quot;, lua_tostring(lua_func_state, -1));
+        return;
+    }
+    // lua function is on stack
+    if (!lua_isfunction(lua_func_state, 1) || !lua_isfunction(lua_func_state, 2) || !lua_isfunction(lua_func_state, 3)) {
+        printf(&quot;load lua function is failed\n&quot;);
+        return;
+    }
+    lua_setglobal(lua_func_state, &quot;gen_string&quot;);
+    lua_setglobal(lua_func_state, &quot;gen_int&quot;);
+    lua_setglobal(lua_func_state, &quot;gen_table&quot;);
+}
+
+int xchange_int(lua_State *L)
+{
+    int value = luaL_checkint(L, 1);
+    lua_settop(lua_func_state, 0);
+    lua_getglobal(lua_func_state, &quot;gen_int&quot;);
+    lua_pushinteger(lua_func_state, (lua_Integer)value);
+    if (lua_pcall(lua_func_state, 1, 1, 0) || !lua_isnumber(lua_func_state, -1)) {
+        printf(&quot;execute lua function gen_int failed, %s\n&quot;, luaL_checkstring(lua_func_state, -1));
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_settop(L, 0);
+    // exchange value 
+    lua_xmove(lua_func_state, L, 1);
+    return 1;
+}
+int xchange_string(lua_State *L)
+{
+    const char *str = luaL_checkstring(L, 1);
+    lua_settop(lua_func_state, 0);
+    lua_getglobal(lua_func_state, &quot;gen_string&quot;);
+    lua_pushstring(lua_func_state, str);
+    if (lua_pcall(lua_func_state, 1, 1, 0) || !lua_isstring(lua_func_state, 1)) {
+        printf(&quot;execute lua function gen_int failed, %s\n&quot;, luaL_checkstring(lua_func_state, -1));
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_settop(L, 0);
+    // exchange value 
+    lua_xmove(lua_func_state, L, 1);
+    return 1;
+}
+int xchange_table(lua_State *L)
+{
+    const char *value1 = luaL_checkstring(L, 1);
+    const char *value2 = luaL_checkstring(L, 2);
+    lua_settop(lua_func_state, 0);
+    lua_getglobal(lua_func_state, &quot;gen_table&quot;);
+    lua_pushstring(lua_func_state, value1);
+    lua_pushstring(lua_func_state, value2);
+    if (lua_pcall(lua_func_state, 2, 1, 0) || !lua_istable(lua_func_state, 1)) {
+        printf(&quot;execute lua function gen_int failed, %s\n&quot;, luaL_checkstring(lua_func_state, -1));
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_settop(L, 0);
+    // exchange value 
+    lua_xmove(lua_func_state, L, 1);
+    return 1;
+}
+static luaL_Reg func_list[] = {
+    {&quot;xchange_int&quot;, xchange_int},
+    {&quot;xchange_string&quot;, xchange_string},
+    {&quot;xchange_table&quot;, xchange_table},
+    {NULL, NULL}
+};
+LUALIB_API int luaopen_testexchange(lua_State *L)
+{
+    init_lua_func();
+    luaL_register(L, &quot;testexchange&quot;, func_list);
+    return 1;
+}</code></pre>
+<p>测试的lua代码如下：</p>
+<pre><code class="LUA">local tx = require(&quot;testexchange&quot;)
+local v1 = tx.xchange_int(10)
+print(&quot;xchange_int result: &quot; .. tostring(v1))
+local v2 = tx.xchange_string(&quot;hello&quot;)
+print(&quot;xchange_string result: &quot; .. tostring(v2))
+local v3 = tx.xchange_table(&quot;zhangsan&quot;, &quot;lisi&quot;)
+print(string.format(&quot;xchange_table reault: %s %s&quot;, tostring(v3[&quot;item1&quot;]), tostring(v3[&quot;item2&quot;])))</code></pre>
+<p>执行结果如下:</p>
+<blockquote>
+<p>xchange_int result: 11</p>
+</blockquote>
+<blockquote>
+<p>xchange_string result: value is hello</p>
+</blockquote>
+<blockquote>
+<p>xchange_table reault: nil nil</p>
+</blockquote>
+<p><strong>结论就是</strong>： 可以在不同的lua_State交换栈上的普通值（int, string等）， 不能交换稍微高级的值（table， userdata等）</p>
+<p>b. 改变栈中数据的位置</p>
+<p>在C接口编码的过程中，我们的C接口可能需要将当前栈上的参数做一些位置调换，那该怎么办呢？<br>luac的接口也考虑到了这种需求，只需调用相关的API就可以做相应的位置变换</p>
+<table>
+<thead>
+<tr>
+<th align="left">函数接口</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">lua_insert</td>
+<td align="left">将栈顶的元素插入到指定的位置，其他元素相应的往前挪位置</td>
+</tr>
+<tr>
+<td align="left">lua_replace</td>
+<td align="left">将栈顶元素替换指定位置的元素，其他元素相应的往前挪位置</td>
+</tr>
+</tbody></table>
+
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2022/0724/hexo_unittest_hook/" class="link f-fl">⟵单元测试中的插桩技术</a>
+    
+    
+      <a href="/2022/0417/hexo_same_file/" class="link f-fr">排查一个同名函数引发的问题⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>

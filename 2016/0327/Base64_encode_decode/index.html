@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Base64编解码 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="今天来把Base64解码的坑填上吧，顺带着把上次的Base64编码合并在一起。解码的原理其实就是编码的逆过程，我这就不写了，详情请注意我的上一篇博客，哈哈我就是这么懒你来打我啊。  Talk is cheap. Show me the code !–Linus Torvalds(linux之父)  好了废话不多说直接上代码 #include&amp;lt;stdio.h&amp;gt; #include&amp;lt;s">
+<meta name="keywords" content="BASE64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Base64编解码">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2016&#x2F;0327&#x2F;Base64_encode_decode&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="今天来把Base64解码的坑填上吧，顺带着把上次的Base64编码合并在一起。解码的原理其实就是编码的逆过程，我这就不写了，详情请注意我的上一篇博客，哈哈我就是这么懒你来打我啊。  Talk is cheap. Show me the code !–Linus Torvalds(linux之父)  好了废话不多说直接上代码 #include&amp;lt;stdio.h&amp;gt; #include&amp;lt;s">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;base64_3.png">
+<meta property="og:updated_time" content="2022-07-24T08:26:35.796Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;base64_3.png">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">Base64编解码</h2>
+  <p class="sub">Mar 27, 2016</p>
+  <article class="content">
+    <p>今天来把Base64解码的坑填上吧，顺带着把上次的Base64编码合并在一起。<br>解码的原理其实就是编码的逆过程，我这就不写了，详情请注意我的上一篇博客，哈哈我就是这么懒你来打我啊。</p>
+<blockquote>
+<p>Talk is cheap. Show me the code !<br>–Linus Torvalds(linux之父)</p>
+</blockquote>
+<p>好了废话不多说直接上代码</p>
+<pre><code class="C">#include&lt;stdio.h&gt;
+#include&lt;string.h&gt;
+/*
+此程序只适用于UTF-8
+*/
+const char base64_map[]=&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&quot;;
+//base64的编码表
+
+/*编码模块的两个函数encrypt64和base64_encrypt*/
+void encrypt64(char *en_three_bits,char *en_four_bits)
+{   //编码函数
+    union{ unsigned char a[3];unsigned int b;} en;
+    int i;
+    for(i=0;i&lt;3;i++)    //把读取的3个字节赋给联合体en
+    en.a[2-i]=en_three_bits[i];
+    for(i=0;i&lt;4;i++)
+    {
+        en_four_bits[3-i]=base64_map[en.a[0]&amp;63];
+        en.b=en.b&gt;&gt;6;
+    }
+    en_four_bits[4]=&#39;\0&#39;;
+}
+void base64_encrypt(char *en_source,char *encrypted)
+{           //通过此函数来将原字符串进行分割，并进行转换
+     int len=strlen(en_source),i;
+     char en_four_bits[5];
+     for(i=0;i&lt;len-2;i+=3)
+     {
+            encrypt64(&amp;en_source[i],en_four_bits);
+            strcat(encrypted,en_four_bits);
+     }
+     if(len%3==1)
+        {
+            encrypt64(&amp;en_source[len-1],en_four_bits);
+            en_four_bits[2]=&#39;\0&#39;;
+            strcat(encrypted,en_four_bits);
+            strcat(encrypted,&quot;==&quot;);
+        }
+    if(len%3==2)
+        {
+            encrypt64(&amp;en_source[len-2],en_four_bits);
+            en_four_bits[3]=&#39;\0&#39;;
+            strcat(encrypted,en_four_bits);
+            strcat(encrypted,&quot;=&quot;);
+        }
+}
+/*解码模块的三个函数index64和decrypted64和base64_decrypt*/
+unsigned int index64(char singel_char)
+{       //求对应字符的下标
+    int j;
+    for(j=0;j&lt;64;j++)
+        if(singel_char==base64_map[j])
+            return j;
+}
+
+void decrypted64(const char *de_four_bits,char *de_three_bits)
+{   //解码主模块
+    union {unsigned int b;char a[4];} de;    //和解码一样继续通过共用体来进行特定位的读取
+    int i,flag=3;       //通过flag标记来去除后面的若干等号
+    if(de_four_bits[2]==&#39;=&#39;)
+        flag=1;
+    else if(de_four_bits[3]==&#39;=&#39;)
+        flag=2;
+    for(de.b=0,i=0;i&lt;4;i++)  //通过四次移位操作把四个字符的下标加起来
+        de.b+=index64(de_four_bits[3-i])&lt;&lt;(i*6);
+    for(i=0;i&lt;3;i++)
+           de_three_bits[i]=de.a[2-i];
+    de_three_bits[flag]=&#39;\0&#39;;
+}
+void base64_decrypt(const char *de_source,char *decrypted)
+{   // 分割待解码的字串
+    int i,len=strlen(de_source);
+    char de_three_bits[4];
+    for(i=0;i&lt;=len-4;i +=4)
+     {
+         decrypted64(&amp;de_source[i],de_three_bits);
+         strcat(decrypted,de_three_bits);
+     }
+}
+void main()
+{
+     char  b1[20]=&quot;&quot;,b2[20]=&quot;&quot;;
+
+     //s1为需要编码的字符串，s2为需要解码的字串
+     char s1[]=&quot;hello world !&quot;,s2[]=&quot;aGVsbG8gd29ybGQgIQ==&quot;;        
+    base64_encrypt(s1,b1);
+    base64_decrypt(s2,b2);
+    printf(&quot;字串 \&quot;%s\&quot; 编码后：\n%s\n&quot;,s1,b1);
+    printf(&quot;字串 \&quot;%s\&quot; 解码后：\n%s\n&quot;,s2,b2);
+    //printf(&quot;%s\n&quot;,b2);
+
+}</code></pre>
+<p>这就是所有的代码了，只依赖简单的两个c标准库， 运行的速度也是非常的快的哟。</p>
+<p>有图有真相</p>
+<p><img src="/images/base64_4.png" alt="我就是真相图"><br>我就是真相图</p>
+<p>Base64的坑就此填完，拜了个拜咧</p>
+
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2016/0329/MD5_learning/" class="link f-fl">⟵初试MD5</a>
+    
+    
+      <a href="/2016/0323/some_pepole_some_talking/" class="link f-fr">那些人，那些话⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>

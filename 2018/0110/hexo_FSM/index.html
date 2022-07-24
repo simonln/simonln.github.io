@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>有限状态机 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="FSM有限状态机（Finite-state machine, FSM），又称有限状态自动机，简称状态机，是表示有限个状态以及在这些状态之间的转移和动作等行为的数学模型。FSM是一种算法思想，简单而言，有限状态机由一组状态、一个初始状态、输入和根据输入及现有状态转换为下一个状态的转换函数组成。现实世界中存在大量具有有限个状态的系统：钟表系统、电梯系统、交通信号灯系统、通信协议系统、正则表达式、硬件电">
+<meta name="keywords" content="算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="有限状态机">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2018&#x2F;0110&#x2F;hexo_FSM&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="FSM有限状态机（Finite-state machine, FSM），又称有限状态自动机，简称状态机，是表示有限个状态以及在这些状态之间的转移和动作等行为的数学模型。FSM是一种算法思想，简单而言，有限状态机由一组状态、一个初始状态、输入和根据输入及现有状态转换为下一个状态的转换函数组成。现实世界中存在大量具有有限个状态的系统：钟表系统、电梯系统、交通信号灯系统、通信协议系统、正则表达式、硬件电">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;fsm_0.jpg">
+<meta property="og:updated_time" content="2022-07-24T08:26:35.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;fsm_0.jpg">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">有限状态机</h2>
+  <p class="sub">Jan 10, 2018</p>
+  <article class="content">
+    <h2 id="FSM"><a href="#FSM" class="headerlink" title="FSM"></a>FSM</h2><p>有限状态机（Finite-state machine, FSM），又称有限状态自动机，简称状态机，是表示有限个状态以及在这些状态之间的转移和动作等行为的数学模型。FSM是一种算法思想，简单而言，有限状态机由一组状态、一个初始状态、输入和根据输入及现有状态转换为下一个状态的转换函数组成。现实世界中存在大量具有有限个状态的系统：钟表系统、电梯系统、交通信号灯系统、通信协议系统、正则表达式、硬件电路系统设计、软件工程，编译器等，有限状态机的概念就是来自于现实世界中的这些有限系统。<br>一般有限状态机可以用状态图精确的描述：<br><img src="/images/fsm_1.png" alt="FSM状态图"></p>
+<h2 id="有限状态机模型"><a href="#有限状态机模型" class="headerlink" title="有限状态机模型"></a>有限状态机模型</h2><p><strong>状态</strong>：指的是对象在其生命周期中的一种状况。处于某个特定状态中的对象必然会满足某些条件，或者执行某些动作，或者等待某些事件。<br><strong>事件</strong>：指的是在时空上占有一定的位置，并且对状态机是有一定意义的事情，事件会造成状态的迁移。<br><strong>转换</strong>：指的是两个状态之间的一种关系，表明某个对象将在第一个状态中执行一定的动作，并将在某个事件发生时满足某个特定的条件，从而进入到第二个状态。<br><strong>动作</strong>：指的是状态机中可以执行的原子操作（不能被中断）。</p>
+<h2 id="实现FMS的方式"><a href="#实现FMS的方式" class="headerlink" title="实现FMS的方式"></a>实现FMS的方式</h2><h3 id="1-switch-case或if-else"><a href="#1-switch-case或if-else" class="headerlink" title="1.switch-case或if-else"></a>1.switch-case或if-else</h3><p>这种方式虽然比较原始，但是效率比较高，实现起来也比较容易。</p>
+<p><img src="/images/fsm_2.png" alt="switch case方式"></p>
+<p>这是一个典型的协议解析状态机，逻辑清晰易于理解。switch-case类的状态机如果在简单状态场景下使用的话比较方便，一旦涉及到状态之间关系转换复杂，那这种状态机实现起来就有些困难。</p>
+<h3 id="2-状态表"><a href="#2-状态表" class="headerlink" title="2.状态表"></a>2.状态表</h3><p>状态表中横坐标表示状态，纵坐标表示输入，每一个元素表示下一个状态。<br><img src="/images/fsm_3.png" alt="状态表方式"></p>
+<h3 id="3-使用宏定义描述状态机"><a href="#3-使用宏定义描述状态机" class="headerlink" title="3.使用宏定义描述状态机"></a>3.使用宏定义描述状态机</h3><h3 id="4-面向对象的设计模式"><a href="#4-面向对象的设计模式" class="headerlink" title="4.面向对象的设计模式"></a>4.面向对象的设计模式</h3>
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2018/0322/hexo_CANoe_getting_started/" class="link f-fl">⟵CANoe入门与使用</a>
+    
+    
+      <a href="/2017/1214/hexo_UDS_dignosis_learning/" class="link f-fr">UDS诊断学习总结⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>

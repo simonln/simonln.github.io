@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>CAN协议知识点 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="CAN的出现CAN（Controller Area Network）是BOSCH公司于20世纪80年代开发用于汽车中各个仪器数据交换的串行通信协议。CAN的出现改变了以往汽车中各个控制单元以及测试仪器之间连接的错综复杂的情况。仅以两根线即可实现CAN网络，其他的个控制单元可挂在这两根线上实现与网络中其他单元的通信。  CAN的特性 CAN通信采用双线差分信号传输  总线上的元器件可以动态的增加与减">
+<meta name="keywords" content="基础知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CAN协议知识点">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2017&#x2F;0220&#x2F;hexo_CAN_protocol_points&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="CAN的出现CAN（Controller Area Network）是BOSCH公司于20世纪80年代开发用于汽车中各个仪器数据交换的串行通信协议。CAN的出现改变了以往汽车中各个控制单元以及测试仪器之间连接的错综复杂的情况。仅以两根线即可实现CAN网络，其他的个控制单元可挂在这两根线上实现与网络中其他单元的通信。  CAN的特性 CAN通信采用双线差分信号传输  总线上的元器件可以动态的增加与减">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;can_base_0.png">
+<meta property="og:updated_time" content="2022-07-24T08:26:35.796Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;can_base_0.png">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">CAN协议知识点</h2>
+  <p class="sub">Feb 20, 2017</p>
+  <article class="content">
+    <h2 id="CAN的出现"><a href="#CAN的出现" class="headerlink" title="CAN的出现"></a>CAN的出现</h2><p>CAN（<em>Controller Area Network</em>）是BOSCH公司于20世纪80年代开发用于汽车中各个仪器数据交换的串行通信协议。CAN的出现改变了以往汽车中各个控制单元以及测试仪器之间连接的错综复杂的情况。仅以两根线即可实现CAN网络，其他的个控制单元可挂在这两根线上实现与网络中其他单元的通信。</p>
+<p><img src="/images/can_base_1.png" alt="汽车的CAN网络"></p>
+<h2 id="CAN的特性"><a href="#CAN的特性" class="headerlink" title="CAN的特性"></a>CAN的特性</h2><ol>
+<li><p>CAN通信采用双线差分信号传输<br><img src="/images/can_base_2.png" alt="CAN逻辑电平"></p>
+</li>
+<li><p>总线上的元器件可以动态的增加与减少，协议本身对总线上的元器件的数量没有做出限制，但总线的物理特性会限制总线上的元器件数量。</p>
+</li>
+<li><p>总线上所有的报文都是广播发送，总线上的所有单元都可以接收。</p>
+</li>
+<li><p>总线上的所有单元既可以是发送单元也可以是接收单元，优先权由报文ID确定。</p>
+</li>
+<li><p>每个报文内容由标示符识别，在网络中标示符是唯一确定的。</p>
+</li>
+<li><p>网络中的每个单元都可以根据需要对报文进行相关性过滤。</p>
+</li>
+<li><p>CAN提供了一套复杂的错误检测与错误处理机制来保证系统数据的一致性，比如CRC检测、接口的抗电磁干扰能力、错误报文的自动重发、临时错误的恢复以及永久错误的关闭。</p>
+</li>
+<li><p>使用双绞线作为物理传输的介质，传输速率最高可达1Mbps(线缆长度小于40m)。</p>
+</li>
+<li><p>传输编码采用的是NRZ（<em>No Return Zero</em>）和位填充。</p>
+</li>
+</ol>
+<h2 id="CAN总线标准"><a href="#CAN总线标准" class="headerlink" title="CAN总线标准"></a>CAN总线标准</h2><p><img src="/images/can_base_3.png" alt="标准"></p>
+<h2 id="通信机制"><a href="#通信机制" class="headerlink" title="通信机制"></a>通信机制</h2><p><strong>报文的发送</strong>：节点发送报文时需要检测总线状态，只有在总线状态为空闲时才能进行报文的发送，发送报文过程中需要进行回读保证送出的位和回读的位是一致的；报文发送时通过ID进行仲裁，ID越小发送的优先级越高；退出仲裁后，没有获得发送权限的单元进入“只听”状态，等待总线空闲后重新发送。发送节点在发送连续5个相同的极性位后插入一个极性相反的填充位。<br><strong>报文的接收</strong>：各接收单元通过过滤器对相关的报文进行接收<br><img src="/images/can_base_4.png" alt="过滤器"></p>
+<p>接收节点在接收到连续5个相同的极性位后去除填充位，然后继续进行有效数据的接收。</p>
+<h2 id="数据帧的格式"><a href="#数据帧的格式" class="headerlink" title="数据帧的格式"></a>数据帧的格式</h2><p>数据帧的格式分为两种，一种是标准帧和扩展帧<br><img src="/images/can_base_5.png" alt="帧格式"></p>
+<p>缩写说明<br><img src="/images/can_base_6.png" alt="缩写说明"></p>
+<p>SOF之前的总线空闲区域，无需进行位同步，CRC之后的位都是固定格式无需进行位填充。</p>
+<h2 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h2><p><img src="/images/can_base_7.png" alt="错误类型"></p>
+<ol>
+<li>检测到错误后即发送错误标志，CRC错误标志在ACK后发送，其余的错误标志都是在检测到错误后下一位发送。</li>
+<li>错误帧格式<br><img src="/images/can_base_8.png" alt="错误帧格式"></li>
+</ol>
+<h2 id="帧类型"><a href="#帧类型" class="headerlink" title="帧类型"></a>帧类型</h2><p><img src="/images/can_base_9.png" alt="帧类型"></p>
+<h3 id="位定时与同步"><a href="#位定时与同步" class="headerlink" title="位定时与同步"></a>位定时与同步</h3><ol>
+<li><p>位时间由四部分组成：同步段，传播段，相位缓冲段1以及相位缓冲段2。在多数的实现中会把传播段和相位缓冲段1合并为一个时间段。<br><img src="/images/can_base_10.png" alt="位时间"></p>
+</li>
+<li><p>同步分为硬同步和重同步。硬同步发生在SOF位；当相位误差为正时，跳变沿位于采样点之前，当相位误差为负时，跳变沿位于采样点之后。 </p>
+</li>
+</ol>
+
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2017/0222/hexo_STM32_IAP/" class="link f-fl">⟵STM32的IAP</a>
+    
+    
+      <a href="/2016/0604/LeetCode_ZigZagConversion/" class="link f-fr">LeetCode--ZigZagConversion⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>

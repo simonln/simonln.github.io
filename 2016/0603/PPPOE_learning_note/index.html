@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>PPPOE的学习笔记 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="引子：由于学校的网络是使用PPPoE进行拨号上网，但是有非常多的限制，所以就产生了学习PPPoE的想法。 PPPoE全称 Point to Point Protocol over Ethernet，解释起来就是，点对点协议在以太网上的实现。下面具体讨论的是PPPoE中CHAP。 完成一个PPPoE拨号流程可以具体的分为三大部分： 1.发现阶段2.LCP协商阶段3.CHAP认证阶段 发现阶段（Dis">
+<meta name="keywords" content="学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PPPOE的学习笔记">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2016&#x2F;0603&#x2F;PPPOE_learning_note&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="引子：由于学校的网络是使用PPPoE进行拨号上网，但是有非常多的限制，所以就产生了学习PPPoE的想法。 PPPoE全称 Point to Point Protocol over Ethernet，解释起来就是，点对点协议在以太网上的实现。下面具体讨论的是PPPoE中CHAP。 完成一个PPPoE拨号流程可以具体的分为三大部分： 1.发现阶段2.LCP协商阶段3.CHAP认证阶段 发现阶段（Dis">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;pppoe_1.jpg">
+<meta property="og:updated_time" content="2022-07-24T08:26:35.796Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;pppoe_1.jpg">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">PPPOE的学习笔记</h2>
+  <p class="sub">Jun 3, 2016</p>
+  <article class="content">
+    <p>引子：由于学校的网络是使用PPPoE进行拨号上网，但是有非常多的限制，所以就产生了学习PPPoE的想法。</p>
+<p>PPPoE全称 Point to Point Protocol over Ethernet，解释起来就是，点对点协议在以太网上的实现。下面具体讨论的是PPPoE中CHAP。</p>
+<p>完成一个PPPoE拨号流程可以具体的分为三大部分：</p>
+<p>1.发现阶段<br>2.LCP协商阶段<br>3.CHAP认证阶段</p>
+<h2 id="发现阶段（Discovery）"><a href="#发现阶段（Discovery）" class="headerlink" title="发现阶段（Discovery）"></a>发现阶段（Discovery）</h2><p><img src="/images/pppoe_2.png" alt="Discovry的工作流程"><br>        Discovry的工作流程</p>
+<p>第一步客户端发送一个PADI（PPPoE Active Discovery Initiation）数据包，目标地址设置为广播地址即(ff:ff:ff:ff:ff:ff)，以太网络层的Type设置为0X6388表明是PPPoE的Discovery阶段的数据包，CODE域设置为0X09,Session ID必须被设置为0X0000。<br>当访问集中器接收到它可以提供服务的PADI包，它通过发送一个PADO（PPPoE Active Discovery Offer）包来响应。目标地址是发送PADI的主机的单播地址。CODE域被设置为0x07，同时，Session ID必须被设置为0x0000。<br>PADO包必须包含一个AC名称（AC-Name）标签，其中有访问集中器的名称；还有一个标记此次会话的AC-Cookie。<br>主机发送PADR（PPPoE Active Discovery Request）包给被选中的访问集中器。目标地址被设置为这个发送PADO的访问集中器的单播以太网地址。CODE域被设置为0x19，同时，Session ID必须被设置为0x0000。PADR包包含一个AC-Cookie标签，这个标签的值为主机收到的PADI包中的AC-Cookie的值。<br>当访问集中器接收到PADR包时，它开始准备开始一个PPP会话。它为PPPoE会话创建一个唯一的会话ID（Session ID），并用PADS（PPPoE Active Discovery Session-confirmation）包回复给主机。目标地址域设置为发送PADR的主机的单播以太网地址。CODE域设置为0x65，同时，SESSION_ID必须设置为刚为本次PPPoE会话创建的唯一值。<br>发现阶段完成后，双方通信的Sesiion ID已经建立，那就开始进入协议协商阶段（LCP）</p>
+<h2 id="LCP阶段"><a href="#LCP阶段" class="headerlink" title="LCP阶段"></a>LCP阶段</h2><p>主机发送Request包，PPP协议的Protocol设置为0XC021表明为Link Control Protocol,在Link Control Protocol下，主机一般设置最大接收单元，魔术字，Protocol Field Compression，Address and Control Field Compression，回调参数。Identifier设置为0X00表明是第一次的request包。<br>对于CHAP认证，这里只需要魔术字和最大接收单元，其他的都得拒绝。所以AC服务器就发送拒绝包，PPP Link Control Protocol域的CODE设置为0X04，Options项列出拒绝的内容。<br>被拒绝后，主机会按照AC服务器发的拒绝包重新发过Request包PPP Identifier设置为0X01表明是第二次发的Request包。此时AC服务器也好发一个Request包，PPP Options选项包含最大接收单元，认证协议（CHAP则为0XC223）,魔术字。<br>一般没什么问题，双放都会各发一个ACK包来确认刚刚的配置请求。<br>确认完后，主机就会开始发若干个(一般是三个)Identification包，PPP Link Control Protocol的CODE设置为0X12,Options包含AC服务器发的确认包中的魔术字，和一些Message。<br>主机发完这些包后，就进入CHAP认证阶段。</p>
+<h2 id="CHAP阶段"><a href="#CHAP阶段" class="headerlink" title="CHAP阶段"></a>CHAP阶段</h2><p>AC服务器就会开始Challenge包。PPP协议的Protocol协议段设置为0XC223表明为挑战握手认证协议（Challenge Handshake Authentication Protocol）。PPP Challenge Handshake Authentication Protocol的CODE设置为0X01,data域带上一个value值，和其长度，加上AC服务器的名字。<br>主机收到AC服务器发的Chanlenge包后，就会发回应包，PPP Challenge Handshake Authentication Protocol的CODE设置为0X02，data域带上一个value值，和其长度，加上拨号的用户名。<br>这时AC服务器就会发认证是否成功的回应包，如果失败那PPP Challenge Handshake Authentication Protocol的CODE设置为0X04，Message里包含失败的原因。如果成功那Code设置为0X03。<br>好了，大体就是这样了！！！<br>我就是这么懒，你来咬我啊，哈哈哈哈。拜了个拜勒。</p>
+
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2016/0604/LeetCode_ZigZagConversion/" class="link f-fl">⟵LeetCode--ZigZagConversion</a>
+    
+    
+      <a href="/2016/0527/imagine_things_2016_5_27/" class="link f-fr">2016-5-27随想⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>

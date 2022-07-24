@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>duilib多线程 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在使用duilib库的时候，发现这个UI框架确实是小而美，它真的只是个UI框架，除了这个一无所有。也可能是用习惯了QT的缘故，理所当然的把它也认作如此了。在界面开发中，一般主线程是用来刷新UI及响应来自用户对UI的操作的，因此主线程上不能跑一些重度耗时的操作，比如文件读取或者网络操作之类的。一但这些操作在主线程执行，那么主线程就没有时间去响应用户对UI的操作，那么外部表现就是界面失去响应或者卡顿。">
+<meta name="keywords" content="duilib">
+<meta property="og:type" content="article">
+<meta property="og:title" content="duilib多线程">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2019&#x2F;0710&#x2F;duilib_mutilple_thread&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="在使用duilib库的时候，发现这个UI框架确实是小而美，它真的只是个UI框架，除了这个一无所有。也可能是用习惯了QT的缘故，理所当然的把它也认作如此了。在界面开发中，一般主线程是用来刷新UI及响应来自用户对UI的操作的，因此主线程上不能跑一些重度耗时的操作，比如文件读取或者网络操作之类的。一但这些操作在主线程执行，那么主线程就没有时间去响应用户对UI的操作，那么外部表现就是界面失去响应或者卡顿。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;duilib_multithread_0.jpg">
+<meta property="og:updated_time" content="2022-07-24T08:26:35.796Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;duilib_multithread_0.jpg">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">duilib多线程</h2>
+  <p class="sub">Jul 10, 2019</p>
+  <article class="content">
+    <p>在使用duilib库的时候，发现这个UI框架确实是小而美，它真的只是个UI框架，除了这个一无所有。也可能是用习惯了QT的缘故，理所当然的把它也认作如此了。<br>在界面开发中，一般主线程是用来刷新UI及响应来自用户对UI的操作的，因此主线程上不能跑一些重度耗时的操作，比如文件读取或者网络操作之类的。<br>一但这些操作在主线程执行，那么主线程就没有时间去响应用户对UI的操作，那么外部表现就是界面失去响应或者卡顿。为了解决这个问题，我们理所当然的旧想到了，<br>既然主线程不能干“重”活，那么我们去创建一个子线程去帮它把这些活干了不就好了。Bingo思路是对的，如果子线程默默的干活（子线程不使用主线程的资源）<br>这不会发生任何问题。但是子线程把活干完了是不是得通知一下主线程，那么问题就来了，子线程需要访问主线程的资源，然而主线程也需要访问自己的资源，<br>这就涉及到资源竞争了，下意识的我们又想到了加锁。加锁确实是个不错的主意，但是这个效率有点低下，有没有更优雅的方案呢？当然是有啦，这就要拉出windows的<br>消息系统了，windows系统的界面是基于消息驱动了，那么子线程只需要往主线程发送一条通知消息即可，这条消息系统会把它放进主线程的消息队列中，主线程的消息<br>循环会把这条消息分发到相应的处理函数，我们只要在为这条消息定制一个处理函数即可。原理讲完了，show code time了。</p>
+<h3 id="1-首先当然是定义一条消息，在windwos系统中，所有的消息都是一个整数"><a href="#1-首先当然是定义一条消息，在windwos系统中，所有的消息都是一个整数" class="headerlink" title="1.首先当然是定义一条消息，在windwos系统中，所有的消息都是一个整数"></a>1.首先当然是定义一条消息，在windwos系统中，所有的消息都是一个整数</h3><pre><code class="C">//WM_USER 0x0400
+#define WM_UPDATEUI (0x0400+50)</code></pre>
+<h3 id="2-在主线程的消息循环中处理这条消息"><a href="#2-在主线程的消息循环中处理这条消息" class="headerlink" title="2.在主线程的消息循环中处理这条消息"></a>2.在主线程的消息循环中处理这条消息</h3><pre><code class="C">LRESULT CDuiFrameWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    if (uMsg == WM_UPDATEUI)
+    {
+    //更新进度条
+        static_cast&lt;CProgressUI*&gt;(m_PaintManager.FindControl(_T(&quot;filepgs&quot;)))-&gt;SetValue((int)wParam);
+    }
+    return __super::HandleMessage(uMsg,wParam,lParam);
+}</code></pre>
+<h3 id="3-在子线程中发送消息"><a href="#3-在子线程中发送消息" class="headerlink" title="3.在子线程中发送消息"></a>3.在子线程中发送消息</h3><pre><code class="C">void Protocol::ReportSendProgress(int percent)
+{
+    ::PostMessage((HWND)ui_hwnd_, WM_UPDATEUI, percent, NULL);
+}</code></pre>
+
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2019/0731/hexo_cpp_delete_item_with_iter/" class="link f-fl">⟵C++中利用迭代器删除元素</a>
+    
+    
+      <a href="/2019/0703/differentail_encoding_on_msp430/" class="link f-fr">在msp430上实现差分双向编码的编解码⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>

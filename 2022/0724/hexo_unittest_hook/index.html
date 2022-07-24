@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>单元测试中的插桩技术 | 清新</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1. 背景在编写C&#x2F;C++代码的过程中经常遇到需要给代码做单元测试的情况，以此验证代码的逻辑是否符合设计的要求。但是在进行单元测试的过程我们需要对一些外部或者内部的API的行为做一些定制。比如我们在测试过程中需要模拟 malloc 函数分配内存失败的场景，这时候我们应该怎么办呢？又比如我们需要在使用 socket 接口的时候使其返回指定的数据包，那又应该如何做呢？ 1.1 常用的方式在写C&#x2F;C++">
+<meta name="keywords" content="基础知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单元测试中的插桩技术">
+<meta property="og:url" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;2022&#x2F;0724&#x2F;hexo_unittest_hook&#x2F;index.html">
+<meta property="og:site_name" content="清新">
+<meta property="og:description" content="1. 背景在编写C&#x2F;C++代码的过程中经常遇到需要给代码做单元测试的情况，以此验证代码的逻辑是否符合设计的要求。但是在进行单元测试的过程我们需要对一些外部或者内部的API的行为做一些定制。比如我们在测试过程中需要模拟 malloc 函数分配内存失败的场景，这时候我们应该怎么办呢？又比如我们需要在使用 socket 接口的时候使其返回指定的数据包，那又应该如何做呢？ 1.1 常用的方式在写C&#x2F;C++">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;unittest_hook_0.png">
+<meta property="og:updated_time" content="2022-07-24T08:26:35.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.qingxin.org&#x2F;images&#x2F;unittest_hook_0.png">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/css/index.css">
+	
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-160992877-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+
+</head>
+
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">野生纯逗</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://dribbble.com/" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
+        
+          
+            <a href="https://www.behance.net/" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/simonln/" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/tags" class="nav-menu ">TAGS</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">单元测试中的插桩技术</h2>
+  <p class="sub">Jul 24, 2022</p>
+  <article class="content">
+    <h1 id="1-背景"><a href="#1-背景" class="headerlink" title="1. 背景"></a>1. 背景</h1><p>在编写C/C++代码的过程中经常遇到需要给代码做单元测试的情况，以此验证代码的逻辑是否符合设计的要求。<br>但是在进行单元测试的过程我们需要对一些外部或者内部的API的行为做一些定制。比如我们在测试过程中需要模拟 <strong>malloc</strong> 函数分配内存失败的场景，这时候我们应该怎么办呢？又比如我们需要在使用 <strong>socket</strong> 接口的时候使其返回指定的数据包，那又应该如何做呢？</p>
+<h2 id="1-1-常用的方式"><a href="#1-1-常用的方式" class="headerlink" title="1.1 常用的方式"></a>1.1 常用的方式</h2><p>在写C/C++代码的时候，我们需要改变API或者是接口的既定行为时通常是使用开关宏来实现的，在不同的运行场景中运行不同的代码<br>例如我们在实现一个对外接口的时候如果使用到了<strong>malloc</strong> 函数，然后我们单元测试时候需要测试到malloc失败的场景 代码实现如下：</p>
+<pre><code class="C">#ifdef UNITTETS
+#define malloc(x) malloc_local(x)
+void *malloc_local(unsigned int x)
+{
+    if (x == 1234)
+        return NULL;
+    else
+        return malloc(x);
+}
+#endif
+char* get_new_buffer(unsigned int size)
+{
+    char *buf = malloc(size);
+    if (!buf) {
+        printf(&quot;malloc failed\n&quot;);
+        return NULL;
+    }
+    return buf;
+}
+#ifdef UNITTEST
+TEST(test, dynamic_buffer)
+{
+    char *buff = get_new_buffer(1024)
+    EXPECT_NE(buff, NULL);
+    free(buff);
+
+    buff = get_new_buffer(1234);
+    EXPECT_EQ(buff, NULL);
+}
+#endif</code></pre>
+<p>在上面的例子中，如果我们需要改变 <strong>malloc</strong> 接口的一些行为，那么我们只能使用宏替换的方式去将malloc接口替换成我们自己实现的接口。这样咋看起来好像好像没什么太大的问题，<del>又不是不能用</del> 。但是当你细细查看的时候会发现，如果整个代码实现中<strong>malloc</strong> 有多处被引用，但是我们又不想改变除单侧接口外的 <strong>malloc</strong> 引用的行为，这时候我们发现好像没有比较优雅的实现方式。这时你可能会说，我们为何不在 <strong>get_new_buffer</strong> 接口中 <strong>malloc</strong> 引用的地方使用宏开关来指定单元测试时的实现呢？</p>
+<h2 id="1-2-使用插桩的单侧方式"><a href="#1-2-使用插桩的单侧方式" class="headerlink" title="1.2 使用插桩的单侧方式"></a>1.2 使用插桩的单侧方式</h2><p>还是上面小节的例子</p>
+<pre><code class="C">#ifdef UNITTETS
+void *malloc_local(unsigned int x)
+{
+    if (x == 1234)
+        return NULL;
+    else
+        return malloc(x);
+}
+#endif
+char* get_new_buffer(unsigned int size)
+{
+    char *buf = malloc(size);
+    if (!buf) {
+        printf(&quot;malloc failed\n&quot;);
+        return NULL;
+    }
+    return buf;
+}
+#ifdef UNITTEST
+TEST(test, dynamic_buffer)
+{
+    // hook interface
+    xtest_replace(malloc, malloc_local);
+
+    char *buff = get_new_buffer(1024)
+    EXPECT_NE(buff, NULL);
+    free(buff);
+
+    buff = get_new_buffer(1234);
+    EXPECT_EQ(buff, NULL);
+
+    // restore hook
+    xtest_retore(malloc);
+}
+#endif</code></pre>
+<p>这样做代码是不是清晰很多，而且不影响其他的接口测试。那么这种方式具体是怎么实现的呢，且看下节</p>
+<h1 id="2-各种插桩方式实现的原理"><a href="#2-各种插桩方式实现的原理" class="headerlink" title="2. 各种插桩方式实现的原理"></a>2. 各种插桩方式实现的原理</h1><p>插桩顾名思义，那就是在原地插入一个桩函数，桩函数就是我们自己实现的自定义函数。实现这种插桩的方式目前有三种<br>分别是 GOT/PLT Hook， Trap Hook ， Inline Hook</p>
+<h2 id="2-1-GOT-PLT-hook"><a href="#2-1-GOT-PLT-hook" class="headerlink" title="2.1 GOT/PLT hook"></a>2.1 GOT/PLT hook</h2><p>在ELF文件中，数据被组织为各个段（section）。<strong>.text</strong> 保存的就是我们实现的代码部分，<strong>.plt</strong> 段就是函数链接表，保存的是 <strong>.text</strong> 段中使用到动态链接的函数地址; <strong>.got</strong> 段保存是全局偏移表</p>
+<p>它们之间的关系如下图</p>
+<p>普通绑定调用：<br><img src="/images/unittest_hook_1.png" alt="普通绑定调用"></p>
+<p>lazy binding:<br><img src="/images/unittest_hook_2.png" alt="延迟绑定调用"></p>
+<p>这时候如果我们需要hook目标函数需要做的两件事就是：注入我们的自定义的函数；将 <strong>.got</strong> 中的目标函数重定向到我们的自定义函数</p>
+<p><img src="/images/unittest_hook_3.png" alt=""></p>
+<h2 id="2-2-Trap-hook"><a href="#2-2-Trap-hook" class="headerlink" title="2.2 Trap hook"></a>2.2 Trap hook</h2><p>Trap 就是用户进程中的异常。 这是由除零或无效的内存访问引起的。 这也是调用内核接口（系统调用）的常用方法，因为它们的运行优先级高于用户代码。</p>
+<p>详细参考：<br><a href="https://man7.org/linux/man-pages/man2/ptrace.2.html" target="_blank" rel="noopener">ptrace</a></p>
+<p><a href="https://www.gnu.org/software/libc/manual/html_node/Backtraces.html" target="_blank" rel="noopener">Backtrace</a></p>
+<p><a href="https://www.gnu.org/software/libc/manual/html_node/Signal-Handling.html" target="_blank" rel="noopener">Signal</a> </p>
+<p><a href="https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=vs-2019" target="_blank" rel="noopener">Windows SEH</a></p>
+<p><a href="http://wiki.dwarfstd.org/index.php?title=Exception_Handling" target="_blank" rel="noopener">Linux EH</a></p>
+<p><a href="https://gcc.gnu.org/wiki/WindowsGCCImprovements" target="_blank" rel="noopener">Linux SEH</a></p>
+<p><a href="https://gist.github.com/coolxv/713f3cc6d013ad49c1a01804f24036d2" target="_blank" rel="noopener">VEH and INT3 for windows</a></p>
+<p><a href="https://gist.github.com/coolxv/22e92aa307cd9346fb6172385fb23fa8" target="_blank" rel="noopener">Signal backtrace and INT3 for linux</a></p>
+<h2 id="2-3-inline-hook"><a href="#2-3-inline-hook" class="headerlink" title="2.3 inline hook"></a>2.3 inline hook</h2><p>在汇编层面，所有的函数的都有一个入口地址，函数调用就是使用跳转指令跳转到这个地址。那在入口地址的地方加入一些汇编指令使其跳转到其他函数入口地址，这就是inline hook的原理。</p>
+<p><img src="/images/unittest_hook_4.png" alt="调用示意图"></p>
+<p>要完成上述的跳转我们还需要知道一些汇编层面函数调用的细节。所有的函数都有一个入口地址，其他地方调用这个函数的时候就是使用跳转指令跳转到这个地址的。参数传入传出时是通过寄存器完成的（参数多的时候也会通过栈传递）。</p>
+<p>函数调用整个过程就是</p>
+<ul>
+<li>将参数依次按顺序放入寄存器中, 第1个参数放入寄存器R0中，第2个参数放入R1中，依此类推</li>
+<li>保存跳转指令下一条指令的地址A1（即函数调用完成后的返回地址），然后使用跳转指令跳转到函数入口地址</li>
+<li>函数最后将返回值放入寄存器R0中， 然后跳回A1地址</li>
+<li>调用方从寄存器R0取得函数返回值</li>
+<li>调用结束</li>
+</ul>
+<p>这时候为了完成inline hook, 我们需要在跑到函数入口地址处时保存当前寄存器内容以及栈顶位置还有就是返回地址，然后跳转到指定的函数，最后调用完后后恢复寄存器的值以及返回地址还有栈顶位置。</p>
+<h1 id="3-结语"><a href="#3-结语" class="headerlink" title="3. 结语"></a>3. 结语</h1><p>不同的插桩方式各有优缺点，也各有适用的场景， 如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">条目</th>
+<th align="left">GOT/PLT hook</th>
+<th align="left">Trap hook</th>
+<th align="left">Inline hook</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">实现层面</td>
+<td align="left">函数级别</td>
+<td align="left">指令级别</td>
+<td align="left">指令级别</td>
+</tr>
+<tr>
+<td align="left">适用范围</td>
+<td align="left">有局限</td>
+<td align="left">广</td>
+<td align="left">广</td>
+</tr>
+<tr>
+<td align="left">性能</td>
+<td align="left">高</td>
+<td align="left">低</td>
+<td align="left">高</td>
+</tr>
+<tr>
+<td align="left">实现难度</td>
+<td align="left">中</td>
+<td align="left">中</td>
+<td align="left">高</td>
+</tr>
+</tbody></table>
+
+  </article>
+  <footer class="f-cf">
+    
+    
+      <a href="/2022/0717/hexo_lua_dev/" class="link f-fr">LUA开发那些事⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  
+  
+    
+      
+        · <a href="https://dribbble.com/" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/sakurahams/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/simonln/" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
+</footer>
+  </div>
+</body>
+</html>
