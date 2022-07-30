@@ -1,0 +1,165 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>MATLAB中mex的使用说明 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="MATLAB中mex的使用说明"><meta property="og:description" content="1.说明 关于MEX文件，官方的解释是： A MEX file is a function, created in MATLAB, that calls a C/C++ program or a Fortran subroutine. A MEX function behaves just like a MATLAB script or function. To call a MEX function, use the name of the MEX file, without the file extension. The MEX file contains only one"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/hexo_matlab_mex_usage/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2020-05-19T10:02:00+00:00"><meta property="article:modified_time" content="2020-05-19T10:02:00+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="MATLAB中mex的使用说明"><meta name=twitter:description content="1.说明 关于MEX文件，官方的解释是： A MEX file is a function, created in MATLAB, that calls a C/C++ program or a Fortran subroutine. A MEX function behaves just like a MATLAB script or function. To call a MEX function, use the name of the MEX file, without the file extension. The MEX file contains only one"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/hexo_matlab_mex_usage/><link rel=prev href=https://www.qingxin.org/hexo_build_tv_system/><link rel=next href=https://www.qingxin.org/hexo_fftw_usage/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"MATLAB中mex的使用说明","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/hexo_matlab_mex_usage\/"},"genre":"posts","keywords":"使用教程","wordcount":1708,"url":"https:\/\/www.qingxin.org\/hexo_matlab_mex_usage\/","datePublished":"2020-05-19T10:02:00+00:00","dateModified":"2020-05-19T10:02:00+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/about>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">MATLAB中mex的使用说明</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2020-05-19>2020-05-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;1708 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;4 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/matlab_mex_0.png data-srcset="/images/matlab_mex_0.png, /images/matlab_mex_0.png 1.5x, /images/matlab_mex_0.png 2x" data-sizes=auto alt=/images/matlab_mex_0.png title=/images/matlab_mex_0.png></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#1说明>1.说明</a></li><li><a href=#2api说明>2.API说明</a><ul><li><a href=#21-mex-c>2.1 MEX C</a></li><li><a href=#22-mex-c>2.2 MEX C++</a></li></ul></li><li><a href=#3例子>3.例子</a><ul><li><a href=#31-mex-c-获取数据-操作完后返回>3.1 MEX c 获取数据 操作完后返回</a></li><li><a href=#32-mex-c-获取数据-操作并返回>3.2 MEX c++ 获取数据 操作并返回</a></li></ul></li></ul></nav></div></div><div class=content id=content><h2 id=1说明>1.说明</h2><p>关于MEX文件，官方的解释是：</p><blockquote><p>A MEX file is a function, created in MATLAB, that calls a C/C++ program or a Fortran subroutine. A MEX function behaves just like a MATLAB script or function. To call a MEX function, use the name of the MEX file, without the file extension. The MEX file contains only one function or subroutine. The calling syntax depends on the input and output arguments defined by the MEX function. The MEX file must be on your MATLAB path.</p></blockquote><p>本质上MEX文件是一个动态链接库文件，在MATLAB中调用该方法时，MATLAB会加载该动态链接库文件，然后调用指定入口方法，然后按照既定的格式去处理输入和输出。</p><h2 id=2api说明>2.API说明</h2><h3 id=21-mex-c>2.1 MEX C</h3><p>在C中，入口方法为</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=c1>// nls： 输出数组的数量
+</span><span class=c1>// plhs：输出数组
+</span><span class=c1>// nrhs: 输入数组的数量
+</span><span class=c1>// prhs: 输入数组 
+</span><span class=c1></span><span class=kt>void</span> <span class=nf>mexFunction</span><span class=p>(</span><span class=kt>int</span> <span class=n>nlhs</span><span class=p>,</span> <span class=n>mxArray</span> <span class=o>*</span><span class=n>plhs</span><span class=p>[],</span><span class=kt>int</span> <span class=n>nrhs</span><span class=p>,</span> <span class=k>const</span> <span class=n>mxArray</span> <span class=o>*</span><span class=n>prhs</span><span class=p>[]);</span>
+</code></pre></td></tr></table></div></div><p>使用MEX C时，实测MATLAB的开销比较小，大概在十几个微秒，猜测是MATLAB的矩阵底层数据结构和<strong>mxArray</strong>基本一致，所以在转换上不会花费太大的开销。</p><p>对于传进来的矩阵首先第一步当然是获取它的维度信息了，使用<strong>mxGetDimensions</strong>可以获取每个维度的大小，不过这个函数有个小瑕疵无法获取具体有多少个维度，要想获取具体维度信息就只能曲线救国，先使用<strong>mxGetNumberOfElements</strong>获取矩阵中元素总数，然后根据每个维度的大小间接算出有多少个维度。对于常用的二维矩阵，使用<strong>mxGetM</strong>函数获取行数量，使用<strong>mxGetN</strong>获取列数量就足矣。</p><p>有了矩阵的维度信息，现在就可以开始处理数据了。除非特别声明不然MATLAB传到MEX C中的矩阵都是<strong>double</strong>类型，使用<strong>mxGetDoubles</strong>函数即可获取内存指针，此时虽然获取的是一个<strong>double</strong>类型的指针，但它其实是可以处理多维数据的，因为多维数据在内存中的分布是顺序的，按列存储，行号低的排列在前，高的在后，列号低的排在列号高的前面。由于该数据是MATLAB以共享内存的方式传进来，所以在C函数内修改该数据，MATLAB中的数据也会被修改，除非特别需要，否则不建议直接对该数据进行修改操作，而是使用<strong>mxMalloc</strong>函数重新分配一块内存，将数据复制到新内存中后进行修改操作。修改完数据后如果需要将数据传回到MATLAB中时，则需要使用<strong>mxCreate</strong>系列函数先给plhs[x]先创建指针，然后使用<strong>mxSet</strong>系列函数将数据指针赋给plhs[x]，此时绝对不可将数据指针使用<strong>mexFree</strong>释放掉，否则MATLAB运行会出错，因为它将访问已经释放的内存。</p><p>对于<strong>mxMalloc</strong>等动态分配内存的函数分配的动态内存，MATLAB会统一释放，所以无需担心内存会泄漏。</p><p>常用的API就以上几个，详细参考 <a href=https://www.mathworks.com/help/matlab/cc-mx-matrix-library.html target=_blank rel="noopener noreffer">MEX C API</a></p><h3 id=22-mex-c>2.2 MEX C++</h3><p>在C++中，入口方法为:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=k>class</span> <span class=nc>MexFunction</span><span class=o>:</span><span class=k>public</span> <span class=n>matlab</span><span class=o>::</span><span class=n>mex</span><span class=o>::</span><span class=n>Function</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=c1>// outputs: 输出数组
+</span><span class=c1></span>    <span class=c1>// inputs: 输入数组
+</span><span class=c1></span>    <span class=kt>void</span> <span class=k>operator</span><span class=p>()(</span><span class=n>matlab</span><span class=o>::</span><span class=n>mex</span><span class=o>::</span><span class=n>ArgumentList</span> <span class=n>outputs</span><span class=p>,</span><span class=n>matlab</span><span class=o>::</span><span class=n>mex</span><span class=o>::</span><span class=n>ArgumentList</span> <span class=n>inputs</span><span class=p>)</span>
+    <span class=p>{</span>
+
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>在MATLAB环境中调用使用MEX C++ API编写的函数时，基本开销大约是50几个微秒，底层数据转换开销相比MEX C 来说比较大，大概是MATLAB中矩阵数据结构和<strong>ArgumentList</strong>数据结构相差较大，故转换开销也比较大。</p><p><strong>ArgumentList</strong>其实是<strong>Array</strong>的一个子类，但是<strong>ArgumentsList</strong>类可进行的操作太少(仅限于获取维度信息，迭代器)，不适合常规使用，所以一般将<strong>ArgumentList</strong>类型的输入参数转换成<strong>Array</strong>的另外一个子类<strong>TypeArray</strong>，这样可以使用各个维度索引来获取具体元素。当需要将矩阵数据输出回MATLAB时，此时需要一个名为<strong>ArrayFactory</strong>的工厂类，其中的<strong>createArray</strong>方法可以根据数据集及其维度信息，创建指定维度的 <strong>Array</strong> 变量。</p><p>数据类型说明参考 <a href="https://www.mathworks.com/help/matlab/matlab-data-array.html?s_tid=srchbrcm" target=_blank rel="noopener noreffer">类型说明</a></p><p>其他API说明参考 <a href=https://www.mathworks.com/help/matlab/matlab_external/cpp-mex-api.html target=_blank rel="noopener noreffer">API说明</a></p><h2 id=3例子>3.例子</h2><h3 id=31-mex-c-获取数据-操作完后返回>3.1 MEX c 获取数据 操作完后返回</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=cp>#include</span> <span class=cpf>&#34;mex.h&#34;</span><span class=cp>
+</span><span class=cp>#include</span> <span class=cpf>&#34;matrix.h&#34;</span><span class=cp>
+</span><span class=cp>#include</span> <span class=cpf>&lt;stdlib.h&gt;</span><span class=cp>
+</span><span class=cp></span>
+<span class=kt>void</span> <span class=nf>mexFunction</span><span class=p>(</span><span class=kt>int</span> <span class=n>nlhs</span><span class=p>,</span> <span class=n>mxArray</span> <span class=o>*</span><span class=n>plhs</span><span class=p>[],</span><span class=kt>int</span> <span class=n>nrhs</span><span class=p>,</span> <span class=k>const</span> <span class=n>mxArray</span> <span class=o>*</span><span class=n>prhs</span><span class=p>[])</span>
+<span class=p>{</span>
+    <span class=c1>// get number of rows
+</span><span class=c1></span>	<span class=n>size_t</span> <span class=n>size</span> <span class=o>=</span> <span class=n>mxGetM</span><span class=p>(</span><span class=n>prhs</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+
+    <span class=c1>// get data pointer of array
+</span><span class=c1></span>	<span class=n>mxComplexDouble</span> <span class=o>*</span><span class=n>input</span> <span class=o>=</span> <span class=n>mxGetComplexDoubles</span><span class=p>(</span><span class=n>prhs</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>	
+	
+	<span class=c1>// new some memory, it is n-by-1 Matrix
+</span><span class=c1></span>	<span class=n>mxComplexDouble</span> <span class=o>*</span><span class=n>temp</span> <span class=o>=</span> <span class=p>(</span><span class=n>mxComplexDouble</span><span class=o>*</span><span class=p>)</span><span class=n>mxMalloc</span><span class=p>(</span><span class=n>size</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>mxComplexDouble</span><span class=p>));</span>
+	<span class=n>memcpy</span><span class=p>(</span><span class=n>temp</span><span class=p>,</span><span class=n>input</span><span class=p>,</span><span class=n>size</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>mxComplexDouble</span><span class=p>));</span>
+	
+	<span class=c1>// real = real * 2, image = -1 * image
+</span><span class=c1></span>	<span class=k>for</span><span class=p>(</span><span class=n>size_t</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>size</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+	<span class=p>{</span>
+		<span class=n>temp</span><span class=p>[</span><span class=n>i</span><span class=p>].</span><span class=n>real</span> <span class=o>=</span> <span class=n>temp</span><span class=p>[</span><span class=n>i</span><span class=p>].</span><span class=n>real</span> <span class=o>*</span> <span class=mi>2</span><span class=p>;</span>
+		<span class=n>temp</span><span class=p>[</span><span class=n>i</span><span class=p>].</span><span class=n>imag</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span> <span class=o>*</span> <span class=n>temp</span><span class=p>[</span><span class=n>i</span><span class=p>].</span><span class=n>imag</span><span class=p>;</span>
+	<span class=p>}</span>
+
+    <span class=c1>//create the pointer
+</span><span class=c1></span>	<span class=n>plhs</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=n>mxCreateDoubleMatrix</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=n>mxCOMPLEX</span><span class=p>);</span>
+
+    <span class=c1>//set the pointer of outputting
+</span><span class=c1></span>	<span class=n>mxSetComplexDoubles</span><span class=p>(</span><span class=n>plhs</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span><span class=n>temp</span><span class=p>);</span>		
+	<span class=n>mxSetM</span><span class=p>(</span><span class=n>plhs</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span><span class=n>size</span><span class=p>);</span>
+	<span class=n>mxSetN</span><span class=p>(</span><span class=n>plhs</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span><span class=mi>1</span><span class=p>);</span>
+		
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><h3 id=32-mex-c-获取数据-操作并返回>3.2 MEX c++ 获取数据 操作并返回</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cp>#include</span> <span class=cpf>&#34;mex.hpp&#34;</span><span class=cp>
+</span><span class=cp>#include</span> <span class=cpf>&#34;mexAdapter.hpp&#34;</span><span class=cp>
+</span><span class=cp>#include</span> <span class=cpf>&lt;complex&gt;</span><span class=cp>
+</span><span class=cp></span>
+<span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+<span class=k>using</span> <span class=k>namespace</span> <span class=n>matlab</span><span class=o>::</span><span class=n>data</span><span class=p>;</span>
+<span class=k>using</span> <span class=n>matlab</span><span class=o>::</span><span class=n>mex</span><span class=o>::</span><span class=n>ArgumentList</span><span class=p>;</span>
+<span class=k>typedef</span> <span class=n>std</span><span class=o>::</span><span class=n>complex</span><span class=o>&lt;</span><span class=kt>double</span><span class=o>&gt;</span> <span class=n>Complex</span><span class=p>;</span>
+
+
+<span class=k>class</span> <span class=nc>MexFunction</span><span class=o>:</span><span class=k>public</span> <span class=n>matlab</span><span class=o>::</span><span class=n>mex</span><span class=o>::</span><span class=n>Function</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=k>operator</span><span class=p>()(</span><span class=n>matlab</span><span class=o>::</span><span class=n>mex</span><span class=o>::</span><span class=n>ArgumentList</span> <span class=n>outputs</span><span class=p>,</span><span class=n>matlab</span><span class=o>::</span><span class=n>mex</span><span class=o>::</span><span class=n>ArgumentList</span> <span class=n>inputs</span><span class=p>)</span>
+    <span class=p>{</span>
+		<span class=n>ArrayFactory</span> <span class=n>factory</span><span class=p>;</span>
+		<span class=c1>// create TypedArray
+</span><span class=c1></span>		<span class=n>TypedArray</span><span class=o>&lt;</span><span class=n>Complex</span><span class=o>&gt;</span> <span class=n>input</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>move</span><span class=p>(</span><span class=n>inputs</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+		<span class=c1>// get dimensions
+</span><span class=c1></span>		<span class=n>ArrayDimensions</span> <span class=n>dims</span> <span class=o>=</span>  <span class=n>input</span><span class=p>.</span><span class=n>getDimensions</span><span class=p>();</span>
+		<span class=c1>// cache the data of inputting
+</span><span class=c1></span>		<span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=n>Complex</span><span class=o>&gt;</span> <span class=n>items</span><span class=p>(</span><span class=n>input</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span><span class=n>input</span><span class=p>.</span><span class=n>end</span><span class=p>());</span>
+		<span class=c1>// real = real * 2 , image = image * -1
+</span><span class=c1></span>		<span class=k>for</span><span class=p>(</span><span class=k>auto</span> <span class=o>&amp;</span><span class=nl>item</span><span class=p>:</span> <span class=n>items</span><span class=p>)</span>
+		<span class=p>{</span>
+			<span class=n>item</span><span class=p>.</span><span class=n>real</span><span class=p>(</span><span class=n>item</span><span class=p>.</span><span class=n>real</span><span class=p>()</span> <span class=o>*</span> <span class=mi>2</span> <span class=p>);</span>
+			<span class=n>item</span><span class=p>.</span><span class=n>imag</span><span class=p>(</span><span class=n>item</span><span class=p>.</span><span class=n>imag</span><span class=p>()</span> <span class=o>*</span> <span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+		<span class=p>}</span>
+		<span class=c1>// create the output Array from cache vector
+</span><span class=c1></span>		<span class=n>outputs</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=n>factory</span><span class=p>.</span><span class=n>createArray</span><span class=p>(</span><span class=n>dims</span><span class=p>,</span><span class=n>items</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span><span class=n>items</span><span class=p>.</span><span class=n>end</span><span class=p>());</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+</code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2020-05-19</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/>使用教程</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/hexo_build_tv_system/ class=prev rel=prev title=点播或直播系统搭建><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>点播或直播系统搭建</a>
+<a href=/hexo_fftw_usage/ class=next rel=next title=使用FFTW库>使用FFTW库<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":30},"comment":{},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

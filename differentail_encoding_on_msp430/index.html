@@ -1,0 +1,768 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>在msp430上实现差分双向编码的编解码 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="在msp430上实现差分双向编码的编解码"><meta property="og:description" content="前言 根据《Qi Wireless Power Transfer System V1.2.3》的规定，Power Transmitter 向 Power Receive 通信时，物理层使用基于FSK的差分双向编码。 调制频率定为fmod = 160KHz"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/differentail_encoding_on_msp430/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2019-07-03T10:37:00+00:00"><meta property="article:modified_time" content="2019-07-03T10:37:00+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="在msp430上实现差分双向编码的编解码"><meta name=twitter:description content="前言 根据《Qi Wireless Power Transfer System V1.2.3》的规定，Power Transmitter 向 Power Receive 通信时，物理层使用基于FSK的差分双向编码。 调制频率定为fmod = 160KHz"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/differentail_encoding_on_msp430/><link rel=prev href=https://www.qingxin.org/printf_for_stm32_on_truestudio/><link rel=next href=https://www.qingxin.org/duilib_mutilple_thread/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"在msp430上实现差分双向编码的编解码","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/differentail_encoding_on_msp430\/"},"genre":"posts","keywords":"使用教程","wordcount":2108,"url":"https:\/\/www.qingxin.org\/differentail_encoding_on_msp430\/","datePublished":"2019-07-03T10:37:00+00:00","dateModified":"2019-07-03T10:37:00+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/about>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">在msp430上实现差分双向编码的编解码</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2019-07-03>2019-07-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;2108 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;5 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/encode_0.jpg data-srcset="/images/encode_0.jpg, /images/encode_0.jpg 1.5x, /images/encode_0.jpg 2x" data-sizes=auto alt=/images/encode_0.jpg title=/images/encode_0.jpg></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#物理层架构图>物理层架构图</a></li><li><a href=#物理层逻辑状态对应图>物理层逻辑状态对应图</a></li><li><a href=#发送编码>发送编码</a></li><li><a href=#在msp430f5529上实现>在MSP430F5529上实现</a><ul><li><a href=#pwm生成>PWM生成</a></li><li><a href=#定时中断>定时中断</a></li><li><a href=#串行格式生成>串行格式生成</a></li></ul></li></ul><ul><li><a href=#物理层架构图-1>物理层架构图</a></li><li><a href=#各部分在msp430f5529上实现>各部分在MSP430F5529上实现</a><ul><li><a href=#ta1部分>TA1部分</a></li><li><a href=#ta0部分>TA0部分</a></li><li><a href=#uart0部分>UART0部分</a></li></ul></li></ul></nav></div></div><div class=content id=content><h1 id=前言>前言</h1><p>根据《Qi Wireless Power Transfer System V1.2.3》的规定，<em>Power Transmitter</em> 向 <em>Power Receive</em> 通信时，物理层使用基于FSK的差分双向编码。
+调制频率定为<em>f</em>mod = 160KHz,工作频率定为<em>f</em>op = 150KHz，传输时钟<em>f</em>clk = 2000KHz。</p><h1 id=编码部分>编码部分</h1><h2 id=物理层架构图>物理层架构图</h2><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/encode_1.png data-srcset="/images/encode_1.png, /images/encode_1.png 1.5x, /images/encode_1.png 2x" data-sizes=auto alt=/images/encode_1.png title=示意图></p><p>由TA0进行基本的150KHz或者160KHz的PWM波形输出，TA1工作在2000KHz时钟下，然后每经过256个周期产生一次定时中断，中断中根据需要发送的数据来决定是否改变P1.4的输出频率。</p><h2 id=物理层逻辑状态对应图>物理层逻辑状态对应图</h2><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/encode_2.png data-srcset="/images/encode_2.png, /images/encode_2.png 1.5x, /images/encode_2.png 2x" data-sizes=auto alt=/images/encode_2.png title=差分双向编码></p><p><strong>HI</strong>状态为发送160KHz的状态，<strong>LO</strong>状态为发送150KHz的状态。如果是1则改变一次（由HI转变成LO或者反过来），如果是0则间隔一次转变一次。</p><h2 id=发送编码>发送编码</h2><p>当应用需要发送一个字节的数据的时，则需要对其编码才能发送出去，这样可以保证数据的完整性。根据《Qi Wireless Power Transfer System V1.2.3》的规定，<em>Power Transmitter</em> 向 <em>Power Receive</em> 通信时，链路层使用11位异步串行格式。此格式包含一个起始位，8个数据位，一个奇偶校验位以及一个停止位。数据位采用的字节序为LSB，校验位采用奇校验。假设发送0x35,则完整的状态如下：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/encode_3.png data-srcset="/images/encode_3.png, /images/encode_3.png 1.5x, /images/encode_3.png 2x" data-sizes=auto alt=/images/encode_3.png title=串行数据格式></p><h2 id=在msp430f5529上实现>在MSP430F5529上实现</h2><h3 id=pwm生成>PWM生成</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=kt>void</span> <span class=nf>PwmInit</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=c1>//TA0.3 PWM     P1.4
+</span><span class=c1></span>    <span class=n>GPIO_setAsPeripheralModuleFunctionOutputPin</span><span class=p>(</span><span class=n>GPIO_PORT_P1</span><span class=p>,</span><span class=n>GPIO_PIN4</span><span class=p>);</span>
+
+    <span class=n>Timer_A_outputPWMParam</span> <span class=n>param</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+    <span class=n>param</span><span class=p>.</span><span class=n>clockSource</span> <span class=o>=</span> <span class=n>TIMER_A_CLOCKSOURCE_SMCLK</span><span class=p>;</span>  <span class=c1>//SMCLK=4MHz
+</span><span class=c1></span>    <span class=n>param</span><span class=p>.</span><span class=n>clockSourceDivider</span> <span class=o>=</span> <span class=n>TIMER_B_CLOCKSOURCE_DIVIDER_2</span><span class=p>;</span>
+    <span class=n>param</span><span class=p>.</span><span class=n>timerPeriod</span> <span class=o>=</span> <span class=n>kBaseFreqTick</span><span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+    <span class=n>param</span><span class=p>.</span><span class=n>compareRegister</span> <span class=o>=</span> <span class=n>TIMER_B_CAPTURECOMPARE_REGISTER_3</span><span class=p>;</span>
+    <span class=n>param</span><span class=p>.</span><span class=n>compareOutputMode</span> <span class=o>=</span> <span class=n>TIMER_A_OUTPUTMODE_TOGGLE_SET</span><span class=p>;</span>
+    <span class=n>param</span><span class=p>.</span><span class=n>dutyCycle</span> <span class=o>=</span> <span class=n>kBaseFreqTick</span><span class=o>/</span><span class=mi>2</span><span class=p>;</span>
+    <span class=n>Timer_A_outputPWM</span><span class=p>(</span><span class=n>TIMER_A0_BASE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>param</span><span class=p>);</span>
+
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><h3 id=定时中断>定时中断</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=kt>void</span> <span class=nf>TimerInit</span><span class=p>()</span>
+<span class=p>{</span>
+
+    <span class=n>Timer_A_initUpModeParam</span> <span class=n>initUpParam</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>clockSource</span> <span class=o>=</span> <span class=n>TIMER_A_CLOCKSOURCE_SMCLK</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>clockSourceDivider</span> <span class=o>=</span> <span class=n>TIMER_A_CLOCKSOURCE_DIVIDER_2</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>timerPeriod</span> <span class=o>=</span> <span class=n>kHalfBitTick</span> <span class=o>-</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>timerInterruptEnable_TAIE</span> <span class=o>=</span> <span class=n>TIMER_A_TAIE_INTERRUPT_ENABLE</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>captureCompareInterruptEnable_CCR0_CCIE</span> <span class=o>=</span>
+        <span class=n>TIMER_A_CAPTURECOMPARE_INTERRUPT_DISABLE</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>timerClear</span> <span class=o>=</span> <span class=n>TIMER_A_DO_CLEAR</span><span class=p>;</span>
+    <span class=n>Timer_A_initUpMode</span><span class=p>(</span><span class=n>TIMER_A1_BASE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>initUpParam</span><span class=p>);</span>
+
+    <span class=n>Timer_A_clearTimerInterrupt</span><span class=p>(</span><span class=n>TIMER_A1_BASE</span><span class=p>);</span><span class=c1>//clear TAIFG
+</span><span class=c1></span>
+    <span class=n>Timer_A_startCounter</span><span class=p>(</span><span class=n>TIMER_A1_BASE</span><span class=p>,</span><span class=n>TIMER_A_UP_MODE</span><span class=p>);</span>
+
+<span class=p>}</span>
+
+<span class=kt>void</span> <span class=nf>TIMER1_A1_ISR</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=p>{</span>
+
+    <span class=c1>//Any access, read or write, of the TAIV register automatically resets the
+</span><span class=c1></span>    <span class=c1>//highest &#34;pending&#34; interrupt flag
+</span><span class=c1></span>    <span class=k>switch</span> <span class=p>(</span> <span class=n>__even_in_range</span><span class=p>(</span><span class=n>TA1IV</span><span class=p>,</span><span class=mi>14</span><span class=p>)</span> <span class=p>){</span>
+        <span class=k>case</span>  <span class=mi>0</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                          <span class=c1>//No interrupt
+</span><span class=c1></span>        <span class=k>case</span>  <span class=mi>2</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                          <span class=c1>//CCR1
+</span><span class=c1></span>        <span class=k>case</span>  <span class=mi>4</span><span class=o>:</span>  <span class=k>break</span><span class=p>;</span>                        <span class=c1>//CCR2
+</span><span class=c1></span>        <span class=k>case</span>  <span class=mi>6</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                           <span class=c1>//CCR3
+</span><span class=c1></span>        <span class=k>case</span>  <span class=mi>8</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                          <span class=c1>//CCR4 not used
+</span><span class=c1></span>        <span class=k>case</span> <span class=mi>10</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                          <span class=c1>//CCR5 not used
+</span><span class=c1></span>        <span class=k>case</span> <span class=mi>12</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                          <span class=c1>//CCR6 not used
+</span><span class=c1></span>        <span class=k>case</span> <span class=mi>14</span><span class=o>:</span>                                <span class=c1>// overflow
+</span><span class=c1></span>            <span class=p>{</span>
+                <span class=k>if</span><span class=p>(</span><span class=n>transmit</span><span class=p>.</span><span class=n>status</span> <span class=o>==</span> <span class=n>TRANSMIT_STATUS_STOP</span><span class=p>)</span>
+                <span class=p>{</span>
+                    <span class=k>break</span><span class=p>;</span>
+                <span class=p>}</span>
+
+                <span class=k>if</span><span class=p>(</span><span class=n>transmit</span><span class=p>.</span><span class=n>tick_count</span> <span class=o>&lt;=</span> <span class=n>transmit</span><span class=p>.</span><span class=n>max_len</span><span class=p>)</span>
+                <span class=p>{</span>
+                    <span class=k>if</span><span class=p>((</span><span class=n>transmit</span><span class=p>.</span><span class=n>raw_buffer</span><span class=p>[</span><span class=n>transmit</span><span class=p>.</span><span class=n>tick_count</span><span class=o>/</span><span class=mi>2</span><span class=p>]</span> <span class=o>==</span> <span class=mi>1</span><span class=p>)</span> <span class=o>||</span>
+                            <span class=p>(</span><span class=n>transmit</span><span class=p>.</span><span class=n>tick_count</span><span class=o>%</span><span class=mi>2</span> <span class=o>==</span> <span class=mi>0</span><span class=p>))</span>
+                    <span class=p>{</span>
+                        <span class=c1>//ONE 2 transitions
+</span><span class=c1></span>                        <span class=n>transmit</span><span class=p>.</span><span class=n>output_status</span> <span class=o>=</span> <span class=n>transmit</span><span class=p>.</span><span class=n>output_status</span><span class=o>?</span><span class=mi>0</span><span class=o>:</span><span class=mi>1</span><span class=p>;</span>
+                        <span class=k>if</span><span class=p>(</span><span class=n>transmit</span><span class=p>.</span><span class=n>output_status</span><span class=p>)</span>
+                        <span class=p>{</span>
+                            <span class=n>TA0CCR3</span> <span class=o>=</span> <span class=n>kModulateFreqTick</span><span class=o>/</span><span class=mi>2</span><span class=p>;</span>
+                            <span class=n>TA0CCR0</span> <span class=o>=</span> <span class=n>kModulateFreqTick</span> <span class=o>-</span> <span class=mi>1</span><span class=p>;</span>
+                        <span class=p>}</span>
+                        <span class=k>else</span>
+                        <span class=p>{</span>
+                            <span class=n>TA0CCR3</span> <span class=o>=</span> <span class=n>kBaseFreqTick</span><span class=o>/</span><span class=mi>2</span><span class=p>;</span>
+                            <span class=n>TA0CCR0</span> <span class=o>=</span> <span class=n>kBaseFreqTick</span> <span class=o>-</span> <span class=mi>1</span><span class=p>;</span>
+                        <span class=p>}</span>
+                    <span class=p>}</span>
+                    <span class=n>transmit</span><span class=p>.</span><span class=n>tick_count</span><span class=o>++</span><span class=p>;</span>
+                <span class=p>}</span>
+                <span class=k>else</span>
+                <span class=p>{</span>
+                    <span class=c1>//back to base frequency
+</span><span class=c1></span>                    <span class=n>TA0CCR3</span> <span class=o>=</span> <span class=n>kBaseFreqTick</span><span class=o>/</span><span class=mi>2</span><span class=p>;</span>
+                    <span class=n>TA0CCR0</span> <span class=o>=</span> <span class=n>kBaseFreqTick</span> <span class=o>-</span> <span class=mi>1</span><span class=p>;</span>
+
+                    <span class=n>transmit</span><span class=p>.</span><span class=n>status</span> <span class=o>=</span> <span class=n>TRANSMIT_STATUS_STOP</span><span class=p>;</span>
+                    <span class=n>transmit</span><span class=p>.</span><span class=n>tick_count</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+                    <span class=n>transmit</span><span class=p>.</span><span class=n>output_status</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+                <span class=p>}</span>
+            <span class=p>}</span>
+            <span class=k>break</span><span class=p>;</span>
+        <span class=k>default</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+
+</code></pre></td></tr></table></div></div><h3 id=串行格式生成>串行格式生成</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=kt>void</span> <span class=nf>SendByte</span><span class=p>(</span><span class=n>uint8_t</span> <span class=n>byte</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span><span class=mi>0</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>val</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+
+    <span class=n>transmit</span><span class=p>.</span><span class=n>raw_buffer</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=p>(</span><span class=n>transmit</span><span class=p>.</span><span class=n>status</span><span class=p>))</span> <span class=c1>//in stop status
+</span><span class=c1></span>    <span class=p>{</span>
+        <span class=k>for</span><span class=p>(;</span><span class=n>i</span><span class=o>&lt;</span><span class=mi>8</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=n>transmit</span><span class=p>.</span><span class=n>raw_buffer</span><span class=p>[</span><span class=mi>1</span><span class=o>+</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=p>(</span><span class=n>byte</span> <span class=o>&gt;&gt;</span> <span class=n>i</span><span class=p>)</span> <span class=o>&amp;</span> <span class=mh>0x01</span><span class=p>;</span>
+            <span class=n>val</span> <span class=o>^=</span> <span class=n>transmit</span><span class=p>.</span><span class=n>raw_buffer</span><span class=p>[</span><span class=mi>1</span><span class=o>+</span><span class=n>i</span><span class=p>];</span>
+        <span class=p>}</span>
+        <span class=n>transmit</span><span class=p>.</span><span class=n>raw_buffer</span><span class=p>[</span><span class=n>i</span><span class=o>+</span><span class=mi>1</span><span class=p>]</span> <span class=o>=</span> <span class=n>val</span><span class=o>?</span><span class=mi>0</span><span class=o>:</span><span class=mi>1</span><span class=p>;</span>
+        <span class=n>transmit</span><span class=p>.</span><span class=n>raw_buffer</span><span class=p>[</span><span class=mi>10</span><span class=p>]</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+        <span class=n>transmit</span><span class=p>.</span><span class=n>max_len</span> <span class=o>=</span> <span class=mi>22</span><span class=p>;</span>
+        <span class=n>transmit</span><span class=p>.</span><span class=n>status</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+        <span class=n>transmit</span><span class=p>.</span><span class=n>tick_count</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><h1 id=解码部分>解码部分</h1><h2 id=物理层架构图-1>物理层架构图</h2><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/encode_4.png data-srcset="/images/encode_4.png, /images/encode_4.png 1.5x, /images/encode_4.png 2x" data-sizes=auto alt=/images/encode_4.png title=架构示意图></p><p>P1.6的输入来源于编码部分的P1.4输出。TA1的主要功能是，10个CLK上升沿后在CCR1输出通道中产生一次输出电平跳变。为何引入TA1这个部分呢？160KHz的PWM波的半周期为3.125us，MSP430时钟捕捉测量功能的中断处理时间约为4.4us，相对于来说太长不利于MCU的运行。故需要放大输入的PWM波的周期。TA0将从TA1输出的放大的波形信号预处理，分辨出是150KHz还是160KHz。如果是150KHz则输出0，如果是160KHz则输出1。然后把这部分信号输入到CCR2通道中，解码出原始的串行编码数据信息。最后将串行编码数据输入到UART0中，最终解出发送的数据。</p><h2 id=各部分在msp430f5529上实现>各部分在MSP430F5529上实现</h2><h3 id=ta1部分>TA1部分</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C>
+<span class=kt>void</span> <span class=nf>CounterInit</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=c1>//TA1CLK INPUT   P1.6
+</span><span class=c1></span>    <span class=c1>//TA1.1  OUTPUT   P2.0
+</span><span class=c1></span>    <span class=n>GPIO_setAsPeripheralModuleFunctionInputPin</span><span class=p>(</span><span class=n>GPIO_PORT_P1</span><span class=p>,</span><span class=n>GPIO_PIN6</span><span class=p>);</span>
+    <span class=n>GPIO_setAsPeripheralModuleFunctionOutputPin</span><span class=p>(</span><span class=n>GPIO_PORT_P2</span><span class=p>,</span><span class=n>GPIO_PIN0</span><span class=p>);</span>
+
+
+    <span class=n>Timer_A_initUpModeParam</span> <span class=n>initUpParam</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+    <span class=c1>//external signal
+</span><span class=c1></span>    <span class=n>initUpParam</span><span class=p>.</span><span class=n>clockSource</span> <span class=o>=</span> <span class=n>TIMER_A_CLOCKSOURCE_EXTERNAL_TXCLK</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>clockSourceDivider</span> <span class=o>=</span> <span class=n>TIMER_A_CLOCKSOURCE_DIVIDER_1</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>timerPeriod</span> <span class=o>=</span> <span class=n>COUNTER_NUM</span><span class=o>*</span><span class=mi>2</span> <span class=o>-</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>timerInterruptEnable_TAIE</span> <span class=o>=</span> <span class=n>TIMER_A_TAIE_INTERRUPT_DISABLE</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>captureCompareInterruptEnable_CCR0_CCIE</span> <span class=o>=</span>
+        <span class=n>TIMER_A_CAPTURECOMPARE_INTERRUPT_DISABLE</span><span class=p>;</span>
+    <span class=n>initUpParam</span><span class=p>.</span><span class=n>timerClear</span> <span class=o>=</span> <span class=n>TIMER_A_DO_CLEAR</span><span class=p>;</span>
+    <span class=n>Timer_A_initUpMode</span><span class=p>(</span><span class=n>TIMER_A1_BASE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>initUpParam</span><span class=p>);</span>
+
+    <span class=c1>//Initiaze compare mode,generate pwm
+</span><span class=c1></span>    <span class=n>Timer_A_initCompareModeParam</span> <span class=n>initInterParam</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+    <span class=n>initInterParam</span><span class=p>.</span><span class=n>compareRegister</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURECOMPARE_REGISTER_1</span><span class=p>;</span>
+    <span class=n>initInterParam</span><span class=p>.</span><span class=n>compareInterruptEnable</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURECOMPARE_INTERRUPT_DISABLE</span><span class=p>;</span>
+    <span class=n>initInterParam</span><span class=p>.</span><span class=n>compareOutputMode</span> <span class=o>=</span> <span class=n>TIMER_A_OUTPUTMODE_TOGGLE_RESET</span><span class=p>;</span>
+    <span class=n>initInterParam</span><span class=p>.</span><span class=n>compareValue</span> <span class=o>=</span> <span class=n>COUNTER_NUM</span><span class=p>;</span>
+    <span class=n>Timer_A_initCompareMode</span><span class=p>(</span><span class=n>TIMER_A1_BASE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>initInterParam</span><span class=p>);</span>
+
+    <span class=n>Timer_A_startCounter</span><span class=p>(</span><span class=n>TIMER_A1_BASE</span><span class=p>,</span> <span class=n>TIMER_A_UP_MODE</span><span class=p>);</span>
+<span class=p>}</span>
+
+</code></pre></td></tr></table></div></div><h3 id=ta0部分>TA0部分</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=kt>void</span> <span class=nf>TimerInit</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=c1>//TA0.1 INPUT   P1.2
+</span><span class=c1></span>    <span class=c1>//TA0.2 INPUT   P1.3
+</span><span class=c1></span>
+    <span class=n>GPIO_setAsPeripheralModuleFunctionInputPin</span><span class=p>(</span><span class=n>GPIO_PORT_P1</span><span class=p>,</span><span class=n>GPIO_PIN2</span><span class=p>);</span>
+    <span class=n>GPIO_setAsPeripheralModuleFunctionInputPin</span><span class=p>(</span><span class=n>GPIO_PORT_P1</span><span class=p>,</span><span class=n>GPIO_PIN3</span><span class=p>);</span>
+
+
+    <span class=n>Timer_A_initContinuousModeParam</span> <span class=n>initContiParam</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+    <span class=n>initContiParam</span><span class=p>.</span><span class=n>clockSource</span> <span class=o>=</span> <span class=n>TIMER_A_CLOCKSOURCE_SMCLK</span><span class=p>;</span>
+    <span class=n>initContiParam</span><span class=p>.</span><span class=n>clockSourceDivider</span> <span class=o>=</span> <span class=n>TIMER_A_CLOCKSOURCE_DIVIDER_1</span><span class=p>;</span>
+    <span class=n>initContiParam</span><span class=p>.</span><span class=n>timerInterruptEnable_TAIE</span> <span class=o>=</span> <span class=n>TIMER_A_TAIE_INTERRUPT_DISABLE</span><span class=p>;</span>
+    <span class=n>initContiParam</span><span class=p>.</span><span class=n>timerClear</span> <span class=o>=</span> <span class=n>TIMER_A_DO_CLEAR</span><span class=p>;</span>
+    <span class=n>initContiParam</span><span class=p>.</span><span class=n>startTimer</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+    <span class=n>Timer_A_initContinuousMode</span><span class=p>(</span><span class=n>TIMER_A0_BASE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>initContiParam</span><span class=p>);</span>
+
+    <span class=n>Timer_A_initCaptureModeParam</span> <span class=n>initCapParam</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+    <span class=n>initCapParam</span><span class=p>.</span><span class=n>captureRegister</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURECOMPARE_REGISTER_1</span><span class=p>;</span>
+    <span class=n>initCapParam</span><span class=p>.</span><span class=n>captureMode</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTUREMODE_RISING_AND_FALLING_EDGE</span><span class=p>;</span>
+    <span class=n>initCapParam</span><span class=p>.</span><span class=n>captureInputSelect</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURE_INPUTSELECT_CCIxA</span><span class=p>;</span>
+    <span class=n>initCapParam</span><span class=p>.</span><span class=n>synchronizeCaptureSource</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURE_SYNCHRONOUS</span><span class=p>;</span>
+    <span class=n>initCapParam</span><span class=p>.</span><span class=n>captureInterruptEnable</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURECOMPARE_INTERRUPT_ENABLE</span><span class=p>;</span>
+    <span class=n>initCapParam</span><span class=p>.</span><span class=n>captureOutputMode</span> <span class=o>=</span> <span class=n>TIMER_A_OUTPUTMODE_OUTBITVALUE</span><span class=p>;</span>
+    <span class=n>Timer_A_initCaptureMode</span><span class=p>(</span><span class=n>TIMER_A0_BASE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>initCapParam</span><span class=p>);</span>
+
+
+    <span class=n>Timer_A_initCaptureModeParam</span> <span class=n>initCap2Param</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+    <span class=n>initCap2Param</span><span class=p>.</span><span class=n>captureRegister</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURECOMPARE_REGISTER_2</span><span class=p>;</span>
+    <span class=n>initCap2Param</span><span class=p>.</span><span class=n>captureMode</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTUREMODE_RISING_AND_FALLING_EDGE</span><span class=p>;</span>
+    <span class=n>initCap2Param</span><span class=p>.</span><span class=n>captureInputSelect</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURE_INPUTSELECT_CCIxA</span><span class=p>;</span>
+    <span class=n>initCap2Param</span><span class=p>.</span><span class=n>synchronizeCaptureSource</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURE_SYNCHRONOUS</span><span class=p>;</span>
+    <span class=n>initCap2Param</span><span class=p>.</span><span class=n>captureInterruptEnable</span> <span class=o>=</span> <span class=n>TIMER_A_CAPTURECOMPARE_INTERRUPT_ENABLE</span><span class=p>;</span>
+    <span class=n>initCap2Param</span><span class=p>.</span><span class=n>captureOutputMode</span> <span class=o>=</span> <span class=n>TIMER_A_OUTPUTMODE_OUTBITVALUE</span><span class=p>;</span>
+    <span class=n>Timer_A_initCaptureMode</span><span class=p>(</span><span class=n>TIMER_A0_BASE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>initCap2Param</span><span class=p>);</span>
+
+    <span class=n>Timer_A_clearCaptureCompareInterrupt</span><span class=p>(</span><span class=n>TIMER_A0_BASE</span><span class=p>,</span>
+        <span class=n>TIMER_A_CAPTURECOMPARE_REGISTER_2</span><span class=p>);</span>
+
+    <span class=n>Timer_A_clearCaptureCompareInterrupt</span><span class=p>(</span><span class=n>TIMER_A0_BASE</span><span class=p>,</span>
+        <span class=n>TIMER_A_CAPTURECOMPARE_REGISTER_1</span><span class=p>);</span>
+
+    <span class=n>Timer_A_startCounter</span><span class=p>(</span><span class=n>TIMER_A0_BASE</span><span class=p>,</span> <span class=n>TIMER_A_CONTINUOUS_MODE</span><span class=p>);</span>
+
+<span class=p>}</span>
+
+<span class=kt>int</span> <span class=n>input_level</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=kt>void</span> <span class=nf>SampleLevel</span><span class=p>(</span><span class=n>uint16_t</span> <span class=n>val</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=k>if</span><span class=p>(</span><span class=n>RANGE</span><span class=p>(</span><span class=n>val</span><span class=p>,</span><span class=n>kModuFreqTick</span><span class=p>,</span><span class=mi>2</span><span class=p>))</span>
+    <span class=p>{</span>
+        <span class=c1>//160KHz
+</span><span class=c1></span>        <span class=k>if</span><span class=p>(</span><span class=n>input_level</span><span class=p>)</span> <span class=c1>//twice sample
+</span><span class=c1></span>        <span class=p>{</span>
+            <span class=n>GPIO_setOutputHighOnPin</span><span class=p>(</span><span class=n>LOGICAL_LEVEL_OUTPUT_PORT</span><span class=p>,</span><span class=n>LOGICAL_LEVEL_OUTPUT_PIN</span><span class=p>);</span>
+        <span class=p>}</span>
+        <span class=n>input_level</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>else</span> <span class=k>if</span><span class=p>(</span><span class=n>RANGE</span><span class=p>(</span><span class=n>val</span><span class=p>,</span><span class=n>kBaseFreqTick</span><span class=p>,</span><span class=mi>2</span><span class=p>))</span>
+    <span class=p>{</span>
+        <span class=c1>//150KHz
+</span><span class=c1></span>        <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>input_level</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=n>GPIO_setOutputLowOnPin</span><span class=p>(</span><span class=n>LOGICAL_LEVEL_OUTPUT_PORT</span><span class=p>,</span><span class=n>LOGICAL_LEVEL_OUTPUT_PIN</span><span class=p>);</span>
+        <span class=p>}</span>
+        <span class=n>input_level</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>else</span>
+    <span class=p>{</span>
+        <span class=c1>//discard
+</span><span class=c1></span>    <span class=p>}</span>
+
+<span class=p>}</span>
+
+<span class=kt>void</span> <span class=nf>TIMER0_A1_ISR</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=c1>//Any access, read or write, of the TAIV register automatically resets the
+</span><span class=c1></span>    <span class=c1>//highest &#34;pending&#34; interrupt flag
+</span><span class=c1></span>    <span class=k>switch</span> <span class=p>(</span> <span class=n>__even_in_range</span><span class=p>(</span><span class=n>TA0IV</span><span class=p>,</span><span class=mi>14</span><span class=p>)</span> <span class=p>){</span>
+        <span class=k>case</span>  <span class=mi>0</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                          <span class=c1>//No interrupt
+</span><span class=c1></span>        <span class=k>case</span>  <span class=mi>2</span><span class=o>:</span>                           <span class=c1>//CCR1
+</span><span class=c1></span>            <span class=p>{</span>
+                    <span class=n>uint16_t</span> <span class=n>now</span> <span class=o>=</span> <span class=n>TA0CCR1</span><span class=p>;</span>
+                    <span class=n>uint16_t</span> <span class=n>val</span><span class=p>;</span>
+                    <span class=k>if</span><span class=p>(</span><span class=n>now</span> <span class=o>&lt;</span> <span class=n>last_stamp</span><span class=p>)</span>
+                    <span class=p>{</span>
+                        <span class=n>val</span> <span class=o>=</span> <span class=mh>0xFFFF</span> <span class=o>-</span> <span class=n>last_stamp</span> <span class=o>+</span> <span class=n>now</span><span class=p>;</span>
+                    <span class=p>}</span>
+                    <span class=k>else</span>
+                    <span class=p>{</span>
+                        <span class=n>val</span> <span class=o>=</span> <span class=n>now</span> <span class=o>-</span> <span class=n>last_stamp</span><span class=p>;</span>
+                    <span class=p>}</span>
+                    <span class=n>last_stamp</span> <span class=o>=</span> <span class=n>now</span><span class=p>;</span>
+
+                    <span class=n>SampleLevel</span><span class=p>(</span><span class=n>val</span><span class=p>);</span>
+            <span class=p>}</span>
+            <span class=k>break</span><span class=p>;</span>
+        <span class=k>case</span>  <span class=mi>4</span><span class=o>:</span>                         <span class=c1>//CCR2
+</span><span class=c1></span>            <span class=p>{</span>
+                <span class=n>uint16_t</span> <span class=n>now</span> <span class=o>=</span>  <span class=n>Timer_A_getCaptureCompareCount</span><span class=p>(</span><span class=n>TIMER_A0_BASE</span><span class=p>,</span>
+                                     <span class=n>TIMER_A_CAPTURECOMPARE_REGISTER_2</span><span class=p>);</span>
+                <span class=n>uint16_t</span> <span class=n>val</span><span class=p>;</span>
+                <span class=k>if</span><span class=p>(</span><span class=n>now</span> <span class=o>&lt;</span> <span class=n>another_stamp</span><span class=p>)</span>
+                <span class=p>{</span>
+                    <span class=n>val</span> <span class=o>=</span> <span class=mh>0xFFFF</span> <span class=o>-</span> <span class=n>another_stamp</span> <span class=o>+</span> <span class=n>now</span><span class=p>;</span>
+                <span class=p>}</span>
+                <span class=k>else</span>
+                <span class=p>{</span>
+                    <span class=n>val</span> <span class=o>=</span> <span class=n>now</span> <span class=o>-</span> <span class=n>another_stamp</span><span class=p>;</span>
+                <span class=p>}</span>
+                <span class=n>another_stamp</span> <span class=o>=</span> <span class=n>now</span><span class=p>;</span>
+                <span class=k>if</span><span class=p>(</span><span class=n>RANGE</span><span class=p>(</span><span class=n>val</span><span class=p>,</span><span class=n>kHalfBitTick</span><span class=p>,</span><span class=n>kBitTimeDiffTick</span><span class=p>))</span> <span class=c1>//312-512us
+</span><span class=c1></span>                <span class=p>{</span>
+                    <span class=k>if</span><span class=p>(</span><span class=n>first_half_level</span> <span class=o>==</span> <span class=mi>1</span><span class=p>)</span>
+                    <span class=p>{</span>
+                        <span class=n>first_half_level</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+                        <span class=n>GPIO_setOutputHighOnPin</span><span class=p>(</span><span class=n>ENCODE_OUTPUT_PORT</span><span class=p>,</span><span class=n>ENCODE_OUTPUT_PIN</span><span class=p>);</span>
+                    <span class=p>}</span>
+                    <span class=k>else</span>
+                    <span class=p>{</span>
+                        <span class=n>first_half_level</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+                    <span class=p>}</span>
+                <span class=p>}</span>
+                <span class=k>else</span> <span class=k>if</span><span class=p>(</span><span class=n>RANGE</span><span class=p>(</span><span class=n>val</span><span class=p>,</span><span class=n>kOneBitTick</span><span class=p>,</span><span class=n>kBitTimeDiffTick</span><span class=p>))</span>   <span class=c1>//824-1204us
+</span><span class=c1></span>                <span class=p>{</span>
+                    <span class=n>first_half_level</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+                    <span class=n>GPIO_setOutputLowOnPin</span><span class=p>(</span><span class=n>ENCODE_OUTPUT_PORT</span><span class=p>,</span><span class=n>ENCODE_OUTPUT_PIN</span><span class=p>);</span>
+                <span class=p>}</span>
+            <span class=p>}</span>
+            <span class=k>break</span><span class=p>;</span>
+        <span class=k>case</span>  <span class=mi>6</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                           <span class=c1>//CCR3
+</span><span class=c1></span>        <span class=k>case</span>  <span class=mi>8</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                          <span class=c1>//CCR4 not used
+</span><span class=c1></span>        <span class=k>case</span> <span class=mi>10</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                          <span class=c1>//CCR5 not used
+</span><span class=c1></span>        <span class=k>case</span> <span class=mi>12</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>                          <span class=c1>//CCR6 not used
+</span><span class=c1></span>        <span class=k>case</span> <span class=mi>14</span><span class=o>:</span>                  <span class=c1>// overflow
+</span><span class=c1></span>            <span class=k>break</span><span class=p>;</span>
+        <span class=k>default</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+
+</code></pre></td></tr></table></div></div><h3 id=uart0部分>UART0部分</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span><span class=lnt>97
+</span><span class=lnt>98
+</span><span class=lnt>99
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=c1>//val = raw * 100
+</span><span class=c1></span><span class=n>uint32_t</span> <span class=nf>Round</span><span class=p>(</span><span class=n>uint32_t</span> <span class=n>val</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>res</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>if</span><span class=p>(</span><span class=n>val</span><span class=o>%</span><span class=mi>100</span> <span class=o>&gt;=</span> <span class=mi>50</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>res</span> <span class=o>=</span> <span class=n>val</span><span class=o>/</span><span class=mi>100</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>else</span>
+    <span class=p>{</span>
+        <span class=n>res</span> <span class=o>=</span> <span class=n>val</span><span class=o>/</span><span class=mi>100</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=n>res</span><span class=p>;</span>
+<span class=p>}</span>
+
+<span class=cp>#define UART_CLOCK      (4000000UL)  </span><span class=c1>//Hz
+</span><span class=c1></span>
+<span class=kt>void</span> <span class=nf>BaudrateConfig</span><span class=p>(</span><span class=n>USCI_A_UART_initParam</span> <span class=o>*</span><span class=n>param</span><span class=p>,</span><span class=n>uint32_t</span> <span class=n>baudrate</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=c1>//Fclk = 4MHz,max baudrate = 460800
+</span><span class=c1></span>    <span class=k>if</span><span class=p>(</span><span class=n>UART_CLOCK</span><span class=o>/</span><span class=n>baudrate</span> <span class=o>&gt;</span> <span class=mi>1024</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>param</span><span class=o>-&gt;</span><span class=n>overSampling</span> <span class=o>=</span> <span class=n>USCI_A_UART_OVERSAMPLING_BAUDRATE_GENERATION</span><span class=p>;</span>
+        <span class=cm>/*
+</span><span class=cm>         * N = Fclk/baudrate
+</span><span class=cm>         * UCBRx = INT(N)
+</span><span class=cm>         * UCBRSx = round( [N/16 - INT(N/16)] X 16 )
+</span><span class=cm>         *
+</span><span class=cm>         * */</span>
+        <span class=n>param</span><span class=o>-&gt;</span><span class=n>clockPrescalar</span> <span class=o>=</span> <span class=n>UART_CLOCK</span><span class=o>/</span><span class=n>baudrate</span><span class=o>/</span><span class=mi>16</span><span class=p>;</span>
+        <span class=n>param</span><span class=o>-&gt;</span><span class=n>firstModReg</span> <span class=o>=</span> <span class=n>Round</span><span class=p>(((</span><span class=n>UART_CLOCK</span><span class=o>*</span><span class=mi>100</span><span class=o>/</span><span class=n>baudrate</span><span class=o>/</span><span class=mi>16</span><span class=p>)</span> <span class=o>-</span>
+                                    <span class=p>(</span><span class=n>param</span><span class=o>-&gt;</span><span class=n>clockPrescalar</span> <span class=o>*</span> <span class=mi>100UL</span><span class=p>))</span><span class=o>*</span><span class=mi>16</span><span class=p>);</span>
+        <span class=n>param</span><span class=o>-&gt;</span><span class=n>secondModReg</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>else</span>
+    <span class=p>{</span>
+        <span class=n>param</span><span class=o>-&gt;</span><span class=n>overSampling</span> <span class=o>=</span> <span class=n>USCI_A_UART_LOW_FREQUENCY_BAUDRATE_GENERATION</span><span class=p>;</span>
+        <span class=cm>/*
+</span><span class=cm>         * N = Fclk/baudrate
+</span><span class=cm>         * UCBRx = INT(N)
+</span><span class=cm>         * UCBRSx = round( [N - INT(N)] X 8 )
+</span><span class=cm>         *
+</span><span class=cm>         * */</span>
+        <span class=n>param</span><span class=o>-&gt;</span><span class=n>clockPrescalar</span> <span class=o>=</span> <span class=n>UART_CLOCK</span><span class=o>/</span><span class=n>baudrate</span><span class=p>;</span>
+        <span class=n>param</span><span class=o>-&gt;</span><span class=n>firstModReg</span> <span class=o>=</span> <span class=n>Round</span><span class=p>(((</span><span class=n>UART_CLOCK</span><span class=o>*</span><span class=mi>100</span><span class=o>/</span><span class=n>baudrate</span><span class=p>)</span> <span class=o>-</span>
+                                       <span class=p>(</span><span class=n>param</span><span class=o>-&gt;</span><span class=n>clockPrescalar</span> <span class=o>*</span> <span class=mi>100</span><span class=p>))</span><span class=o>*</span><span class=mi>8</span><span class=p>);</span>
+        <span class=n>param</span><span class=o>-&gt;</span><span class=n>secondModReg</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+
+<span class=kt>void</span> <span class=nf>UartInit</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>uint32_t</span> <span class=n>baudrate</span> <span class=o>=</span> <span class=mi>9600</span><span class=p>;</span>
+    <span class=c1>//Configure UART pins
+</span><span class=c1></span>    <span class=n>GPIO_setAsPeripheralModuleFunctionInputPin</span><span class=p>(</span>
+            <span class=n>GPIO_PORT_P3</span><span class=p>,</span>
+            <span class=n>GPIO_PIN3</span> <span class=o>|</span> <span class=n>GPIO_PIN4</span>
+    <span class=p>);</span>
+
+    <span class=c1>//Configure UART
+</span><span class=c1></span>    <span class=c1>//baud rate = 500k/512 = 977bps
+</span><span class=c1></span>    <span class=n>USCI_A_UART_initParam</span> <span class=n>param</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+    <span class=n>param</span><span class=p>.</span><span class=n>selectClockSource</span> <span class=o>=</span> <span class=n>USCI_A_UART_CLOCKSOURCE_SMCLK</span><span class=p>;</span>
+
+    <span class=n>param</span><span class=p>.</span><span class=n>parity</span> <span class=o>=</span> <span class=n>USCI_A_UART_ODD_PARITY</span><span class=p>;</span>
+    <span class=n>param</span><span class=p>.</span><span class=n>msborLsbFirst</span> <span class=o>=</span> <span class=n>USCI_A_UART_LSB_FIRST</span><span class=p>;</span>
+    <span class=n>param</span><span class=p>.</span><span class=n>numberofStopBits</span> <span class=o>=</span> <span class=n>USCI_A_UART_ONE_STOP_BIT</span><span class=p>;</span>
+    <span class=n>param</span><span class=p>.</span><span class=n>uartMode</span> <span class=o>=</span> <span class=n>USCI_A_UART_MODE</span><span class=p>;</span>
+
+    <span class=n>baudrate</span> <span class=o>=</span> <span class=n>Round</span><span class=p>((</span><span class=mi>50000UL</span> <span class=o>*</span> <span class=n>TRANSMIT_FREQ</span><span class=p>)</span> <span class=o>/</span> <span class=n>HALF_BIT_DUTY_CYCLE</span><span class=p>);</span>
+    <span class=n>BaudrateConfig</span><span class=p>(</span><span class=o>&amp;</span><span class=n>param</span><span class=p>,</span><span class=n>baudrate</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>STATUS_FAIL</span> <span class=o>==</span> <span class=n>USCI_A_UART_init</span><span class=p>(</span><span class=n>USCI_A0_BASE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>param</span><span class=p>))</span> <span class=p>{</span>
+        <span class=k>return</span><span class=p>;</span>
+    <span class=p>}</span>
+
+   <span class=n>USCI_A_UART_enable</span><span class=p>(</span><span class=n>USCI_A0_BASE</span><span class=p>);</span>
+
+   <span class=c1>//Enable Receive Interrupt
+</span><span class=c1></span>   <span class=n>USCI_A_UART_clearInterrupt</span><span class=p>(</span><span class=n>USCI_A0_BASE</span><span class=p>,</span><span class=n>USCI_A_UART_RECEIVE_INTERRUPT</span><span class=p>);</span>
+   <span class=n>USCI_A_UART_enableInterrupt</span><span class=p>(</span><span class=n>USCI_A0_BASE</span><span class=p>,</span><span class=n>USCI_A_UART_RECEIVE_INTERRUPT</span><span class=p>);</span>
+
+<span class=p>}</span>
+
+<span class=kt>void</span> <span class=nf>USCI_A0_ISR</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=n>uint8_t</span> <span class=n>rx_data</span><span class=p>;</span>
+    <span class=k>switch</span><span class=p>(</span><span class=n>__even_in_range</span><span class=p>(</span><span class=n>UCA0IV</span><span class=p>,</span><span class=mi>4</span><span class=p>))</span>
+    <span class=p>{</span>
+        <span class=k>case</span> <span class=nl>USCI_NONE</span><span class=p>:</span> <span class=k>break</span><span class=p>;</span>
+        <span class=k>case</span> <span class=nl>USCI_UCRXIFG</span><span class=p>:</span>
+            <span class=p>{</span>
+                <span class=n>rx_data</span> <span class=o>=</span> <span class=n>UCA0RXBUF</span><span class=p>;</span>
+                <span class=n>PutChar</span><span class=p>(</span><span class=n>rx_data</span><span class=p>);</span>
+            <span class=p>}</span>
+            <span class=k>break</span><span class=p>;</span>
+       <span class=k>case</span> <span class=nl>USCI_UCTXIFG</span><span class=p>:</span> <span class=k>break</span><span class=p>;</span>
+       <span class=k>default</span><span class=o>:</span><span class=k>break</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><h1 id=运行结果>运行结果</h1><p>发送0xAA，一个字节的数据</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/encode_5.png data-srcset="/images/encode_5.png, /images/encode_5.png 1.5x, /images/encode_5.png 2x" data-sizes=auto alt=/images/encode_5.png title=结果></p><ol><li><p><em>粉红线为编码后的输出</em></p></li><li><p><em>蓝色线为周期放大10倍后的输出</em></p></li><li><p><em>绿色线为P1.4的输出</em></p></li><li><p><em>黄色线为串行编码数据</em></p></li></ol></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2019-07-03</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/>使用教程</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/printf_for_stm32_on_truestudio/ class=prev rel=prev title=在TrueSTUDIO环境中实现STM32平台的printf><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>在TrueSTUDIO环境中实现STM32平台的printf</a>
+<a href=/duilib_mutilple_thread/ class=next rel=next title=duilib多线程>duilib多线程<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":30},"comment":{},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

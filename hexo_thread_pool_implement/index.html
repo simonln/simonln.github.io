@@ -1,0 +1,119 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Thread pool实现 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="Thread pool实现"><meta property="og:description" content="当我们需要处理多个耗时任务时，每一个任务都不能中途暂停，此时怎么办？ 大多数时候我们会考虑使用多线程来处理，因为多线程中的每一个线程都相当于是"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/hexo_thread_pool_implement/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2019-11-25T10:01:00+00:00"><meta property="article:modified_time" content="2019-11-25T10:01:00+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="Thread pool实现"><meta name=twitter:description content="当我们需要处理多个耗时任务时，每一个任务都不能中途暂停，此时怎么办？ 大多数时候我们会考虑使用多线程来处理，因为多线程中的每一个线程都相当于是"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/hexo_thread_pool_implement/><link rel=prev href=https://www.qingxin.org/wailingding_travel_notes/><link rel=next href=https://www.qingxin.org/hexo_feeling_read_hongkong_movies_first/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Thread pool实现","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/hexo_thread_pool_implement\/"},"genre":"posts","keywords":"C\x2b\x2b","wordcount":1351,"url":"https:\/\/www.qingxin.org\/hexo_thread_pool_implement\/","datePublished":"2019-11-25T10:01:00+00:00","dateModified":"2019-11-25T10:01:00+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/about>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Thread pool实现</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2019-11-25>2019-11-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;1351 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;3 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/c++_0.png data-srcset="/images/c++_0.png, /images/c++_0.png 1.5x, /images/c++_0.png 2x" data-sizes=auto alt=/images/c++_0.png title=/images/c++_0.png></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#thread-pool-原理>thread pool 原理</a></li><li><a href=#thread-pool-实现>thread pool 实现</a><ul><li><a href=#总结>总结</a></li></ul></li></ul></nav></div></div><div class=content id=content><blockquote><p>当我们需要处理多个耗时任务时，每一个任务都不能中途暂停，此时怎么办？</p></blockquote><p>大多数时候我们会考虑使用多线程来处理，因为多线程中的每一个线程都相当于是单独的任务，每个子线程都共享数据。在一个系统中，动态任务比较多的情况下，每当有一个动态任务就创建一个线程去执行它，任务执行完这个线程即销毁，这是理想状态。由于创建子线程的系统开销比较大，所以当任务量多到一定数量级后，这种“即建即跑即销毁”的机制会耗费大量的时间在创建和销毁线程上，真正执行任务的时间比较少，执行效率很低。那怎么办呢？于是有天才的程序猿想到了一个方法，既然创建和销毁线程会占用很多时间，那在启动的时候就把指定量的线程创建好不就可以了，<strong>机智如你</strong>。</p><h2 id=thread-pool-原理>thread pool 原理</h2><p>如上所述，线程池的出现时为了解决创建和销毁线程很耗费资源而出现的。在启动之初，根据负载，创建指定量的线程。这时又带来了另一个问题，就是在启动之初根本不知道每个线程运行的具体任务，此时线程岂不是在空跑。在windows系统中，线程空跑是会把CPU占用提升到100%的。至此任务队列就出现了，它解决了任务的创建和运行不在同一时刻的问题；但还有一个问题，没有任务执行的时候线程在干嘛？我觉得总不至于在吃饭睡觉打豆豆吧，那这样太没有意义了，其实主要是让它们让出宝贵的CPU资源给有需要的线程使用。这就需要引入一个信号标识“指挥”它们，让它们在有需要的时候“醒来”执行任务，没有任务的时候就“睡觉”。所有线程的主任务就是去任务队列里领取任务，如果没有则等待信号标志。当有新任务加入任务队列的时候，则发信号让其中一个线程“醒来”工作。当主线程需要结束的时候，此时通过信号标志唤醒所有的子线程，“指挥”它们依次退出。</p><h2 id=thread-pool-实现>thread pool 实现</h2><p>ThreadPool声明如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=k>class</span> <span class=nc>ThreadPool</span> <span class=p>{</span>
+    <span class=k>public</span><span class=o>:</span>
+    <span class=k>typedef</span> <span class=n>std</span><span class=o>::</span><span class=n>shared_ptr</span><span class=o>&lt;</span><span class=n>Pthread</span><span class=o>&gt;</span> <span class=n>ThreadPtr</span><span class=p>;</span>
+    <span class=k>typedef</span> <span class=n>std</span><span class=o>::</span><span class=n>function</span><span class=o>&lt;</span><span class=kt>void</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=o>&gt;</span> <span class=n>Task</span><span class=p>;</span>
+    <span class=n>ThreadPool</span><span class=p>(</span><span class=kt>int</span> <span class=n>max_count</span> <span class=o>=</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=o>~</span><span class=n>ThreadPool</span><span class=p>()</span> <span class=o>=</span> <span class=k>default</span><span class=p>;</span>
+    <span class=kt>void</span> <span class=nf>AddTask</span><span class=p>(</span><span class=k>const</span> <span class=n>Task</span> <span class=o>&amp;</span><span class=n>callback</span><span class=p>);</span>
+
+    <span class=kt>void</span> <span class=nf>Shutdown</span><span class=p>();</span>
+
+    <span class=k>private</span><span class=o>:</span>
+    <span class=kt>void</span><span class=o>*</span> <span class=n>ThreadLoop</span><span class=p>(</span><span class=kt>void</span><span class=o>*</span><span class=p>);</span>
+    <span class=kt>bool</span> <span class=nf>TaskEmpty</span><span class=p>();</span>
+    <span class=k>private</span><span class=o>:</span>
+    <span class=n>Condition</span> <span class=n>cv_</span><span class=p>;</span>
+    <span class=n>Mutex</span> <span class=n>mtx_</span><span class=p>;</span>
+    <span class=kt>bool</span> <span class=n>shutdown_</span><span class=p>;</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=n>ThreadPtr</span><span class=o>&gt;</span> <span class=n>threads_</span><span class=p>;</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>deque</span><span class=o>&lt;</span><span class=n>Task</span><span class=o>&gt;</span> <span class=n>task_list_</span><span class=p>;</span>
+
+<span class=p>};</span>
+</code></pre></td></tr></table></div></div><p><em>创建ThreadPool实例的时候即指定所需子线程的数量，默认为1，即创建一个子线程</em></p><p>ThreadLoop函数是所有的子线程的创建后运行的函数，实现如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=kt>void</span><span class=o>*</span> <span class=n>ThreadPool</span><span class=o>::</span><span class=n>ThreadLoop</span><span class=p>(</span><span class=kt>void</span><span class=o>*</span><span class=p>)</span>
+<span class=p>{</span>
+	<span class=k>while</span><span class=p>(</span><span class=nb>true</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=k>while</span><span class=p>(</span><span class=o>!</span><span class=n>shutdown_</span> <span class=o>&amp;&amp;</span> <span class=k>this</span><span class=o>-&gt;</span><span class=n>TaskEmpty</span><span class=p>())</span>
+        <span class=p>{</span>
+            <span class=c1>//no task,wait the new task
+</span><span class=c1></span>            <span class=n>cv_</span><span class=p>.</span><span class=n>Wait</span><span class=p>();</span>
+        <span class=p>}</span>
+        <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>TaskEmpty</span><span class=p>())</span>
+        <span class=p>{</span>
+            <span class=n>mtx_</span><span class=p>.</span><span class=n>Lock</span><span class=p>();</span>
+            <span class=k>auto</span> <span class=o>&amp;</span><span class=n>task</span> <span class=o>=</span> <span class=n>task_list_</span><span class=p>.</span><span class=n>front</span><span class=p>();</span>
+            <span class=n>task_list_</span><span class=p>.</span><span class=n>pop_front</span><span class=p>();</span>
+            <span class=n>mtx_</span><span class=p>.</span><span class=n>Unlock</span><span class=p>();</span>
+
+            <span class=k>if</span><span class=p>(</span><span class=n>task</span><span class=p>)</span>
+            <span class=p>{</span>
+                <span class=n>task</span><span class=p>();</span>
+            <span class=p>}</span>
+        <span class=p>}</span>
+        <span class=k>else</span> <span class=nf>if</span><span class=p>(</span><span class=n>shutdown_</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=k>break</span><span class=p>;</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+  <span class=k>return</span> <span class=k>nullptr</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><em>如果任务队列里没有任务，则等待cv_信号量；如果有任务，则执行</em></p><p><strong>在实践中，判断线程休眠条件时最好是循环判断，即while模式，因为信号量有可能会被其他的线程发送全局唤醒信号唤醒</strong></p><p>每次通过AddTask加任务时，通过调用信号量的Notify函数就向等待信号量的子线程发送一次信号，以此唤醒子线程执行任务。由于所有的线程都可以操作任务队列，为了保证任务队列的线程安全，必须对其加入锁机制，即mutex。</p><p>任务加入时锁机制实现如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-c++ data-lang=c++><span class=n>mtx_</span><span class=p>.</span><span class=n>Lock</span><span class=p>();</span>
+<span class=n>task_list_</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=n>callback</span><span class=p>);</span>
+<span class=n>mtx_</span><span class=p>.</span><span class=n>Unlock</span><span class=p>();</span>
+</code></pre></td></tr></table></div></div><p>任务移出时锁机制如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-c++ data-lang=c++><span class=n>mtx_</span><span class=p>.</span><span class=n>Lock</span><span class=p>();</span>
+<span class=k>auto</span> <span class=o>&amp;</span><span class=n>task</span> <span class=o>=</span> <span class=n>task_list_</span><span class=p>.</span><span class=n>front</span><span class=p>();</span>
+<span class=n>task_list_</span><span class=p>.</span><span class=n>pop_front</span><span class=p>();</span>
+<span class=n>mtx_</span><span class=p>.</span><span class=n>Unlock</span><span class=p>();</span>
+</code></pre></td></tr></table></div></div><h3 id=总结>总结</h3><p>初始版本中，最后一个任务执行完之后会有很大概率产生段错误，造程序异常退出。分析原因如下</p><blockquote><p>在A线程的if判断中，任务列表不为空，然后系统调度另一个线程B执行，此线程将任务列表清空后，系统将前面休眠的线程A调度起来，此时该线程执行task_list_.pop_front()函数，由于列表中已经没有了任务，所以系统产生段错误</p></blockquote><p>在进行判断列表为空的操作时加入读写锁后，程序正常。</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2019-11-25</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/c++/>C++</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/wailingding_travel_notes/ class=prev rel=prev title=外伶仃岛游记><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>外伶仃岛游记</a>
+<a href=/hexo_feeling_read_hongkong_movies_first/ class=next rel=next title=读《香港电影艺术史》有感（上）>读《香港电影艺术史》有感（上）<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":30},"comment":{},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

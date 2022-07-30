@@ -1,0 +1,653 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>LUA开发那些事 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="LUA开发那些事"><meta property="og:description" content="前言 lua是一门很小巧的脚本语言，完全是由C实现。正因为它的小巧，所以现在很多项目拿它来做嵌入执行的脚本，这中操作在游戏行业中非常普遍。 1. lua"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/hexo_lua_dev/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2022-07-17T21:49:00+00:00"><meta property="article:modified_time" content="2022-07-17T21:49:00+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="LUA开发那些事"><meta name=twitter:description content="前言 lua是一门很小巧的脚本语言，完全是由C实现。正因为它的小巧，所以现在很多项目拿它来做嵌入执行的脚本，这中操作在游戏行业中非常普遍。 1. lua"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/hexo_lua_dev/><link rel=prev href=https://www.qingxin.org/hexo_same_file/><link rel=next href=https://www.qingxin.org/hexo_unittest_hook/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"LUA开发那些事","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/hexo_lua_dev\/"},"genre":"posts","keywords":"基础知识","wordcount":3148,"url":"https:\/\/www.qingxin.org\/hexo_lua_dev\/","datePublished":"2022-07-17T21:49:00+00:00","dateModified":"2022-07-17T21:49:00+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/about>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">LUA开发那些事</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2022-07-17>2022-07-17</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;3148 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;7 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/lua_dev_0.png data-srcset="/images/lua_dev_0.png, /images/lua_dev_0.png 1.5x, /images/lua_dev_0.png 2x" data-sizes=auto alt=/images/lua_dev_0.png title=/images/lua_dev_0.png></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#11-薛定谔的table长度>1.1 薛定谔的table长度</a></li><li><a href=#12-空与不空>1.2 空与不空</a></li><li><a href=#13-table比较>1.3 table比较</a></li></ul><ul><li><a href=#21-c-中运行lua代码>2.1 C 中运行lua代码</a></li><li><a href=#22-c-导出接口给lua中使用>2.2 C 导出接口给lua中使用</a><ul><li><a href=#221-c-导出普通函数>2.2.1 C 导出普通函数</a></li><li><a href=#222-c中导出lua类>2.2.2 C中导出lua类</a></li><li><a href=#223-c中执行lua的闭包函数>2.2.3 C中执行lua的闭包函数</a></li><li><a href=#224-c中的lua栈平衡>2.2.4 C中的lua栈平衡</a></li><li><a href=#225-c中栈交换的问题>2.2.5 C中栈交换的问题</a></li></ul></li></ul></nav></div></div><div class=content id=content><h1 id=前言>前言</h1><p>lua是一门很小巧的脚本语言，完全是由C实现。正因为它的小巧，所以现在很多项目拿它来做嵌入执行的脚本，这中操作在游戏行业中非常普遍。</p><h1 id=1-lua-开发过程中的坑>1. lua 开发过程中的坑</h1><h2 id=11-薛定谔的table长度>1.1 薛定谔的table长度</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-LUA data-lang=LUA><span class=kd>local</span> <span class=n>t1</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=p>[</span><span class=s2>&#34;key1&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;value1&#34;</span><span class=p>,</span>
+    <span class=p>[</span><span class=s2>&#34;key2&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;value2&#34;</span><span class=p>,</span>
+    <span class=p>[</span><span class=s2>&#34;key3&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;value3&#34;</span>
+<span class=p>}</span>
+<span class=kd>local</span> <span class=n>t2</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=s2>&#34;value1&#34;</span><span class=p>,</span>
+    <span class=s2>&#34;value2&#34;</span><span class=p>,</span>
+    <span class=s2>&#34;value3&#34;</span>
+<span class=p>}</span>
+<span class=kd>local</span> <span class=n>t3</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=p>[</span><span class=s2>&#34;key1&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;value1&#34;</span><span class=p>,</span>
+    <span class=s2>&#34;value2&#34;</span>
+<span class=p>}</span>
+<span class=kd>local</span> <span class=n>t4</span> <span class=o>=</span> <span class=p>{}</span>
+<span class=kd>local</span> <span class=n>t5</span> <span class=o>=</span> <span class=p>{</span><span class=kc>nil</span><span class=p>,</span> <span class=kc>nil</span><span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>上面的5个table， 如果使用 <strong>#</strong> 或者 table.getn 运算计算table长度的话各为多少呢？
+结果是：</p><blockquote><p>t1 size: 0, t2 size: 3, t3 size: 1, t4 size: 0, t5 size: 0</p></blockquote><p>读到这你时候可能有疑问了，t1中明明有三个值，为啥它的长度就为0呢。还有t3它不是有两个值么，为啥它的长度又为1呢</p><p><strong>直接结论</strong> 就是，<strong>#</strong> 运算只计算数组值的个数，像key-value这种map形式的元素不参与长度计算</p><h2 id=12-空与不空>1.2 空与不空</h2><p>对于最后两个table， 如果如果使用判空操作又会得到什么结果呢？</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-LUA data-lang=LUA><span class=kr>if</span> <span class=n>t4</span> <span class=o>==</span> <span class=kc>nil</span> <span class=kr>then</span>
+    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;t4 is nil&#34;</span><span class=p>)</span>
+<span class=kr>else</span>
+    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;t4 is not nil&#34;</span><span class=p>)</span>
+<span class=kr>end</span>
+<span class=kr>if</span> <span class=n>t5</span> <span class=o>==</span> <span class=kc>nil</span> <span class=kr>then</span>
+    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;t5 is nil&#34;</span><span class=p>)</span>
+<span class=kr>else</span>
+    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;t5 is not nil&#34;</span><span class=p>)</span>
+<span class=kr>end</span>
+</code></pre></td></tr></table></div></div><p>执行结果是：</p><blockquote><p>t4 is not nil</p></blockquote><blockquote><p>t5 is not nil</p></blockquote><p>t4 明明没有任何值，它为啥就不为空呢</p><p>原因就是：t4是个空table它有地址所以它不等于nil，类似于C中的分配了地址但是内容为空的情况，这时候判断此地址是否为空，那肯定不为空嘛</p><h2 id=13-table比较>1.3 table比较</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-LUA data-lang=LUA><span class=n>t6</span> <span class=o>=</span> <span class=p>{}</span>
+<span class=n>t7</span> <span class=o>=</span> <span class=p>{}</span>
+<span class=kr>if</span> <span class=n>t6</span> <span class=o>==</span> <span class=n>t7</span> <span class=kr>then</span>
+    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;t6 is equal t7&#34;</span><span class=p>)</span>
+<span class=kr>else</span>
+    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;t6 is not equal t7&#34;</span><span class=p>)</span>
+<span class=kr>end</span>
+</code></pre></td></tr></table></div></div><p>执行结果是：</p><blockquote><p>t6 is not equal t7</p></blockquote><p>为啥明明 t6 和 t7 都是空它两就不相等呢？</p><p>原因就是： lua中如果是table比较的话，比较的两个table的地址，并不是内容</p><h1 id=2-lua-与-c-的互相调用>2. lua 与 C 的互相调用</h1><p>因为lua是由C实现的，所以其和C的交互非常方便</p><h2 id=21-c-中运行lua代码>2.1 C 中运行lua代码</h2><p>在常用的C 开发中，都会将lua嵌入做脚本语言，方便相关业务快速开发或迭代。
+查看lua doc 我们会发现有好几个接口都能执行lua脚本。</p><p><a href=https://www.lua.org/manual/5.1/manual.html#3 target=_blank rel="noopener noreffer">lua c doc</a></p><p><a href=https://simion.com/info/lua_capi.html target=_blank rel="noopener noreffer">lua c api</a></p><table><thead><tr><th align=left>函数名</th><th align=left>描述</th></tr></thead><tbody><tr><td align=left>lua_load</td><td align=left>Loads a Lua chunk, it does not run it</td></tr><tr><td align=left>luaL_dofile</td><td align=left>Loads and runs the given file</td></tr><tr><td align=left>luaL_dostring</td><td align=left>Loads and runs the given string</td></tr><tr><td align=left>luaL_loadfile</td><td align=left>Loads a file as a Lua chunk, it does not run it</td></tr><tr><td align=left>luaL_loadstring</td><td align=left>Loads a string as a Lua chunk, it does not run it</td></tr><tr><td align=left>luaL_loadbuffer</td><td align=left>Loads a buffer as a Lua chunk, same as lua_load</td></tr></tbody></table><p>C 中运行lua的简单例子如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>lua_str</span> <span class=o>=</span> <span class=s>&#34; \
+</span><span class=s>local a = 1234      </span><span class=se>\n</span><span class=s> \
+</span><span class=s>local b = </span><span class=se>\&#34;</span><span class=s>xxyy</span><span class=se>\&#34;</span><span class=s>      </span><span class=se>\n</span><span class=s> \
+</span><span class=s>print(string.format(</span><span class=se>\&#34;</span><span class=s>a is %d, b is %s</span><span class=se>\&#34;</span><span class=s>, a, b)) \
+</span><span class=s>&#34;</span><span class=p>;</span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span> <span class=o>=</span> <span class=n>luaL_newstate</span><span class=p>();</span>
+    <span class=n>luaL_openlibs</span><span class=p>(</span><span class=n>L</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>luaL_dostring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>lua_str</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;luaL_dostring failed, %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>lua_tostring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>));</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>执行结果:</p><blockquote><p>a is 1234, b is xxyy</p></blockquote><h2 id=22-c-导出接口给lua中使用>2.2 C 导出接口给lua中使用</h2><p>在平常的开发过程中，我们可能需要导出一些C函数给到业务层的lua调用。C 函数导出后是以动态库的形态被lua加载，然后在lua中以module的形式存在</p><h3 id=221-c-导出普通函数>2.2.1 C 导出普通函数</h3><p>C 导出函数给到lua调用有两种方式，一种是普通的导出方式，另一种也是“普通”的导出方式</p><p>普通的导出方式就是使用lua 的CAPI, <strong>luaL_register</strong></p><p>例如导出一个简单的hello_world接口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=kt>int</span> <span class=nf>hello_world</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>name</span> <span class=o>=</span> <span class=n>luaL_checkstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;from c function, %s tell hello world</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>name</span><span class=p>);</span>
+    <span class=n>lua_pushinteger</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>18</span><span class=p>);</span>     <span class=c1>// 返回一个整数
+</span><span class=c1></span>    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span> 
+<span class=p>}</span>
+<span class=cm>/* 导出函数列表及函数调用入口 */</span>
+<span class=k>static</span> <span class=n>luaL_Reg</span> <span class=n>func_list</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=p>{</span><span class=s>&#34;hello_world&#34;</span><span class=p>,</span> <span class=n>hello_world</span><span class=p>},</span>
+    <span class=p>{</span><span class=nb>NULL</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>}</span>
+<span class=p>};</span>
+<span class=n>LUALIB_API</span> <span class=kt>int</span> <span class=nf>luaopen_test</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=n>luaL_register</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;test&#34;</span><span class=p>,</span> <span class=n>func_list</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>调用上述C库的lua脚本如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-LUA data-lang=LUA><span class=kd>local</span> <span class=n>test</span> <span class=o>=</span> <span class=n>require</span><span class=p>(</span><span class=s2>&#34;test&#34;</span><span class=p>)</span>
+<span class=kd>local</span> <span class=n>output</span> <span class=o>=</span> <span class=n>test.hello_world</span><span class=p>(</span><span class=s2>&#34;zhangshan&#34;</span><span class=p>)</span>
+<span class=n>print</span><span class=p>(</span><span class=n>string.format</span><span class=p>(</span><span class=s2>&#34;hello_world output is %d&#34;</span><span class=p>,</span> <span class=n>output</span><span class=p>))</span>
+</code></pre></td></tr></table></div></div><p>执行结果：</p><blockquote><p>from c function, zhangshan tell hello world
+hello_world output is 18</p></blockquote><p><em>另一种“普通”的导出方法参考导出类部分，(●'◡'●)</em></p><h3 id=222-c中导出lua类>2.2.2 C中导出lua类</h3><p>有些操作是附加在某些对象上的，所以我们可能需要在C中导出lua的类</p><p>下面就是一个简单的读写文件的操作类的导出：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=cm>/* key name in registry */</span>
+<span class=cp>#define TEST_CALSS_ID  &#34;test.class&#34;
+</span><span class=cp></span><span class=k>typedef</span> <span class=k>struct</span> <span class=n>file_udata</span> <span class=p>{</span>
+    <span class=n>FILE</span> <span class=o>*</span><span class=n>fp</span><span class=p>;</span>
+<span class=p>}</span><span class=n>file_udata_t</span><span class=p>;</span>
+<span class=kt>int</span> <span class=nf>open_file</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span> <span class=p>{</span>
+    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>file</span> <span class=o>=</span> <span class=n>luaL_checkstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=n>FILE</span> <span class=o>*</span><span class=n>fp</span> <span class=o>=</span> <span class=n>fopen</span><span class=p>(</span><span class=n>file</span><span class=p>,</span> <span class=s>&#34;a+&#34;</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>fp</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>lua_pushnil</span><span class=p>(</span><span class=n>L</span><span class=p>);</span>
+        <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>else</span> <span class=p>{</span>
+        <span class=n>file_udata_t</span> <span class=o>*</span><span class=n>ui</span> <span class=o>=</span> <span class=n>lua_newuserdata</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>file_udata_t</span><span class=p>));</span>
+        <span class=n>ui</span><span class=o>-&gt;</span><span class=n>fp</span> <span class=o>=</span> <span class=n>fp</span><span class=p>;</span>
+        <span class=n>luaL_getmetatable</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>TEST_CALSS_ID</span><span class=p>);</span>
+        <span class=n>lua_setmetatable</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>2</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+<span class=kt>int</span> <span class=nf>close_file</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span> <span class=p>{</span>
+    <span class=n>file_udata_t</span> <span class=o>*</span><span class=n>ud</span> <span class=o>=</span> <span class=p>(</span><span class=n>file_udata_t</span> <span class=o>*</span><span class=p>)</span><span class=n>luaL_checkudata</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=n>TEST_CALSS_ID</span><span class=p>);</span>
+    <span class=n>luaL_argcheck</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>ud</span> <span class=o>!=</span> <span class=nb>NULL</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=s>&#34;unexpected object class&#34;</span><span class=p>);</span>
+    <span class=kt>int</span> <span class=n>ret</span> <span class=o>=</span> <span class=n>fclose</span><span class=p>(</span><span class=n>ud</span><span class=o>-&gt;</span><span class=n>fp</span><span class=p>);</span>
+    <span class=n>lua_pushboolean</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>ret</span><span class=o>?</span><span class=mi>0</span><span class=o>:</span><span class=mi>1</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+<span class=kt>int</span> <span class=nf>append_file</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=n>file_udata_t</span> <span class=o>*</span><span class=n>ud</span> <span class=o>=</span> <span class=p>(</span><span class=n>file_udata_t</span> <span class=o>*</span><span class=p>)</span><span class=n>luaL_checkudata</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=n>TEST_CALSS_ID</span><span class=p>);</span>
+    <span class=n>luaL_argcheck</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>ud</span> <span class=o>!=</span> <span class=nb>NULL</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=s>&#34;unexpected object class&#34;</span><span class=p>);</span>
+    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>str</span> <span class=o>=</span> <span class=n>luaL_checkstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>2</span><span class=p>);</span>
+    <span class=n>size_t</span> <span class=n>size</span> <span class=o>=</span> <span class=n>strlen</span><span class=p>(</span><span class=n>str</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>fwrite</span><span class=p>(</span><span class=n>str</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=n>size</span><span class=p>,</span> <span class=n>ud</span><span class=o>-&gt;</span><span class=n>fp</span><span class=p>)</span> <span class=o>==</span> <span class=n>size</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>lua_pushboolean</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=k>else</span> <span class=p>{</span>
+        <span class=n>lua_pushboolean</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+<span class=kt>int</span> <span class=nf>readall_file</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=n>file_udata_t</span> <span class=o>*</span><span class=n>ud</span> <span class=o>=</span> <span class=p>(</span><span class=n>file_udata_t</span> <span class=o>*</span><span class=p>)</span><span class=n>luaL_checkudata</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=n>TEST_CALSS_ID</span><span class=p>);</span>
+    <span class=n>luaL_argcheck</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>ud</span> <span class=o>!=</span> <span class=nb>NULL</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=s>&#34;unexpected object class&#34;</span><span class=p>);</span>
+        <span class=c1>// get file size
+</span><span class=c1></span>    <span class=n>fseek</span><span class=p>(</span><span class=n>ud</span><span class=o>-&gt;</span><span class=n>fp</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>SEEK_END</span><span class=p>);</span>
+    <span class=n>size_t</span> <span class=n>size</span> <span class=o>=</span> <span class=n>ftell</span><span class=p>(</span><span class=n>ud</span><span class=o>-&gt;</span><span class=n>fp</span><span class=p>);</span>
+    <span class=n>rewind</span><span class=p>(</span><span class=n>ud</span><span class=o>-&gt;</span><span class=n>fp</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>size</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>lua_pushnil</span><span class=p>(</span><span class=n>L</span><span class=p>);</span>
+        <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=kt>char</span> <span class=o>*</span><span class=n>out</span> <span class=o>=</span> <span class=n>malloc</span><span class=p>(</span><span class=n>size</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>size</span> <span class=o>!=</span> <span class=n>fread</span><span class=p>(</span><span class=n>out</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=n>size</span><span class=p>,</span> <span class=n>ud</span><span class=o>-&gt;</span><span class=n>fp</span><span class=p>))</span> <span class=p>{</span>
+        <span class=n>lua_pushnil</span><span class=p>(</span><span class=n>L</span><span class=p>);</span>
+        <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=n>lua_pushstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>out</span><span class=p>);</span>
+    <span class=n>free</span><span class=p>(</span><span class=n>out</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+<span class=k>static</span> <span class=kt>void</span> <span class=nf>make_namespace</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>name</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=n>lua_getglobal</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>name</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>lua_isnoneornil</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=p>{</span>
+        <span class=n>lua_pop</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+        <span class=n>lua_newtable</span><span class=p>(</span><span class=n>L</span><span class=p>);</span>
+        <span class=n>lua_setglobal</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>name</span><span class=p>);</span>
+        <span class=n>lua_getglobal</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>name</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>assert</span><span class=p>(</span><span class=n>lua_istable</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>));</span>
+<span class=p>}</span>
+<span class=k>static</span> <span class=kt>void</span> <span class=nf>register_function</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>name</span><span class=p>,</span> <span class=n>lua_CFunction</span> <span class=n>func</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=n>lua_pushstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>name</span><span class=p>);</span>
+    <span class=n>lua_pushcfunction</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>func</span><span class=p>);</span>
+    <span class=n>lua_settable</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>3</span><span class=p>);</span>  
+<span class=p>}</span>
+<span class=n>LUALIB_API</span> <span class=kt>int</span> <span class=nf>luaopen_testclass</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span> <span class=p>{</span>
+    <span class=c1>// regist module private function
+</span><span class=c1></span>    <span class=n>luaL_newmetatable</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>TEST_CALSS_ID</span><span class=p>);</span>
+    <span class=n>lua_pushstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;__index&#34;</span><span class=p>);</span>
+    <span class=n>lua_pushvalue</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>2</span><span class=p>);</span>
+    <span class=n>lua_settable</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>3</span><span class=p>);</span>            <span class=cm>/* metatable.__index = metatable */</span>
+
+    <span class=n>register_function</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;appendfile&#34;</span><span class=p>,</span> <span class=n>append_file</span><span class=p>);</span>
+    <span class=n>register_function</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;readallfile&#34;</span><span class=p>,</span> <span class=n>readall_file</span><span class=p>);</span>
+    <span class=n>register_function</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;closefile&#34;</span><span class=p>,</span> <span class=n>close_file</span><span class=p>);</span>
+    <span class=n>lua_pop</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+
+    <span class=c1>// registe module global function 
+</span><span class=c1></span>    <span class=n>make_namespace</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;testclass&#34;</span><span class=p>);</span>
+    <span class=n>register_function</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;openfile&#34;</span><span class=p>,</span> <span class=n>open_file</span><span class=p>);</span>
+
+    <span class=n>lua_pushliteral</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;__META__&#34;</span><span class=p>);</span>
+    <span class=n>luaL_getmetatable</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>TEST_CALSS_ID</span><span class=p>);</span>
+    <span class=n>lua_rawset</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>3</span><span class=p>);</span>
+    <span class=n>lua_pop</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+
+    <span class=n>lua_getglobal</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;testclass&#34;</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>测试的lua脚本如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-LUA data-lang=LUA><span class=kd>local</span> <span class=n>tc</span> <span class=o>=</span> <span class=n>require</span><span class=p>(</span><span class=s2>&#34;testclass&#34;</span><span class=p>)</span>
+<span class=kd>local</span> <span class=n>file</span> <span class=o>=</span> <span class=n>tc.openfile</span><span class=p>(</span><span class=s2>&#34;test.txt&#34;</span><span class=p>)</span>
+<span class=kr>if</span> <span class=n>file</span> <span class=kr>then</span>
+    <span class=n>file</span><span class=p>:</span><span class=n>appendfile</span><span class=p>(</span><span class=s2>&#34;this is a test txt in file&#34;</span><span class=p>)</span>
+    <span class=kd>local</span> <span class=n>str</span> <span class=o>=</span> <span class=n>file</span><span class=p>:</span><span class=n>readallfile</span><span class=p>()</span>
+    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;test.txt: &#34;</span> <span class=o>..</span> <span class=n>tostring</span><span class=p>(</span><span class=n>str</span><span class=p>))</span>
+    <span class=n>file</span><span class=p>:</span><span class=n>closefile</span><span class=p>()</span>
+<span class=kr>else</span>
+    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;openfile test.txt failed&#34;</span><span class=p>)</span>
+<span class=kr>end</span>
+</code></pre></td></tr></table></div></div><p>执行结果：</p><blockquote><p>test.txt: this is a test txt in file</p></blockquote><h3 id=223-c中执行lua的闭包函数>2.2.3 C中执行lua的闭包函数</h3><p>在业务层写lua脚本的过程中，我们会经常使用到lua的闭包函数，特别是在异步执行的过程中 例如：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-LUA data-lang=LUA><span class=kd>local</span> <span class=n>func</span> <span class=o>=</span> <span class=kr>function</span><span class=p>(</span><span class=n>param</span><span class=p>,</span> <span class=n>callback</span><span class=p>)</span>
+    <span class=kd>local</span> <span class=n>str</span> <span class=o>=</span> <span class=s2>&#34;param: &#34;</span> <span class=o>..</span> <span class=n>tostring</span><span class=p>(</span><span class=n>param</span><span class=p>)</span>
+    <span class=n>callback</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=n>str</span><span class=p>)</span>
+<span class=kr>end</span>
+<span class=n>func</span><span class=p>(</span><span class=mi>123</span><span class=p>,</span> <span class=kr>function</span><span class=p>(</span><span class=n>code</span><span class=p>,</span> <span class=n>msg</span><span class=p>)</span>
+    <span class=n>print</span><span class=p>(</span><span class=n>string.format</span><span class=p>(</span><span class=s2>&#34;from callback: code is %d msg is %d&#34;</span><span class=p>,</span> <span class=n>code</span><span class=p>,</span> <span class=n>msg</span><span class=p>))</span>
+<span class=kr>end</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><p>上面例子中调用的是本地实现的<strong>func</strong>, lua中参数获取或返回还是比较简单，但是如果此 <strong>func</strong> 是在C中实现的话，参数传递又该如何操作呢？</p><p>依然是实现一个简单的例子：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=kt>int</span> <span class=nf>function_from_c</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>code</span> <span class=o>=</span> <span class=n>luaL_checkint</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=n>lua_pushvalue</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>2</span><span class=p>);</span>            <span class=cm>/* copy closure to top */</span>
+    <span class=n>lua_pushinteger</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=n>code</span><span class=p>);</span>
+    <span class=n>lua_pushstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;c function&#34;</span><span class=p>);</span>
+    <span class=c1>//call the c function， two paramter, no return value
+</span><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>lua_pcall</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>))</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;error executing callback, error: %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>lua_tostring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>));</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span> 
+<span class=p>}</span>
+<span class=k>static</span> <span class=n>luaL_Reg</span> <span class=n>func_list</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=p>{</span><span class=s>&#34;func&#34;</span><span class=p>,</span> <span class=n>function_from_c</span><span class=p>},</span>
+    <span class=p>{</span><span class=nb>NULL</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>}</span>
+<span class=p>};</span>
+<span class=n>LUALIB_API</span> <span class=kt>int</span> <span class=nf>luaopen_testclosure</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=n>luaL_register</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;testclosure&#34;</span><span class=p>,</span> <span class=n>func_list</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>测试的lua脚本：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-LUA data-lang=LUA><span class=kd>local</span> <span class=n>ts</span> <span class=o>=</span> <span class=n>require</span><span class=p>(</span><span class=s2>&#34;testclosure&#34;</span><span class=p>)</span>
+<span class=kd>local</span> <span class=n>func</span> <span class=o>=</span> <span class=kr>function</span><span class=p>(</span><span class=n>param</span><span class=p>,</span> <span class=n>callback</span><span class=p>)</span>
+    <span class=n>callback</span><span class=p>(</span><span class=n>param</span><span class=p>,</span> <span class=s2>&#34;lua function&#34;</span><span class=p>)</span>
+<span class=kr>end</span>
+<span class=n>func</span><span class=p>(</span><span class=mi>123</span><span class=p>,</span> <span class=kr>function</span><span class=p>(</span><span class=n>code</span><span class=p>,</span> <span class=n>msg</span><span class=p>)</span>
+    <span class=n>print</span><span class=p>(</span><span class=n>string.format</span><span class=p>(</span><span class=s2>&#34;from callback: code is %d msg is %s&#34;</span><span class=p>,</span> <span class=n>code</span><span class=p>,</span> <span class=n>msg</span><span class=p>))</span>
+<span class=kr>end</span><span class=p>)</span>
+<span class=n>ts.func</span><span class=p>(</span><span class=mi>123</span><span class=p>,</span> <span class=kr>function</span><span class=p>(</span><span class=n>code</span><span class=p>,</span> <span class=n>msg</span><span class=p>)</span>
+    <span class=n>print</span><span class=p>(</span><span class=n>string.format</span><span class=p>(</span><span class=s2>&#34;from callback: code is %d msg is %s&#34;</span><span class=p>,</span> <span class=n>code</span><span class=p>,</span> <span class=n>msg</span><span class=p>))</span>
+<span class=kr>end</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><p>结果：</p><blockquote><p>from callback: code is 123 msg is lua function</p></blockquote><blockquote><p>from callback: code is 123 msg is c function</p></blockquote><h3 id=224-c中的lua栈平衡>2.2.4 C中的lua栈平衡</h3><p>由于lua调用C时传参是通过lua的 <em>虚拟栈</em> 实现的，所以这其中就必然涉及到栈平衡的问题。</p><p>每当 Lua 调用 C 时，被调用的函数都会获得一个新的堆栈，该堆栈独立于先前的堆栈和仍处于活动状态的 C 函数堆栈。此堆栈包含C函数的参数，并且是C函数将其结果返回给调用者的地方。</p><p>栈结构示意图如下：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/lua_dev_01.png data-srcset="/images/lua_dev_01.png, /images/lua_dev_01.png 1.5x, /images/lua_dev_01.png 2x" data-sizes=auto alt=/images/lua_dev_01.png title=调用栈示意图></p><p>可以通过 <strong>luaL_check*</strong> 系列接口获取传递给C函数的参数, 这时候需要确保只获取指定数量的参数，不然后会引发panic。在使用完参数后可以将参数丢弃或者弹出到全局变量等其他地方，这时候也需要确保只从栈中弹出了指定数量的参数，否则也会造成panic。</p><p>处理完成后可以使用 <strong>luaL_push*</strong> 系列接口将返回值放入栈中。这时候C函数的返回值表示需要返回的参数个数，这时候就需要确保栈中有指定数量的值，否则就会引发panic错误。</p><h3 id=225-c中栈交换的问题>2.2.5 C中栈交换的问题</h3><p>a. 在一些特殊的场景我们需要交换两个栈中的值，这时候可以使用 <strong>lua_xmove</strong> 接口来交换两个栈中的数据</p><p>依然是举个栗子：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>lua_func_str</span> <span class=o>=</span> <span class=s>&#34; \
+</span><span class=s>local gen_table = function(value1, value2) </span><span class=se>\n</span><span class=s> \
+</span><span class=s>    return {[</span><span class=se>\&#34;</span><span class=s>item1</span><span class=se>\&#34;</span><span class=s>] = value1, [</span><span class=se>\&#34;</span><span class=s>item2</span><span class=se>\&#34;</span><span class=s>] = value2} </span><span class=se>\n</span><span class=s> \
+</span><span class=s>end </span><span class=se>\n</span><span class=s> \
+</span><span class=s>local gen_int = function(value) </span><span class=se>\n</span><span class=s> \
+</span><span class=s>    return value + 1 </span><span class=se>\n</span><span class=s> \
+</span><span class=s>end </span><span class=se>\n</span><span class=s> \
+</span><span class=s>local gen_string = function(value) </span><span class=se>\n</span><span class=s> \
+</span><span class=s>    return </span><span class=se>\&#34;</span><span class=s>value is </span><span class=se>\&#34;</span><span class=s> .. tostring(value) </span><span class=se>\n</span><span class=s> \
+</span><span class=s>end </span><span class=se>\n</span><span class=s> \
+</span><span class=s>return gen_table, gen_int, gen_string </span><span class=se>\n</span><span class=s> \
+</span><span class=s>&#34;</span><span class=p>;</span>
+<span class=k>static</span> <span class=n>lua_State</span> <span class=o>*</span><span class=n>lua_func_state</span> <span class=o>=</span> <span class=nb>NULL</span><span class=p>;</span>
+<span class=k>static</span> <span class=kt>void</span> <span class=nf>init_lua_func</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>lua_func_state</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>lua_func_state</span> <span class=o>=</span> <span class=n>luaL_newstate</span><span class=p>();</span>
+    <span class=p>}</span>
+    <span class=n>luaL_openlibs</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>luaL_dostring</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=n>lua_func_str</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;luaL_dostring failed, %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>lua_tostring</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>));</span>
+        <span class=k>return</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=c1>// lua function is on stack
+</span><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>lua_isfunction</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span> <span class=o>||</span> <span class=o>!</span><span class=n>lua_isfunction</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span> <span class=o>||</span> <span class=o>!</span><span class=n>lua_isfunction</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>3</span><span class=p>))</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;load lua function is failed</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+        <span class=k>return</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=n>lua_setglobal</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=s>&#34;gen_string&#34;</span><span class=p>);</span>
+    <span class=n>lua_setglobal</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=s>&#34;gen_int&#34;</span><span class=p>);</span>
+    <span class=n>lua_setglobal</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=s>&#34;gen_table&#34;</span><span class=p>);</span>
+<span class=p>}</span>
+
+<span class=kt>int</span> <span class=nf>xchange_int</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>value</span> <span class=o>=</span> <span class=n>luaL_checkint</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=n>lua_settop</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+    <span class=n>lua_getglobal</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=s>&#34;gen_int&#34;</span><span class=p>);</span>
+    <span class=n>lua_pushinteger</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=p>(</span><span class=n>lua_Integer</span><span class=p>)</span><span class=n>value</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>lua_pcall</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span> <span class=o>||</span> <span class=o>!</span><span class=n>lua_isnumber</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;execute lua function gen_int failed, %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>luaL_checkstring</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>));</span>
+        <span class=n>lua_pushnil</span><span class=p>(</span><span class=n>L</span><span class=p>);</span>
+        <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=n>lua_settop</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+    <span class=c1>// exchange value 
+</span><span class=c1></span>    <span class=n>lua_xmove</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+<span class=kt>int</span> <span class=nf>xchange_string</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>str</span> <span class=o>=</span> <span class=n>luaL_checkstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=n>lua_settop</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+    <span class=n>lua_getglobal</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=s>&#34;gen_string&#34;</span><span class=p>);</span>
+    <span class=n>lua_pushstring</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=n>str</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>lua_pcall</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span> <span class=o>||</span> <span class=o>!</span><span class=n>lua_isstring</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>1</span><span class=p>))</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;execute lua function gen_int failed, %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>luaL_checkstring</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>));</span>
+        <span class=n>lua_pushnil</span><span class=p>(</span><span class=n>L</span><span class=p>);</span>
+        <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=n>lua_settop</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+    <span class=c1>// exchange value 
+</span><span class=c1></span>    <span class=n>lua_xmove</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+<span class=kt>int</span> <span class=nf>xchange_table</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>value1</span> <span class=o>=</span> <span class=n>luaL_checkstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>value2</span> <span class=o>=</span> <span class=n>luaL_checkstring</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>2</span><span class=p>);</span>
+    <span class=n>lua_settop</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+    <span class=n>lua_getglobal</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=s>&#34;gen_table&#34;</span><span class=p>);</span>
+    <span class=n>lua_pushstring</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=n>value1</span><span class=p>);</span>
+    <span class=n>lua_pushstring</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=n>value2</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>lua_pcall</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span> <span class=o>||</span> <span class=o>!</span><span class=n>lua_istable</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=mi>1</span><span class=p>))</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;execute lua function gen_int failed, %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>luaL_checkstring</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>));</span>
+        <span class=n>lua_pushnil</span><span class=p>(</span><span class=n>L</span><span class=p>);</span>
+        <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=n>lua_settop</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+    <span class=c1>// exchange value 
+</span><span class=c1></span>    <span class=n>lua_xmove</span><span class=p>(</span><span class=n>lua_func_state</span><span class=p>,</span> <span class=n>L</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+<span class=k>static</span> <span class=n>luaL_Reg</span> <span class=n>func_list</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=p>{</span><span class=s>&#34;xchange_int&#34;</span><span class=p>,</span> <span class=n>xchange_int</span><span class=p>},</span>
+    <span class=p>{</span><span class=s>&#34;xchange_string&#34;</span><span class=p>,</span> <span class=n>xchange_string</span><span class=p>},</span>
+    <span class=p>{</span><span class=s>&#34;xchange_table&#34;</span><span class=p>,</span> <span class=n>xchange_table</span><span class=p>},</span>
+    <span class=p>{</span><span class=nb>NULL</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>}</span>
+<span class=p>};</span>
+<span class=n>LUALIB_API</span> <span class=kt>int</span> <span class=nf>luaopen_testexchange</span><span class=p>(</span><span class=n>lua_State</span> <span class=o>*</span><span class=n>L</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=n>init_lua_func</span><span class=p>();</span>
+    <span class=n>luaL_register</span><span class=p>(</span><span class=n>L</span><span class=p>,</span> <span class=s>&#34;testexchange&#34;</span><span class=p>,</span> <span class=n>func_list</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>测试的lua代码如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-LUA data-lang=LUA><span class=kd>local</span> <span class=n>tx</span> <span class=o>=</span> <span class=n>require</span><span class=p>(</span><span class=s2>&#34;testexchange&#34;</span><span class=p>)</span>
+<span class=kd>local</span> <span class=n>v1</span> <span class=o>=</span> <span class=n>tx.xchange_int</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span>
+<span class=n>print</span><span class=p>(</span><span class=s2>&#34;xchange_int result: &#34;</span> <span class=o>..</span> <span class=n>tostring</span><span class=p>(</span><span class=n>v1</span><span class=p>))</span>
+<span class=kd>local</span> <span class=n>v2</span> <span class=o>=</span> <span class=n>tx.xchange_string</span><span class=p>(</span><span class=s2>&#34;hello&#34;</span><span class=p>)</span>
+<span class=n>print</span><span class=p>(</span><span class=s2>&#34;xchange_string result: &#34;</span> <span class=o>..</span> <span class=n>tostring</span><span class=p>(</span><span class=n>v2</span><span class=p>))</span>
+<span class=kd>local</span> <span class=n>v3</span> <span class=o>=</span> <span class=n>tx.xchange_table</span><span class=p>(</span><span class=s2>&#34;zhangsan&#34;</span><span class=p>,</span> <span class=s2>&#34;lisi&#34;</span><span class=p>)</span>
+<span class=n>print</span><span class=p>(</span><span class=n>string.format</span><span class=p>(</span><span class=s2>&#34;xchange_table reault: %s %s&#34;</span><span class=p>,</span> <span class=n>tostring</span><span class=p>(</span><span class=n>v3</span><span class=p>[</span><span class=s2>&#34;item1&#34;</span><span class=p>]),</span> <span class=n>tostring</span><span class=p>(</span><span class=n>v3</span><span class=p>[</span><span class=s2>&#34;item2&#34;</span><span class=p>])))</span>
+</code></pre></td></tr></table></div></div><p>执行结果如下:</p><blockquote><p>xchange_int result: 11</p></blockquote><blockquote><p>xchange_string result: value is hello</p></blockquote><blockquote><p>xchange_table reault: nil nil</p></blockquote><p><strong>结论就是</strong>： 可以在不同的lua_State交换栈上的普通值（int, string等）， 不能交换稍微高级的值（table， userdata等）</p><p>b. 改变栈中数据的位置</p><p>在C接口编码的过程中，我们的C接口可能需要将当前栈上的参数做一些位置调换，那该怎么办呢？
+luac的接口也考虑到了这种需求，只需调用相关的API就可以做相应的位置变换</p><table><thead><tr><th align=left>函数接口</th><th align=left>说明</th></tr></thead><tbody><tr><td align=left>lua_insert</td><td align=left>将栈顶的元素插入到指定的位置，其他元素相应的往前挪位置</td></tr><tr><td align=left>lua_replace</td><td align=left>将栈顶元素替换指定位置的元素，其他元素相应的往前挪位置</td></tr></tbody></table></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2022-07-17</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/>基础知识</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/hexo_same_file/ class=prev rel=prev title=排查一个同名函数引发的问题><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>排查一个同名函数引发的问题</a>
+<a href=/hexo_unittest_hook/ class=next rel=next title=单元测试中的插桩技术>单元测试中的插桩技术<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":30},"comment":{},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

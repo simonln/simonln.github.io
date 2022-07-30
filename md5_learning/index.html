@@ -1,0 +1,377 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>初试MD5 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="初试MD5"><meta property="og:description" content="由于c的小巧，运行速度比较快，所以用来写一些加密程序非常适合。今天就来讲讲我们生活中比较常见的MD5吧。 什么是MD5? MD5消息摘要算法（英"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/md5_learning/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2016-03-29T13:38:00+00:00"><meta property="article:modified_time" content="2016-03-29T13:38:00+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="初试MD5"><meta name=twitter:description content="由于c的小巧，运行速度比较快，所以用来写一些加密程序非常适合。今天就来讲讲我们生活中比较常见的MD5吧。 什么是MD5? MD5消息摘要算法（英"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/md5_learning/><link rel=prev href=https://www.qingxin.org/base64_encode_decode/><link rel=next href=https://www.qingxin.org/imagine_things_2016_5_27/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"初试MD5","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/md5_learning\/"},"genre":"posts","keywords":"MD5","wordcount":3559,"url":"https:\/\/www.qingxin.org\/md5_learning\/","datePublished":"2016-03-29T13:38:00+00:00","dateModified":"2016-03-29T13:38:00+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/about>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">初试MD5</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2016-03-29>2016-03-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;3559 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;8 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/md5_1.jpg data-srcset="/images/md5_1.jpg, /images/md5_1.jpg 1.5x, /images/md5_1.jpg 2x" data-sizes=auto alt=/images/md5_1.jpg title=/images/md5_1.jpg></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents></nav></div></div><div class=content id=content><p>由于c的小巧，运行速度比较快，所以用来写一些加密程序非常适合。今天就来讲讲我们生活中比较常见的MD5吧。</p><p><strong>什么是MD5?</strong></p><blockquote><p>MD5消息摘要算法（英语：MD5 Message-Digest Algorithm），一种被广泛使用的密码散列函数，可以产生出一个128位 （16字节）的散列值（hash value），用于确保信息传输完整一致。</p></blockquote><p>以上摘自wikipedia，贴个链接<a href=https://zh.wikipedia.org/wiki/MD5 target=_blank rel="noopener noreffer">我是链接</a></p><h1 id=md5加密原理>MD5加密原理</h1><p>MD5以512位分组来处理输入的信息，且每一分组又被划分为16个32位子分组，经过了一系列的处理后，算法的输出由四个32位分组组成，将这四个32位分组级联后将生成一个128位散列值。</p><p>在MD5算法中，首先需要对信息进行填充，使其字节长度对512求余数的结果等于448。因此，信息的字节长度（Bits Length）将被扩展至N512+448，即N64+56个字节（Bytes），N为一个正整数。填充的方法如下，在信息的后面填充一个1和无数个0，直到满足上面的条件时才停止用0对信息的填充。然后再在这个结果后面附加一个以64位二进制表示的填充前的信息长度。经过这两步的处理，现在的信息字节长度=N512+448+64=(N+1)512，即长度恰好是512的整数倍数。这样做的原因是为满足后面处理中对信息长度的要求。MD5中有四个32位被称作链接变量（Chaining Variable）的整数参数，他们分别为：A=0x01234567，B=0x89abcdef，C=0xfedcba98，D=0x76543210。 当设置好这四个链接变量后，就开始进入算法的四轮循环运算，循环的次数是信息中512位信息分组的数目。</p><p>将上面四个链接变量复制到另外四个变量中：A到a，B到b，C到c，D到d。 主循环有四轮（MD4只有三轮），每轮循环都很相似。第一轮进行16次操作。每次操作对a、b、c和d中的其中三个作一次非线性函数运算，然后将所得结果加上第四个变量（文本中的一个子分组和一个常数）。</p><p>再将所得结果向右环移一个不定的数，并加上a、b、c或d中之一。最后用该结果取代a、b、c或d中之一。 以一下是每次操作中用到的四个非线性函数（每轮一个）。</p><p>F(x, y, z) (((x) & (y)) | ((~x) & (z)))</p><p>G(x, y, z) (((x) & (z)) | ((y) & (~z)))</p><p>H(x, y, z) ((x) ^ (y) ^ (z))</p><p>I(x, y, z) ((y) ^ ((x) | (~z)))</p><p>注：&为位运算的与，|为位运算的或，～为位运算的取反，^为位运算的按位异或</p><p>如果X、Y和Z的对应位是独立和均匀的，那么结果的每一位也应是独立和均匀的。F是一个逐位运算的函数。即，如果X，那么Y，否则Z。函数H是逐位奇偶操作符。所有这些完成之后，将A，B，C，D分别加上a，b，c，d。然后用下一分组数据继续运行算法，最后的输出是A，B，C和D的级联。最后得到的A，B，C，D就是输出结果，A是低位，D为高位，DCBA组成128位输出结果</p><h1 id=代码实现>代码实现</h1><p>说完原理，我们就直接来上代码吧，代码部分我就不解说了，详情请看注释，哈哈我就是这么懒。。。。。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=cp>#include</span><span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span><span class=cp>#include</span><span class=cpf>&lt;stdlib.h&gt;</span><span class=cp>
+</span><span class=cp>#include</span><span class=cpf>&lt;string.h&gt;</span><span class=cp>
+</span><span class=cp></span>
+<span class=cp>#define F(x, y, z) (((x) &amp; (y)) | ((~x) &amp; (z)))
+</span><span class=cp>#define G(x, y, z) (((x) &amp; (z)) | ((y) &amp; (~z)))
+</span><span class=cp>#define H(x, y, z) ((x) ^ (y) ^ (z))
+</span><span class=cp>#define I(x, y, z) ((y) ^ ((x) | (~z)))
+</span><span class=cp></span>
+<span class=cp>#define RL(x, y) (((x) &lt;&lt; (y)) | ((x) &gt;&gt; (32 - (y))))  </span><span class=c1>//x向左循环移y位
+</span><span class=c1></span>
+<span class=cp>#define PP(x) (x&lt;&lt;24)|((x&lt;&lt;8)&amp;0xff0000)|((x&gt;&gt;8)&amp;0xff00)|(x&gt;&gt;24)  </span><span class=c1>//将x高低位互换,例如PP(aabbccdd)=ddccbbaa
+</span><span class=c1></span>
+<span class=cp>#define FF(a, b, c, d, x, s, ac) a = b + (RL((a + F(b,c,d) + x + ac),s))
+</span><span class=cp>#define GG(a, b, c, d, x, s, ac) a = b + (RL((a + G(b,c,d) + x + ac),s))
+</span><span class=cp>#define HH(a, b, c, d, x, s, ac) a = b + (RL((a + H(b,c,d) + x + ac),s))
+</span><span class=cp>#define II(a, b, c, d, x, s, ac) a = b + (RL((a + I(b,c,d) + x + ac),s))
+</span><span class=cp></span>
+ <span class=c1>//i临时变量,len文件长,flen[2]为64位二进制表示的文件初始长度
+</span><span class=c1></span><span class=kt>unsigned</span> <span class=n>A</span><span class=p>,</span><span class=n>B</span><span class=p>,</span><span class=n>C</span><span class=p>,</span><span class=n>D</span><span class=p>,</span><span class=n>a</span><span class=p>,</span><span class=n>b</span><span class=p>,</span><span class=n>c</span><span class=p>,</span><span class=n>d</span><span class=p>,</span><span class=n>i</span><span class=p>,</span><span class=n>len</span><span class=p>,</span><span class=n>flen</span><span class=p>[</span><span class=mi>2</span><span class=p>],</span><span class=n>x</span><span class=p>[</span><span class=mi>16</span><span class=p>];</span>  
+
+<span class=kt>void</span> <span class=nf>md5</span><span class=p>()</span>
+<span class=p>{</span>                
+<span class=c1>//MD5核心算法,共64轮
+</span><span class=c1></span>  <span class=n>a</span><span class=o>=</span><span class=n>A</span><span class=p>,</span><span class=n>b</span><span class=o>=</span><span class=n>B</span><span class=p>,</span><span class=n>c</span><span class=o>=</span><span class=n>C</span><span class=p>,</span><span class=n>d</span><span class=o>=</span><span class=n>D</span><span class=p>;</span>
+  <span class=cm>/**//* Round 1 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>0</span><span class=p>],</span>  <span class=mi>7</span><span class=p>,</span> <span class=mh>0xd76aa478</span><span class=p>);</span> <span class=cm>/**//* 1 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>1</span><span class=p>],</span> <span class=mi>12</span><span class=p>,</span> <span class=mh>0xe8c7b756</span><span class=p>);</span> <span class=cm>/**//* 2 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>2</span><span class=p>],</span> <span class=mi>17</span><span class=p>,</span> <span class=mh>0x242070db</span><span class=p>);</span> <span class=cm>/**//* 3 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>3</span><span class=p>],</span> <span class=mi>22</span><span class=p>,</span> <span class=mh>0xc1bdceee</span><span class=p>);</span> <span class=cm>/**//* 4 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>4</span><span class=p>],</span>  <span class=mi>7</span><span class=p>,</span> <span class=mh>0xf57c0faf</span><span class=p>);</span> <span class=cm>/**//* 5 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>5</span><span class=p>],</span> <span class=mi>12</span><span class=p>,</span> <span class=mh>0x4787c62a</span><span class=p>);</span> <span class=cm>/**//* 6 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>6</span><span class=p>],</span> <span class=mi>17</span><span class=p>,</span> <span class=mh>0xa8304613</span><span class=p>);</span> <span class=cm>/**//* 7 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>7</span><span class=p>],</span> <span class=mi>22</span><span class=p>,</span> <span class=mh>0xfd469501</span><span class=p>);</span> <span class=cm>/**//* 8 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>8</span><span class=p>],</span>  <span class=mi>7</span><span class=p>,</span> <span class=mh>0x698098d8</span><span class=p>);</span> <span class=cm>/**//* 9 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>9</span><span class=p>],</span> <span class=mi>12</span><span class=p>,</span> <span class=mh>0x8b44f7af</span><span class=p>);</span> <span class=cm>/**//* 10 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>10</span><span class=p>],</span> <span class=mi>17</span><span class=p>,</span> <span class=mh>0xffff5bb1</span><span class=p>);</span> <span class=cm>/**//* 11 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>11</span><span class=p>],</span> <span class=mi>22</span><span class=p>,</span> <span class=mh>0x895cd7be</span><span class=p>);</span> <span class=cm>/**//* 12 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>12</span><span class=p>],</span>  <span class=mi>7</span><span class=p>,</span> <span class=mh>0x6b901122</span><span class=p>);</span> <span class=cm>/**//* 13 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>13</span><span class=p>],</span> <span class=mi>12</span><span class=p>,</span> <span class=mh>0xfd987193</span><span class=p>);</span> <span class=cm>/**//* 14 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>14</span><span class=p>],</span> <span class=mi>17</span><span class=p>,</span> <span class=mh>0xa679438e</span><span class=p>);</span> <span class=cm>/**//* 15 */</span>
+  <span class=n>FF</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>15</span><span class=p>],</span> <span class=mi>22</span><span class=p>,</span> <span class=mh>0x49b40821</span><span class=p>);</span> <span class=cm>/**//* 16 */</span>
+
+ <span class=cm>/**//* Round 2 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>1</span><span class=p>],</span>  <span class=mi>5</span><span class=p>,</span> <span class=mh>0xf61e2562</span><span class=p>);</span> <span class=cm>/**//* 17 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>6</span><span class=p>],</span>  <span class=mi>9</span><span class=p>,</span> <span class=mh>0xc040b340</span><span class=p>);</span> <span class=cm>/**//* 18 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>11</span><span class=p>],</span> <span class=mi>14</span><span class=p>,</span> <span class=mh>0x265e5a51</span><span class=p>);</span> <span class=cm>/**//* 19 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>0</span><span class=p>],</span> <span class=mi>20</span><span class=p>,</span> <span class=mh>0xe9b6c7aa</span><span class=p>);</span> <span class=cm>/**//* 20 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>5</span><span class=p>],</span>  <span class=mi>5</span><span class=p>,</span> <span class=mh>0xd62f105d</span><span class=p>);</span> <span class=cm>/**//* 21 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>10</span><span class=p>],</span>  <span class=mi>9</span><span class=p>,</span> <span class=mh>0x02441453</span><span class=p>);</span> <span class=cm>/**//* 22 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>15</span><span class=p>],</span> <span class=mi>14</span><span class=p>,</span> <span class=mh>0xd8a1e681</span><span class=p>);</span> <span class=cm>/**//* 23 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>4</span><span class=p>],</span> <span class=mi>20</span><span class=p>,</span> <span class=mh>0xe7d3fbc8</span><span class=p>);</span> <span class=cm>/**//* 24 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>9</span><span class=p>],</span>  <span class=mi>5</span><span class=p>,</span> <span class=mh>0x21e1cde6</span><span class=p>);</span> <span class=cm>/**//* 25 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>14</span><span class=p>],</span>  <span class=mi>9</span><span class=p>,</span> <span class=mh>0xc33707d6</span><span class=p>);</span> <span class=cm>/**//* 26 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>3</span><span class=p>],</span> <span class=mi>14</span><span class=p>,</span> <span class=mh>0xf4d50d87</span><span class=p>);</span> <span class=cm>/**//* 27 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>8</span><span class=p>],</span> <span class=mi>20</span><span class=p>,</span> <span class=mh>0x455a14ed</span><span class=p>);</span> <span class=cm>/**//* 28 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>13</span><span class=p>],</span>  <span class=mi>5</span><span class=p>,</span> <span class=mh>0xa9e3e905</span><span class=p>);</span> <span class=cm>/**//* 29 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>2</span><span class=p>],</span>  <span class=mi>9</span><span class=p>,</span> <span class=mh>0xfcefa3f8</span><span class=p>);</span> <span class=cm>/**//* 30 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>7</span><span class=p>],</span> <span class=mi>14</span><span class=p>,</span> <span class=mh>0x676f02d9</span><span class=p>);</span> <span class=cm>/**//* 31 */</span>
+  <span class=n>GG</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>12</span><span class=p>],</span> <span class=mi>20</span><span class=p>,</span> <span class=mh>0x8d2a4c8a</span><span class=p>);</span> <span class=cm>/**//* 32 */</span>
+
+  <span class=cm>/**//* Round 3 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>5</span><span class=p>],</span>  <span class=mi>4</span><span class=p>,</span> <span class=mh>0xfffa3942</span><span class=p>);</span> <span class=cm>/**//* 33 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>8</span><span class=p>],</span> <span class=mi>11</span><span class=p>,</span> <span class=mh>0x8771f681</span><span class=p>);</span> <span class=cm>/**//* 34 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>11</span><span class=p>],</span> <span class=mi>16</span><span class=p>,</span> <span class=mh>0x6d9d6122</span><span class=p>);</span> <span class=cm>/**//* 35 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>14</span><span class=p>],</span> <span class=mi>23</span><span class=p>,</span> <span class=mh>0xfde5380c</span><span class=p>);</span> <span class=cm>/**//* 36 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>1</span><span class=p>],</span>  <span class=mi>4</span><span class=p>,</span> <span class=mh>0xa4beea44</span><span class=p>);</span> <span class=cm>/**//* 37 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>4</span><span class=p>],</span> <span class=mi>11</span><span class=p>,</span> <span class=mh>0x4bdecfa9</span><span class=p>);</span> <span class=cm>/**//* 38 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>7</span><span class=p>],</span> <span class=mi>16</span><span class=p>,</span> <span class=mh>0xf6bb4b60</span><span class=p>);</span> <span class=cm>/**//* 39 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>10</span><span class=p>],</span> <span class=mi>23</span><span class=p>,</span> <span class=mh>0xbebfbc70</span><span class=p>);</span> <span class=cm>/**//* 40 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>13</span><span class=p>],</span>  <span class=mi>4</span><span class=p>,</span> <span class=mh>0x289b7ec6</span><span class=p>);</span> <span class=cm>/**//* 41 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>0</span><span class=p>],</span> <span class=mi>11</span><span class=p>,</span> <span class=mh>0xeaa127fa</span><span class=p>);</span> <span class=cm>/**//* 42 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>3</span><span class=p>],</span> <span class=mi>16</span><span class=p>,</span> <span class=mh>0xd4ef3085</span><span class=p>);</span> <span class=cm>/**//* 43 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>6</span><span class=p>],</span> <span class=mi>23</span><span class=p>,</span> <span class=mh>0x04881d05</span><span class=p>);</span> <span class=cm>/**//* 44 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>9</span><span class=p>],</span>  <span class=mi>4</span><span class=p>,</span> <span class=mh>0xd9d4d039</span><span class=p>);</span> <span class=cm>/**//* 45 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>12</span><span class=p>],</span> <span class=mi>11</span><span class=p>,</span> <span class=mh>0xe6db99e5</span><span class=p>);</span> <span class=cm>/**//* 46 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>15</span><span class=p>],</span> <span class=mi>16</span><span class=p>,</span> <span class=mh>0x1fa27cf8</span><span class=p>);</span> <span class=cm>/**//* 47 */</span>
+  <span class=n>HH</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>2</span><span class=p>],</span> <span class=mi>23</span><span class=p>,</span> <span class=mh>0xc4ac5665</span><span class=p>);</span> <span class=cm>/**//* 48 */</span>
+
+  <span class=cm>/**//* Round 4 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>0</span><span class=p>],</span>  <span class=mi>6</span><span class=p>,</span> <span class=mh>0xf4292244</span><span class=p>);</span> <span class=cm>/**//* 49 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>7</span><span class=p>],</span> <span class=mi>10</span><span class=p>,</span> <span class=mh>0x432aff97</span><span class=p>);</span> <span class=cm>/**//* 50 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>14</span><span class=p>],</span> <span class=mi>15</span><span class=p>,</span> <span class=mh>0xab9423a7</span><span class=p>);</span> <span class=cm>/**//* 51 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>5</span><span class=p>],</span> <span class=mi>21</span><span class=p>,</span> <span class=mh>0xfc93a039</span><span class=p>);</span> <span class=cm>/**//* 52 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>12</span><span class=p>],</span>  <span class=mi>6</span><span class=p>,</span> <span class=mh>0x655b59c3</span><span class=p>);</span> <span class=cm>/**//* 53 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>3</span><span class=p>],</span> <span class=mi>10</span><span class=p>,</span> <span class=mh>0x8f0ccc92</span><span class=p>);</span> <span class=cm>/**//* 54 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>10</span><span class=p>],</span> <span class=mi>15</span><span class=p>,</span> <span class=mh>0xffeff47d</span><span class=p>);</span> <span class=cm>/**//* 55 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>1</span><span class=p>],</span> <span class=mi>21</span><span class=p>,</span> <span class=mh>0x85845dd1</span><span class=p>);</span> <span class=cm>/**//* 56 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>8</span><span class=p>],</span>  <span class=mi>6</span><span class=p>,</span> <span class=mh>0x6fa87e4f</span><span class=p>);</span> <span class=cm>/**//* 57 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>15</span><span class=p>],</span> <span class=mi>10</span><span class=p>,</span> <span class=mh>0xfe2ce6e0</span><span class=p>);</span> <span class=cm>/**//* 58 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>6</span><span class=p>],</span> <span class=mi>15</span><span class=p>,</span> <span class=mh>0xa3014314</span><span class=p>);</span> <span class=cm>/**//* 59 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>13</span><span class=p>],</span> <span class=mi>21</span><span class=p>,</span> <span class=mh>0x4e0811a1</span><span class=p>);</span> <span class=cm>/**//* 60 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>4</span><span class=p>],</span>  <span class=mi>6</span><span class=p>,</span> <span class=mh>0xf7537e82</span><span class=p>);</span> <span class=cm>/**//* 61 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span><span class=mi>11</span><span class=p>],</span> <span class=mi>10</span><span class=p>,</span> <span class=mh>0xbd3af235</span><span class=p>);</span> <span class=cm>/**//* 62 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>2</span><span class=p>],</span> <span class=mi>15</span><span class=p>,</span> <span class=mh>0x2ad7d2bb</span><span class=p>);</span> <span class=cm>/**//* 63 */</span>
+  <span class=n>II</span> <span class=p>(</span><span class=n>b</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>a</span><span class=p>,</span> <span class=n>x</span><span class=p>[</span> <span class=mi>9</span><span class=p>],</span> <span class=mi>21</span><span class=p>,</span> <span class=mh>0xeb86d391</span><span class=p>);</span> <span class=cm>/**//* 64 */</span>
+
+  <span class=n>A</span> <span class=o>+=</span> <span class=n>a</span><span class=p>;</span>
+  <span class=n>B</span> <span class=o>+=</span> <span class=n>b</span><span class=p>;</span>
+  <span class=n>C</span> <span class=o>+=</span> <span class=n>c</span><span class=p>;</span>
+  <span class=n>D</span> <span class=o>+=</span> <span class=n>d</span><span class=p>;</span>
+<span class=p>}</span>
+<span class=kt>void</span> <span class=nf>file_md5</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=n>filename</span><span class=p>)</span>
+<span class=p>{</span>   <span class=c1>//计算文件的MD5值
+</span><span class=c1></span>     <span class=c1>//char filename[200]=&#34;lx1.txt&#34;;   //文件名
+</span><span class=c1></span>     <span class=n>FILE</span> <span class=o>*</span><span class=n>fp</span><span class=p>;</span>
+     <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=p>(</span><span class=n>fp</span><span class=o>=</span><span class=n>fopen</span><span class=p>(</span><span class=n>filename</span><span class=p>,</span><span class=s>&#34;rb&#34;</span><span class=p>)))</span> <span class=p>{</span><span class=n>printf</span><span class=p>(</span><span class=s>&#34;Can not open this file!</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span><span class=n>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);}</span>  <span class=c1>//以二进制打开文件
+</span><span class=c1></span>    <span class=n>fseek</span><span class=p>(</span><span class=n>fp</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>SEEK_END</span><span class=p>);</span>  <span class=c1>//文件指针转到文件末尾
+</span><span class=c1></span>    <span class=n>len</span><span class=o>=</span><span class=n>ftell</span><span class=p>(</span><span class=n>fp</span><span class=p>);</span>
+    <span class=n>rewind</span><span class=p>(</span><span class=n>fp</span><span class=p>);</span>  <span class=c1>//文件指针复位到文件头
+</span><span class=c1></span>    <span class=n>A</span><span class=o>=</span><span class=mh>0x67452301</span><span class=p>,</span><span class=n>B</span><span class=o>=</span><span class=mh>0xefcdab89</span><span class=p>,</span><span class=n>C</span><span class=o>=</span><span class=mh>0x98badcfe</span><span class=p>,</span><span class=n>D</span><span class=o>=</span><span class=mh>0x10325476</span><span class=p>;</span> <span class=c1>//初始化链接变量
+</span><span class=c1></span>    <span class=n>flen</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>=</span><span class=n>len</span><span class=o>/</span><span class=mh>0x20000000</span><span class=p>;</span>     <span class=c1>//flen单位是bit
+</span><span class=c1></span>    <span class=n>flen</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>=</span><span class=p>(</span><span class=n>len</span><span class=o>%</span><span class=mh>0x20000000</span><span class=p>)</span><span class=o>*</span><span class=mi>8</span><span class=p>;</span>
+    <span class=n>memset</span><span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>64</span><span class=p>);</span>   <span class=c1>//初始化x数组为0
+</span><span class=c1></span>    <span class=n>fread</span><span class=p>(</span><span class=o>&amp;</span><span class=n>x</span><span class=p>,</span><span class=mi>4</span><span class=p>,</span><span class=mi>16</span><span class=p>,</span><span class=n>fp</span><span class=p>);</span>  <span class=c1>//以4字节为一组,读取16组数据
+</span><span class=c1></span>    <span class=k>for</span><span class=p>(</span><span class=n>i</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=n>i</span><span class=o>&lt;</span><span class=n>len</span><span class=o>/</span><span class=mi>64</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>){</span>    <span class=c1>//循环运算直至文件结束
+</span><span class=c1></span>      <span class=n>md5</span><span class=p>();</span>
+      <span class=n>memset</span><span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>64</span><span class=p>);</span>
+      <span class=n>fread</span><span class=p>(</span><span class=o>&amp;</span><span class=n>x</span><span class=p>,</span><span class=mi>4</span><span class=p>,</span><span class=mi>16</span><span class=p>,</span><span class=n>fp</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=p>((</span><span class=kt>char</span><span class=o>*</span><span class=p>)</span><span class=n>x</span><span class=p>)[</span><span class=n>len</span><span class=o>%</span><span class=mi>64</span><span class=p>]</span><span class=o>=</span><span class=mi>128</span><span class=p>;</span>  <span class=c1>//文件结束补1,补0操作,128二进制即10000000
+</span><span class=c1></span>    <span class=k>if</span><span class=p>(</span><span class=n>len</span><span class=o>%</span><span class=mi>64</span><span class=o>&gt;</span><span class=mi>55</span><span class=p>)</span> <span class=n>md5</span><span class=p>(),</span><span class=n>memset</span><span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>64</span><span class=p>);</span>
+    <span class=n>memcpy</span><span class=p>(</span><span class=n>x</span><span class=o>+</span><span class=mi>14</span><span class=p>,</span><span class=n>flen</span><span class=p>,</span><span class=mi>8</span><span class=p>);</span>    <span class=c1>//文件末尾加入原文件的bit长度
+</span><span class=c1></span>    <span class=n>md5</span><span class=p>();</span>
+    <span class=n>fclose</span><span class=p>(</span><span class=n>fp</span><span class=p>);</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;MD5 Code(32):%08x%08x%08x%08x</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>PP</span><span class=p>(</span><span class=n>A</span><span class=p>),</span><span class=n>PP</span><span class=p>(</span><span class=n>B</span><span class=p>),</span><span class=n>PP</span><span class=p>(</span><span class=n>C</span><span class=p>),</span><span class=n>PP</span><span class=p>(</span><span class=n>D</span><span class=p>));</span>  <span class=c1>//32位高低位逆反输出
+</span><span class=c1></span>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;MD5 Code(16):%08x%08x</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>PP</span><span class=p>(</span><span class=n>B</span><span class=p>),</span><span class=n>PP</span><span class=p>(</span><span class=n>C</span><span class=p>));</span>  <span class=c1>//16位输出
+</span><span class=c1></span><span class=p>}</span>
+<span class=kt>void</span> <span class=nf>string_md5</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=n>string</span><span class=p>)</span>
+<span class=p>{</span>		<span class=c1>//计算字符串的MD5值
+</span><span class=c1></span>   <span class=n>len</span><span class=o>=</span><span class=n>strlen</span><span class=p>(</span><span class=n>string</span><span class=p>);</span>
+    <span class=n>A</span><span class=o>=</span><span class=mh>0x67452301</span><span class=p>,</span><span class=n>B</span><span class=o>=</span><span class=mh>0xefcdab89</span><span class=p>,</span><span class=n>C</span><span class=o>=</span><span class=mh>0x98badcfe</span><span class=p>,</span><span class=n>D</span><span class=o>=</span><span class=mh>0x10325476</span><span class=p>;</span> <span class=c1>//初始化链接变量
+</span><span class=c1></span>    <span class=n>flen</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>=</span><span class=n>len</span><span class=o>/</span><span class=mh>0x20000000</span><span class=p>;</span>     <span class=c1>//flen单位是bit
+</span><span class=c1></span>    <span class=n>flen</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>=</span><span class=p>(</span><span class=n>len</span><span class=o>%</span><span class=mh>0x20000000</span><span class=p>)</span><span class=o>*</span><span class=mi>8</span><span class=p>;</span>
+    <span class=n>memset</span><span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>64</span><span class=p>);</span>   <span class=c1>//初始化x数组为0
+</span><span class=c1></span>    <span class=n>memcpy</span><span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=n>string</span><span class=p>,</span><span class=mi>64</span><span class=p>);</span>  <span class=c1>//从string 复制64字节数据到x数组
+</span><span class=c1></span>    <span class=k>for</span><span class=p>(</span><span class=n>i</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=n>i</span><span class=o>&lt;</span><span class=n>len</span><span class=o>/</span><span class=mi>64</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>){</span>    <span class=c1>//循环运算直至字符串结束
+</span><span class=c1></span>      <span class=n>md5</span><span class=p>();</span>
+      <span class=n>memset</span><span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>64</span><span class=p>);</span>
+      <span class=n>memcpy</span><span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=o>&amp;</span><span class=n>string</span><span class=p>[(</span><span class=n>i</span><span class=o>+</span><span class=mi>1</span><span class=p>)</span><span class=o>*</span><span class=mi>64</span><span class=p>],</span><span class=mi>64</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>memset</span><span class=p>((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=n>x</span><span class=o>+</span><span class=n>len</span><span class=o>%</span><span class=mi>64</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>64</span><span class=o>-</span><span class=n>len</span><span class=o>%</span><span class=mi>64</span><span class=p>);</span><span class=c1>//排除后面非string内的数据的干扰
+</span><span class=c1></span>    <span class=p>((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=n>x</span><span class=p>)[</span><span class=n>len</span><span class=o>%</span><span class=mi>64</span><span class=p>]</span><span class=o>=</span><span class=mi>128</span><span class=p>;</span>  <span class=c1>//字符串结束补1,补0操作,128二进制即10000000
+</span><span class=c1></span>    <span class=k>if</span><span class=p>(</span><span class=n>len</span><span class=o>%</span><span class=mi>64</span><span class=o>&gt;</span><span class=mi>55</span><span class=p>)</span> <span class=n>md5</span><span class=p>(),</span><span class=n>memset</span><span class=p>(</span><span class=n>x</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>64</span><span class=p>);</span>
+    <span class=n>memcpy</span><span class=p>(</span><span class=n>x</span><span class=o>+</span><span class=mi>14</span><span class=p>,</span><span class=n>flen</span><span class=p>,</span><span class=mi>8</span><span class=p>);</span>    <span class=c1>//字串末尾加入原文件的bit长度
+</span><span class=c1></span>    <span class=n>md5</span><span class=p>();</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;MD5 Code(32):%08x%08x%08x%08x</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>PP</span><span class=p>(</span><span class=n>A</span><span class=p>),</span><span class=n>PP</span><span class=p>(</span><span class=n>B</span><span class=p>),</span><span class=n>PP</span><span class=p>(</span><span class=n>C</span><span class=p>),</span><span class=n>PP</span><span class=p>(</span><span class=n>D</span><span class=p>));</span>  <span class=c1>//32位高低位逆反输出
+</span><span class=c1></span>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;MD5 Code(16):%08x%08x</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>PP</span><span class=p>(</span><span class=n>B</span><span class=p>),</span><span class=n>PP</span><span class=p>(</span><span class=n>C</span><span class=p>));</span>  <span class=c1>//16位输出
+</span><span class=c1></span><span class=p>}</span>
+<span class=kt>void</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>arg</span><span class=p>,</span><span class=kt>char</span> <span class=o>**</span><span class=n>argv</span><span class=p>){</span>
+    <span class=k>if</span><span class=p>(</span><span class=n>arg</span><span class=o>&lt;=</span><span class=mi>1</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;Usage:choose one argument</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;-f  &lt;filename&gt;        the  MD5 of file.</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;-s  &lt;string&gt;            the MD5 of string.</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+        <span class=n>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>strcmp</span><span class=p>(</span><span class=n>argv</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span><span class=s>&#34;-f&#34;</span><span class=p>))</span>
+       <span class=n>file_md5</span><span class=p>(</span><span class=n>argv</span><span class=p>[</span><span class=mi>2</span><span class=p>]);</span>
+   <span class=k>else</span>  <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>strcmp</span><span class=p>(</span><span class=n>argv</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span><span class=s>&#34;-s&#34;</span><span class=p>))</span>
+        <span class=n>string_md5</span><span class=p>(</span><span class=n>argv</span><span class=p>[</span><span class=mi>2</span><span class=p>]);</span>
+    <span class=k>else</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;the argument is error!!</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+
+<span class=cm>/*
+</span><span class=cm>两个栗子：
+</span><span class=cm>md5(admin)= 21232f297a57a5a743894a0e4a801fc3
+</span><span class=cm>md5(hello world !)=905138a85e85e74344e90d25dba7299e
+</span><span class=cm>*/</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>代码比较长，看的话就耐心点看吧，哈哈</p><p>有了代码，我们来编译吧
+一条命令解决一切，linux就是这么方便快捷，但是为了更加方（zhuang）便（bi）快捷，我写了个makefile,内容很简单</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-bash data-lang=bash>md5: lx1.c
+	gcc lx1.c -o md5
+</code></pre></td></tr></table></div></div><p>好了，我们在终端敲下下面这条装逼的命令</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-bash data-lang=bash>make
+</code></pre></td></tr></table></div></div><p>好了，编译完了，我们就来运行一下吧！</p><h1 id=运行>运行</h1><p>依然是一条命令</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-bash data-lang=bash>./md5
+</code></pre></td></tr></table></div></div><p>咦，什么鬼？？？
+<img class=lazyload src=/svg/loading.min.svg data-src=/images/md5_2.png data-srcset="/images/md5_2.png, /images/md5_2.png 1.5x, /images/md5_2.png 2x" data-sizes=auto alt=/images/md5_2.png title=/images/md5_2.png></p><p>没有权限是什么鬼？？可能是没有执行权限吧，好吧来加权限吧</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-bash data-lang=bash>chmod +x ./md5
+./md5
+</code></pre></td></tr></table></div></div><p>这回总能运行了吧！</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/md5_3.png data-srcset="/images/md5_3.png, /images/md5_3.png 1.5x, /images/md5_3.png 2x" data-sizes=auto alt=/images/md5_3.png title=/images/md5_3.png>
+我艹，难道是加权限的姿势不对？？？</p><p>那我换个姿势来吧，泪奔。。。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-bash data-lang=bash>chmod +777 ./md5
+./md5
+</code></pre></td></tr></table></div></div><p><strong>给你加满总行了吧</strong></p><p>到这我要发飙了啊！！！！！
+<img class=lazyload src=/svg/loading.min.svg data-src=/images/md5_4.png data-srcset="/images/md5_4.png, /images/md5_4.png 1.5x, /images/md5_4.png 2x" data-sizes=auto alt=/images/md5_4.png title=/images/md5_4.png></p><p>还是老实的来google一下吧，不要再挣扎了</p><p>这里看看外国网友给出的解决方法：</p><blockquote><p>chmod u+x program_name. Then execute it.
+If that does not work, copy the program from the USB device to a native volume on the system. Then chmod u+x program_name on the local copy and execute that.</p></blockquote><blockquote><p>Unix and Unix-like systems generally will not execute a program unless it is marked with permission to execute. The way you copied the file from one system to another (or mounted an external volume) may have turned off execute permission (as a safety feature). The command chmod u+x name adds permission for the user that owns the file to execute it.</p></blockquote><blockquote><p>That command only changes the permissions associated with the file; it does not change the security controls associated with the entire volume. If it is security controls on the volume that are interfering with execution, then you can remount the volume with options to allow execution. However, copying the file to a local volume may be a quicker and easier solution.</p></blockquote><p>贴个网址：http://stackoverflow.com/questions/18960689/ubuntu-says-bash-program-permission-denied</p><p>原来编译后的这个破程序是在windows分区下，然后windows分区权限设置对于ubuntu来说它也无能为力。好，我这就把你从万恶的windows中拖出来</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-bash data-lang=bash>cp md5 /home/tylor/c
+<span class=nb>cd</span> /home/tylor/c
+chmod +x ./md5
+</code></pre></td></tr></table></div></div><p>好行了，我们来再次来运行一下吧！</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-bash data-lang=bash>./md5
+</code></pre></td></tr></table></div></div><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/md5_5.png data-srcset="/images/md5_5.png, /images/md5_5.png 1.5x, /images/md5_5.png 2x" data-sizes=auto alt=/images/md5_5.png title=/images/md5_5.png>
+这次行了，耶耶耶！！！</p><p>我们来试试个简单的字符串吧，比如 &ldquo;admin&rdquo;</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/md5_6.png data-srcset="/images/md5_6.png, /images/md5_6.png 1.5x, /images/md5_6.png 2x" data-sizes=auto alt=/images/md5_6.png title=admin></p><p>八错八错，可以正常运行了！！</p><p>MD5加密就是这样了，拜了个拜嘞</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2016-03-29</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/md5/>MD5</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/base64_encode_decode/ class=prev rel=prev title=Base64编解码><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Base64编解码</a>
+<a href=/imagine_things_2016_5_27/ class=next rel=next title=2016-5-27随想>2016-5-27随想<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":30},"comment":{},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
