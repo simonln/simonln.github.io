@@ -1,43 +1,1046 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>设计模式总结二 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="设计模式总结二"><meta property="og:description" content="结构型模式主要有：适配器模式，装饰模式，桥接模式，组合模式，享元模式，代理模式，外观模式 2.1 适配器模式 (Adapter) 特点： 将一个类的接口转换成客户希望的另"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/hexo_design_mode_two/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2020-07-03T09:10:03+00:00"><meta property="article:modified_time" content="2020-07-03T09:10:03+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="设计模式总结二"><meta name=twitter:description content="结构型模式主要有：适配器模式，装饰模式，桥接模式，组合模式，享元模式，代理模式，外观模式 2.1 适配器模式 (Adapter) 特点： 将一个类的接口转换成客户希望的另"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/hexo_design_mode_two/><link rel=prev href=https://www.qingxin.org/hexo_fftw_usage/><link rel=next href=https://www.qingxin.org/hexo_kmp_dfa/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"设计模式总结二","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/hexo_design_mode_two\/"},"genre":"posts","keywords":"基础知识, 学习笔记","wordcount":1883,"url":"https:\/\/www.qingxin.org\/hexo_design_mode_two\/","datePublished":"2020-07-03T09:10:03+00:00","dateModified":"2020-07-03T09:10:03+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>设计模式总结二 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="设计模式总结二"><meta property="og:description" content="结构型模式主要有：适配器模式，装饰模式，桥接模式，组合模式，享元模式，代理模式，外观模式 2.1 适配器模式 (Adapter) 特点： 将一个类的接口转换成客户希望的另"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/hexo_design_mode_two/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2020-07-03T09:10:03+00:00"><meta property="article:modified_time" content="2020-07-03T09:10:03+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="设计模式总结二"><meta name=twitter:description content="结构型模式主要有：适配器模式，装饰模式，桥接模式，组合模式，享元模式，代理模式，外观模式 2.1 适配器模式 (Adapter) 特点： 将一个类的接口转换成客户希望的另"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/hexo_design_mode_two/><link rel=prev href=https://www.qingxin.org/hexo_fftw_usage/><link rel=next href=https://www.qingxin.org/hexo_kmp_dfa/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"设计模式总结二","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/hexo_design_mode_two\/"},"genre":"posts","keywords":"基础知识, 学习笔记","wordcount":3364,"url":"https:\/\/www.qingxin.org\/hexo_design_mode_two\/","datePublished":"2020-07-03T09:10:03+00:00","dateModified":"2020-07-03T09:10:03+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/about>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
-<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">设计模式总结二</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2020-07-03>2020-07-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;1883 words&nbsp;
-<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;4 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_0.jpg data-srcset="/images/design_pattern_0.jpg, /images/design_pattern_0.jpg 1.5x, /images/design_pattern_0.jpg 2x" data-sizes=auto alt=/images/design_pattern_0.jpg title=/images/design_pattern_0.jpg></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
-<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#21-适配器模式-adapter>2.1 适配器模式 (Adapter)</a></li><li><a href=#22-装饰模式-decorator>2.2 装饰模式 （Decorator）</a></li><li><a href=#23-桥接模式-bridge>2.3 桥接模式 （Bridge）</a></li><li><a href=#24-组合模式-composite>2.4 组合模式 （Composite）</a></li><li><a href=#25-享元模式-flyweight>2.5 享元模式 （Flyweight）</a></li><li><a href=#26-代理模式proxy>2.6 代理模式（Proxy）</a></li><li><a href=#27-外观模式facade>2.7 外观模式（Facade）</a></li></ul></nav></div></div><div class=content id=content><p>结构型模式主要有：适配器模式，装饰模式，桥接模式，组合模式，享元模式，代理模式，外观模式</p><h2 id=21-适配器模式-adapter>2.1 适配器模式 (Adapter)</h2><p><strong>特点</strong>：</p><p>将一个类的接口转换成客户希望的另外一个接口。适配器模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</p><p><strong>应用场景</strong>：</p><ul><li><p>a.使用一个已经存在的类，而它的接口不符合你的需求时</p></li><li><p>b.当你想创建一个可以复用的类，该类可以与其他不相关的类或不可预见的类（即那些接口可能不一定兼容的类）协同工作时</p></li><li><p>c.想使用一些已经存在的子类，但是不可能对每一个都进行子类化以匹配它们的接口（仅适用于对象Adapter）</p></li></ul><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_1.png data-srcset="/images/design_pattern2_1.png, /images/design_pattern2_1.png 1.5x, /images/design_pattern2_1.png 2x" data-sizes=auto alt=/images/design_pattern2_1.png title=/images/design_pattern2_1.png>
-<strong>实现</strong>：
-<a href=https://gist.github.com/simonln/b61fafe2f4506d73e1d8352587b6012b#file-structuretypemode-cc-L2 target=_blank rel="noopener noreffer">Adapter</a></p><p><strong>优点</strong>：</p><ul><li>a.使得可以Adapter可以重定义Adaptee的部分行为</li><li>b.允许一个Adapter与多个Adaptee（即Adaptee本身以及它的所有子类）一同工作</li></ul><p><strong>缺点</strong>：</p><ul><li>a.使用一个具体的类对Adapter类对Adaotee和Target进行匹配，无法灵活使用Adapter的子类</li><li>b.使得重定义Adaptee的全部行为比较困难</li></ul><h2 id=22-装饰模式-decorator>2.2 装饰模式 （Decorator）</h2><p><strong>特点</strong>：</p><p>动态地给一个对象添加一些额外的职责，就增加功能来说，装饰模式比生成子类更加灵活。</p><p><strong>应用场景</strong>：</p><ul><li><p>a.在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责</p></li><li><p>b.处理那些可以撤销的职责</p></li><li><p>c.当不能采用生成子类的方法进行扩充时</p></li></ul><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_2.png data-srcset="/images/design_pattern2_2.png, /images/design_pattern2_2.png 1.5x, /images/design_pattern2_2.png 2x" data-sizes=auto alt=/images/design_pattern2_2.png title=/images/design_pattern2_2.png>
-<strong>实现</strong>：
-<a href=https://gist.github.com/simonln/b61fafe2f4506d73e1d8352587b6012b#file-structuretypemode-cc-L75 target=_blank rel="noopener noreffer">Decorator</a>
-<strong>优点</strong>：</p><ul><li><p>a.比静态类更灵活</p></li><li><p>b.避免在层次结构高层的类有太多的特征</p></li></ul><p><strong>缺点</strong>：</p><ul><li><p>a.Decorator与它的Component不一样，Decorator只有一个透明的包装</p></li><li><p>b.当装饰的功能一多时，会有许多小对象</p></li></ul><h2 id=23-桥接模式-bridge>2.3 桥接模式 （Bridge）</h2><p><strong>特点</strong>：</p><p>将抽象部分与它的实现部分分离，使它们都可以独立的变化。实现系统可能有多角度分类，每一种分类都有可能变化，那么就把这种多角度分离出来让它们独立变化，减少它们之间的耦合。</p><p><strong>应用场景</strong>：</p><ul><li><p>a.不希望在抽象和它的实现部分之间有一个固定的绑定关系</p></li><li><p>b.类的抽象以及它的实现都应该可以通过生成子类的方法加以扩充</p></li><li><p>c.对一个抽象的实现部分的修改应对客户不产生影响</p></li><li><p>d.对客户完全隐藏抽象的实现部分</p></li><li><p>e.意图在多个对象间共享实现，但同时要求客户并不知道这一点</p></li></ul><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_3.png data-srcset="/images/design_pattern2_3.png, /images/design_pattern2_3.png 1.5x, /images/design_pattern2_3.png 2x" data-sizes=auto alt=/images/design_pattern2_3.png title=/images/design_pattern2_3.png>
-<strong>实现</strong>：
-<a href=https://gist.github.com/simonln/b61fafe2f4506d73e1d8352587b6012b#file-structuretypemode-cc-L156 target=_blank rel="noopener noreffer">Bridge</a>
-<strong>优点</strong>：</p><ul><li><p>a.分离接口及其实现部分</p></li><li><p>b.提高可扩充性</p></li><li><p>c.实现细节对客户透明</p></li></ul><p><strong>缺点</strong>：
-无</p><h2 id=24-组合模式-composite>2.4 组合模式 （Composite）</h2><p><strong>特点</strong>：</p><p>将对象组合成树形结构以表示“部分-整体”的层次结构。组合模式使得用户对单个对象和组合对象的使用具有一致性</p><p><strong>应用场景</strong>：</p><ul><li>a.表达对象的部分-整体层次结构</li><li>b.希望用户忽略组合对象与单个对象的不同，用户将统一地使用组合结构中的所有对象</li></ul><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_4.png data-srcset="/images/design_pattern2_4.png, /images/design_pattern2_4.png 1.5x, /images/design_pattern2_4.png 2x" data-sizes=auto alt=/images/design_pattern2_4.png title=/images/design_pattern2_4.png>
-<strong>实现</strong>：
-<a href=https://gist.github.com/simonln/b61fafe2f4506d73e1d8352587b6012b#file-structuretypemode-cc-L230 target=_blank rel="noopener noreffer">Composite</a>
-<strong>优点</strong>：</p><ul><li><p>a.定义了包含基本对象和组合对象的层次结构</p></li><li><p>b.简化客户代码</p></li><li><p>c.使得更容易增加新类型的组件</p></li><li><p>d.是设计变得更加一般化</p></li></ul><p><strong>缺点</strong>：
-无</p><h2 id=25-享元模式-flyweight>2.5 享元模式 （Flyweight）</h2><p><strong>特点</strong>：
-运用共享技术有效的支持大量细粒度的对象。享元模式可以避免大量非常相似类的开销。在程序设计中，有时需要生成大量细粒度的类实例来标识数据。如果能发现这些实例除了几个参数外基本上都是相同的，有时就能大幅度地减少需要实例化的类的数量。如果能把那些参数移到类实例的外面，在方法调用时将它们传递进来，就可以通过共享大幅度地减少单个实例的数目。
-<strong>应用场景</strong>：
-一个应用程序使用了大量的对象，并且大量的对象造成巨大的开销,对象的大多数状态对可变为外部状态，可使用相对较少的共享对象取代很多组对象，不依赖于对象标识，此时可考虑使用享元模式</p><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_5.png data-srcset="/images/design_pattern2_5.png, /images/design_pattern2_5.png 1.5x, /images/design_pattern2_5.png 2x" data-sizes=auto alt=/images/design_pattern2_5.png title=/images/design_pattern2_5.png>
-<strong>实现</strong>：
-<a href=https://gist.github.com/simonln/b61fafe2f4506d73e1d8352587b6012b#file-structuretypemode-cc-L321 target=_blank rel="noopener noreffer">FlyweigthMode</a>
-<strong>优点</strong>：
-节约存储</p><p><strong>缺点</strong>：</p><ul><li>a. 对象太多时，会造成运行时的资源与性能损耗</li><li>b.为了使对象共享需要将一些状态外部化，使得程序的逻辑复杂化</li></ul><h2 id=26-代理模式proxy>2.6 代理模式（Proxy）</h2><p><strong>特点</strong>：</p><p>为其他对象提供一种代理以控制对这个对象的访问。</p><p><strong>应用场景</strong>：</p><ul><li>a.远程代理 为一个对象在不同的地址空间提供局部代表</li><li>b.虚代理 根据需要创建开销很大的对象</li><li>c.保护代理 控制原始对象的访问</li><li>d.智能指引 取代了简单的指针，它在访问对象时执行一些附加的操作</li></ul><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_6.png data-srcset="/images/design_pattern2_6.png, /images/design_pattern2_6.png 1.5x, /images/design_pattern2_6.png 2x" data-sizes=auto alt=/images/design_pattern2_6.png title=/images/design_pattern2_6.png></p><p><strong>实现</strong>：</p><p><a href=https://gist.github.com/simonln/b61fafe2f4506d73e1d8352587b6012b#file-structuretypemode-cc-L392 target=_blank rel="noopener noreffer">ProxyMode</a></p><p><strong>优点</strong>：
-a.远程代理可以隐藏一个对象存在于不同地址空间的事实
-b.虚代理可以进行最优化，例如根据要求创建对象
-c.保护代理和只能指引对允许在访问一个对象时有一些附加的内务处理
-<strong>缺点</strong>：
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">设计模式总结二</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2020-07-03>2020-07-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;3364 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;7 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_0.jpg data-srcset="/images/design_pattern_0.jpg, /images/design_pattern_0.jpg 1.5x, /images/design_pattern_0.jpg 2x" data-sizes=auto alt=/images/design_pattern_0.jpg title=/images/design_pattern_0.jpg></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#21-适配器模式-adapter>2.1 适配器模式 (Adapter)</a></li><li><a href=#22-装饰模式-decorator>2.2 装饰模式 （Decorator）</a></li><li><a href=#23-桥接模式-bridge>2.3 桥接模式 （Bridge）</a></li><li><a href=#24-组合模式-composite>2.4 组合模式 （Composite）</a></li><li><a href=#25-享元模式-flyweight>2.5 享元模式 （Flyweight）</a></li><li><a href=#26-代理模式proxy>2.6 代理模式（Proxy）</a></li><li><a href=#27-外观模式facade>2.7 外观模式（Facade）</a></li></ul></nav></div></div><div class=content id=content><p>结构型模式主要有：适配器模式，装饰模式，桥接模式，组合模式，享元模式，代理模式，外观模式</p><h2 id=21-适配器模式-adapter>2.1 适配器模式 (Adapter)</h2><p><strong>特点</strong>：</p><p>将一个类的接口转换成客户希望的另外一个接口。适配器模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</p><p><strong>应用场景</strong>：</p><ul><li><p>a.使用一个已经存在的类，而它的接口不符合你的需求时</p></li><li><p>b.当你想创建一个可以复用的类，该类可以与其他不相关的类或不可预见的类（即那些接口可能不一定兼容的类）协同工作时</p></li><li><p>c.想使用一些已经存在的子类，但是不可能对每一个都进行子类化以匹配它们的接口（仅适用于对象Adapter）</p></li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_1.png data-srcset="/images/design_pattern2_1.png, /images/design_pattern2_1.png 1.5x, /images/design_pattern2_1.png 2x" data-sizes=auto alt=/images/design_pattern2_1.png title=/images/design_pattern2_1.png></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cm>/* 适配器模式 */</span>
+<span class=k>class</span> <span class=nc>Adaptee</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>SpecificRequest</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;SpecificRequest&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Target</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>Request</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Request&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Adapter</span><span class=o>:</span> <span class=k>public</span> <span class=n>Target</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Request</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>adapter</span><span class=p>.</span><span class=n>SpecificRequest</span><span class=p>();</span>
+    <span class=p>}</span>
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>Adaptee</span> <span class=n>adapter</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>Target</span> <span class=o>*</span><span class=n>target</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Adapter</span><span class=p>();</span>
+    <span class=n>target</span><span class=o>-&gt;</span><span class=n>Request</span><span class=p>();</span>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+
+<span class=c1>// 类适配器
+</span><span class=c1></span><span class=k>class</span> <span class=nc>Adaptee</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>SpecificRequest</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;SpecificRequest&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Target</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>Request</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Request&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Adapter</span><span class=o>:</span> <span class=k>public</span> <span class=n>Target</span><span class=p>,</span><span class=k>private</span> <span class=n>Adaptee</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Request</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>Adaptee</span><span class=o>::</span><span class=n>SpecificRequest</span><span class=p>();</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>Target</span> <span class=o>*</span><span class=n>target</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Adapter</span><span class=p>();</span>
+    <span class=n>target</span><span class=o>-&gt;</span><span class=n>Request</span><span class=p>();</span>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li>a.使得可以Adapter可以重定义Adaptee的部分行为</li><li>b.允许一个Adapter与多个Adaptee（即Adaptee本身以及它的所有子类）一同工作</li></ul><p><strong>缺点</strong>：</p><ul><li>a.使用一个具体的类对Adapter类对Adaotee和Target进行匹配，无法灵活使用Adapter的子类</li><li>b.使得重定义Adaptee的全部行为比较困难</li></ul><h2 id=22-装饰模式-decorator>2.2 装饰模式 （Decorator）</h2><p><strong>特点</strong>：</p><p>动态地给一个对象添加一些额外的职责，就增加功能来说，装饰模式比生成子类更加灵活。</p><p><strong>应用场景</strong>：</p><ul><li><p>a.在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责</p></li><li><p>b.处理那些可以撤销的职责</p></li><li><p>c.当不能采用生成子类的方法进行扩充时</p></li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_2.png data-srcset="/images/design_pattern2_2.png, /images/design_pattern2_2.png 1.5x, /images/design_pattern2_2.png 2x" data-sizes=auto alt=/images/design_pattern2_2.png title=/images/design_pattern2_2.png></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cm>/* 装饰器模式 */</span>
+<span class=k>class</span> <span class=nc>Component</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>Operation</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ConcreteComponent</span><span class=o>:</span><span class=k>public</span> <span class=n>Component</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Operation</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;base operation&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Decorator</span><span class=o>:</span> <span class=k>private</span> <span class=n>Component</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>SetComponent</span><span class=p>(</span><span class=n>Component</span> <span class=o>*</span><span class=n>component</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>component_</span> <span class=o>=</span> <span class=n>component</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>Operation</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>if</span><span class=p>(</span><span class=n>component_</span> <span class=o>!=</span> <span class=k>nullptr</span><span class=p>)</span>
+        <span class=p>{</span>
+        <span class=n>component_</span><span class=o>-&gt;</span><span class=n>Operation</span><span class=p>();</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+<span class=k>protected</span><span class=o>:</span>
+    <span class=n>Component</span> <span class=o>*</span><span class=n>component_</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ConcreteDecoratorA</span><span class=o>:</span> <span class=k>public</span> <span class=n>Decorator</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Operation</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>Decorator</span><span class=o>::</span><span class=n>Operation</span><span class=p>();</span>
+        <span class=n>added_state_</span> <span class=o>=</span> <span class=s>&#34;New State&#34;</span><span class=p>;</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;concrete decorator A&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>added_state_</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ConcreteDecoratorB</span><span class=o>:</span><span class=k>public</span> <span class=n>Decorator</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Operation</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>Decorator</span><span class=o>::</span><span class=n>Operation</span><span class=p>();</span>
+        <span class=n>AddedBehavior</span><span class=p>();</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;concrete decortator B&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=k>private</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>AddedBehavior</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;AddedBehavior&#34;</span><span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>ConcreteComponent</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcreteComponent</span><span class=p>();</span>
+    <span class=n>ConcreteDecoratorA</span> <span class=o>*</span><span class=n>d1</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcreteDecoratorA</span><span class=p>();</span>
+    <span class=n>ConcreteDecoratorB</span> <span class=o>*</span><span class=n>d2</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcreteDecoratorB</span><span class=p>();</span>
+    <span class=n>d1</span><span class=o>-&gt;</span><span class=n>SetComponent</span><span class=p>(</span><span class=n>p</span><span class=p>);</span>
+    <span class=n>d1</span><span class=o>-&gt;</span><span class=n>Operation</span><span class=p>();</span>
+
+    <span class=n>d2</span><span class=o>-&gt;</span><span class=n>SetComponent</span><span class=p>(</span><span class=n>p</span><span class=p>);</span>
+    <span class=n>d2</span><span class=o>-&gt;</span><span class=n>Operation</span><span class=p>();</span>
+
+    <span class=k>delete</span> <span class=n>d2</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>d1</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>p</span><span class=p>;</span>
+
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li><p>a.比静态类更灵活</p></li><li><p>b.避免在层次结构高层的类有太多的特征</p></li></ul><p><strong>缺点</strong>：</p><ul><li><p>a.Decorator与它的Component不一样，Decorator只有一个透明的包装</p></li><li><p>b.当装饰的功能一多时，会有许多小对象</p></li></ul><h2 id=23-桥接模式-bridge>2.3 桥接模式 （Bridge）</h2><p><strong>特点</strong>：</p><p>将抽象部分与它的实现部分分离，使它们都可以独立的变化。实现系统可能有多角度分类，每一种分类都有可能变化，那么就把这种多角度分离出来让它们独立变化，减少它们之间的耦合。</p><p><strong>应用场景</strong>：</p><ul><li><p>a.不希望在抽象和它的实现部分之间有一个固定的绑定关系</p></li><li><p>b.类的抽象以及它的实现都应该可以通过生成子类的方法加以扩充</p></li><li><p>c.对一个抽象的实现部分的修改应对客户不产生影响</p></li><li><p>d.对客户完全隐藏抽象的实现部分</p></li><li><p>e.意图在多个对象间共享实现，但同时要求客户并不知道这一点</p></li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_3.png data-srcset="/images/design_pattern2_3.png, /images/design_pattern2_3.png 1.5x, /images/design_pattern2_3.png 2x" data-sizes=auto alt=/images/design_pattern2_3.png title=/images/design_pattern2_3.png></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cm>/* 桥接模式 */</span>
+<span class=k>class</span> <span class=nc>Implementor</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>OperationImp</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ConcreteImplementorA</span><span class=o>:</span><span class=k>public</span> <span class=n>Implementor</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>OperationImp</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Concrete Implement A&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ConcreteImplementorB</span><span class=o>:</span> <span class=k>public</span> <span class=n>Implementor</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>OperationImp</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Concrete Implement B&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span> 
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Abstraction</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>SetImplementor</span><span class=p>(</span><span class=n>Implementor</span> <span class=o>*</span><span class=n>imp</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>imp_</span>  <span class=o>=</span> <span class=n>imp</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=nf>Operation</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=k>if</span><span class=p>(</span><span class=n>imp_</span> <span class=o>!=</span> <span class=k>nullptr</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=n>imp_</span><span class=o>-&gt;</span><span class=n>OperationImp</span><span class=p>();</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+<span class=k>protected</span><span class=o>:</span>
+    <span class=n>Implementor</span> <span class=o>*</span><span class=n>imp_</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>     
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>RefinedAbstraction</span><span class=o>:</span><span class=k>public</span> <span class=n>Abstraction</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Operation</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>Abstraction</span><span class=o>::</span><span class=n>Operation</span><span class=p>();</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>Abstraction</span> <span class=o>*</span><span class=n>ab</span> <span class=o>=</span> <span class=k>new</span> <span class=n>RefinedAbstraction</span><span class=p>();</span>
+    <span class=n>Implementor</span> <span class=o>*</span><span class=n>p1</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcreteImplementorA</span><span class=p>();</span>
+    <span class=n>Implementor</span> <span class=o>*</span><span class=n>p2</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcreteImplementorB</span><span class=p>();</span>
+
+    <span class=n>ab</span><span class=o>-&gt;</span><span class=n>SetImplementor</span><span class=p>(</span><span class=n>p1</span><span class=p>);</span>
+    <span class=n>ab</span><span class=o>-&gt;</span><span class=n>Operation</span><span class=p>();</span>
+
+    <span class=n>ab</span><span class=o>-&gt;</span><span class=n>SetImplementor</span><span class=p>(</span><span class=n>p2</span><span class=p>);</span>
+    <span class=n>ab</span><span class=o>-&gt;</span><span class=n>Operation</span><span class=p>();</span>
+
+    <span class=k>delete</span> <span class=n>p2</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>p1</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>ab</span><span class=p>;</span>
+
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li><p>a.分离接口及其实现部分</p></li><li><p>b.提高可扩充性</p></li><li><p>c.实现细节对客户透明</p></li></ul><p><strong>缺点</strong>：
+无</p><h2 id=24-组合模式-composite>2.4 组合模式 （Composite）</h2><p><strong>特点</strong>：</p><p>将对象组合成树形结构以表示“部分-整体”的层次结构。组合模式使得用户对单个对象和组合对象的使用具有一致性</p><p><strong>应用场景</strong>：</p><ul><li>a.表达对象的部分-整体层次结构</li><li>b.希望用户忽略组合对象与单个对象的不同，用户将统一地使用组合结构中的所有对象</li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_4.png data-srcset="/images/design_pattern2_4.png, /images/design_pattern2_4.png 1.5x, /images/design_pattern2_4.png 2x" data-sizes=auto alt=/images/design_pattern2_4.png title=/images/design_pattern2_4.png></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cm>/* 组合模式 */</span>
+<span class=k>class</span> <span class=nc>Component</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>Component</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>name</span><span class=p>)</span>
+        <span class=o>:</span><span class=n>name_</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
+    <span class=p>{}</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=nf>Add</span><span class=p>(</span><span class=n>Component</span> <span class=o>*</span><span class=n>component</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=nf>Remove</span><span class=p>(</span><span class=n>Component</span> <span class=o>*</span><span class=n>component</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=nf>Display</span><span class=p>(</span><span class=kt>int</span> <span class=n>depth</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=k>protected</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>name_</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Leaf</span><span class=o>:</span><span class=k>public</span> <span class=n>Component</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>Leaf</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>name</span><span class=p>)</span>
+        <span class=o>:</span><span class=n>Component</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
+    <span class=p>{}</span>
+    <span class=kt>void</span> <span class=nf>Display</span><span class=p>(</span><span class=kt>int</span> <span class=n>depth</span><span class=p>)</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;-&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>depth</span> <span class=o>&lt;&lt;</span> <span class=n>name_</span><span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>Add</span><span class=p>(</span><span class=n>Component</span> <span class=o>*</span><span class=p>)</span> <span class=k>override</span>
+    <span class=p>{</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>Remove</span><span class=p>(</span><span class=n>Component</span><span class=o>*</span><span class=p>)</span> <span class=k>override</span>
+    <span class=p>{}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Composite</span><span class=o>:</span><span class=k>public</span> <span class=n>Component</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>Composite</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>name</span> <span class=p>)</span>
+        <span class=o>:</span><span class=n>Component</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
+    <span class=p>{}</span>
+    <span class=kt>void</span> <span class=nf>Add</span><span class=p>(</span><span class=n>Component</span> <span class=o>*</span><span class=n>component</span><span class=p>)</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>children_</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=n>component</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>Remove</span><span class=p>(</span><span class=n>Component</span> <span class=o>*</span><span class=n>component</span><span class=p>)</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>for</span><span class=p>(</span><span class=k>auto</span> <span class=n>it</span> <span class=o>=</span> <span class=n>children_</span><span class=p>.</span><span class=n>begin</span><span class=p>();</span> <span class=n>it</span> <span class=o>!=</span> <span class=n>children_</span><span class=p>.</span><span class=n>end</span><span class=p>();</span> <span class=o>++</span><span class=n>it</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=k>if</span><span class=p>(</span><span class=o>*</span><span class=n>it</span> <span class=o>==</span> <span class=n>component</span><span class=p>)</span>
+            <span class=p>{</span>
+                <span class=n>children_</span><span class=p>.</span><span class=n>erase</span><span class=p>(</span><span class=n>it</span><span class=p>);</span>
+                <span class=k>break</span><span class=p>;</span>
+            <span class=p>}</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>Display</span><span class=p>(</span><span class=kt>int</span> <span class=n>depth</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;-&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>depth</span> <span class=o>&lt;&lt;</span> <span class=n>name_</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+        <span class=k>for</span><span class=p>(</span><span class=k>auto</span> <span class=nl>it</span> <span class=p>:</span> <span class=n>children_</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=n>it</span><span class=o>-&gt;</span><span class=n>Display</span><span class=p>(</span><span class=n>depth</span> <span class=o>+</span> <span class=mi>1</span><span class=p>);</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=n>Component</span><span class=o>*&gt;</span> <span class=n>children_</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>Composite</span> <span class=o>*</span><span class=n>root</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Composite</span><span class=p>(</span><span class=s>&#34;root&#34;</span><span class=p>);</span>
+    <span class=n>root</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=k>new</span> <span class=n>Leaf</span><span class=p>(</span><span class=s>&#34;Leaf A&#34;</span><span class=p>));</span>
+    <span class=n>root</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=k>new</span> <span class=n>Leaf</span><span class=p>(</span><span class=s>&#34;Leaf B&#34;</span><span class=p>));</span>
+
+    <span class=n>Composite</span> <span class=o>*</span><span class=n>comp</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Composite</span><span class=p>(</span><span class=s>&#34;Composite X&#34;</span><span class=p>);</span>
+    <span class=n>comp</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=k>new</span> <span class=n>Leaf</span><span class=p>(</span><span class=s>&#34;Leaf XA&#34;</span><span class=p>));</span>
+    <span class=n>comp</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=k>new</span> <span class=n>Leaf</span><span class=p>(</span><span class=s>&#34;Leaf XB&#34;</span><span class=p>));</span>
+
+    <span class=n>root</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=n>comp</span><span class=p>);</span>
+
+    <span class=n>Composite</span> <span class=o>*</span><span class=n>comp2</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Composite</span><span class=p>(</span><span class=s>&#34;Composite XY&#34;</span><span class=p>);</span>
+    <span class=n>comp2</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=k>new</span> <span class=n>Leaf</span><span class=p>(</span><span class=s>&#34;Leaf XYA&#34;</span><span class=p>));</span>
+    <span class=n>comp2</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=k>new</span> <span class=n>Leaf</span><span class=p>(</span><span class=s>&#34;Leaf XYB&#34;</span><span class=p>));</span>
+    <span class=n>comp</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=n>comp2</span><span class=p>);</span>
+
+    <span class=n>root</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=k>new</span> <span class=n>Leaf</span><span class=p>(</span><span class=s>&#34;Leaf C&#34;</span><span class=p>));</span>
+    <span class=n>Leaf</span> <span class=o>*</span><span class=n>leaf</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Leaf</span><span class=p>(</span><span class=s>&#34;Leaf D&#34;</span><span class=p>);</span>
+    <span class=n>root</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=n>leaf</span><span class=p>);</span>
+    <span class=n>root</span><span class=o>-&gt;</span><span class=n>Remove</span><span class=p>(</span><span class=n>leaf</span><span class=p>);</span>
+
+    <span class=n>root</span><span class=o>-&gt;</span><span class=n>Display</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li><p>a.定义了包含基本对象和组合对象的层次结构</p></li><li><p>b.简化客户代码</p></li><li><p>c.使得更容易增加新类型的组件</p></li><li><p>d.是设计变得更加一般化</p></li></ul><p><strong>缺点</strong>：
+无</p><h2 id=25-享元模式-flyweight>2.5 享元模式 （Flyweight）</h2><p><strong>特点</strong>：</p><p>运用共享技术有效的支持大量细粒度的对象。享元模式可以避免大量非常相似类的开销。在程序设计中，有时需要生成大量细粒度的类实例来标识数据。如果能发现这些实例除了几个参数外基本上都是相同的，有时就能大幅度地减少需要实例化的类的数量。如果能把那些参数移到类实例的外面，在方法调用时将它们传递进来，就可以通过共享大幅度地减少单个实例的数目。</p><p><strong>应用场景</strong>：</p><p>一个应用程序使用了大量的对象，并且大量的对象造成巨大的开销,对象的大多数状态对可变为外部状态，可使用相对较少的共享对象取代很多组对象，不依赖于对象标识，此时可考虑使用享元模式</p><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_5.png data-srcset="/images/design_pattern2_5.png, /images/design_pattern2_5.png 1.5x, /images/design_pattern2_5.png 2x" data-sizes=auto alt=/images/design_pattern2_5.png title=/images/design_pattern2_5.png></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cm>/* 享元模式 */</span>
+<span class=k>class</span> <span class=nc>FlyWeight</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>Operation</span><span class=p>(</span><span class=kt>int</span> <span class=n>extra_state</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ConcreteFlyWeight</span><span class=o>:</span><span class=k>public</span> <span class=n>FlyWeight</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Operation</span><span class=p>(</span><span class=kt>int</span> <span class=n>extra_state</span><span class=p>)</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Concrete FlyWeight &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>extra_state</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>UnsharedConcreteFlyWeight</span><span class=o>:</span><span class=k>public</span> <span class=n>FlyWeight</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Operation</span><span class=p>(</span><span class=kt>int</span> <span class=n>extra_state</span><span class=p>)</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Unshared Concrete FlyWeight &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>extra_state</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>FlyWeightFactory</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>FlyWeightFactory</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>fly_weights_</span><span class=p>.</span><span class=n>emplace</span><span class=p>(</span><span class=s>&#34;X&#34;</span><span class=p>,</span><span class=k>new</span> <span class=n>ConcreteFlyWeight</span><span class=p>());</span>
+        <span class=n>fly_weights_</span><span class=p>.</span><span class=n>emplace</span><span class=p>(</span><span class=s>&#34;Y&#34;</span><span class=p>,</span><span class=k>new</span> <span class=n>ConcreteFlyWeight</span><span class=p>());</span>
+        <span class=n>fly_weights_</span><span class=p>.</span><span class=n>emplace</span><span class=p>(</span><span class=s>&#34;Z&#34;</span><span class=p>,</span><span class=k>new</span> <span class=n>ConcreteFlyWeight</span><span class=p>());</span>
+    <span class=p>}</span>
+    <span class=o>~</span><span class=n>FlyWeightFactory</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=k>for</span><span class=p>(</span><span class=k>auto</span> <span class=n>it</span> <span class=o>=</span> <span class=n>fly_weights_</span><span class=p>.</span><span class=n>begin</span><span class=p>();</span> <span class=n>it</span> <span class=o>!=</span> <span class=n>fly_weights_</span><span class=p>.</span><span class=n>end</span><span class=p>();)</span>
+        <span class=p>{</span>
+            <span class=k>delete</span> <span class=n>it</span><span class=o>-&gt;</span><span class=n>second</span><span class=p>;</span>
+            <span class=n>it</span> <span class=o>=</span> <span class=n>fly_weights_</span><span class=p>.</span><span class=n>erase</span><span class=p>(</span><span class=n>it</span><span class=p>);</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+    <span class=n>FlyWeight</span><span class=o>*</span> <span class=nf>GetFlyWeight</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>key</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=n>fly_weights_</span><span class=p>[</span><span class=n>key</span><span class=p>];</span>
+    <span class=p>}</span>
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>map</span><span class=o>&lt;</span><span class=n>std</span><span class=o>::</span><span class=n>string</span><span class=p>,</span><span class=n>FlyWeight</span><span class=o>*&gt;</span> <span class=n>fly_weights_</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>extra_state</span> <span class=o>=</span> <span class=mi>22</span><span class=p>;</span>
+
+    <span class=n>FlyWeightFactory</span> <span class=o>*</span><span class=n>f</span> <span class=o>=</span> <span class=k>new</span> <span class=n>FlyWeightFactory</span><span class=p>();</span>
+
+    <span class=n>FlyWeight</span> <span class=o>*</span><span class=n>fx</span> <span class=o>=</span> <span class=n>f</span><span class=o>-&gt;</span><span class=n>GetFlyWeight</span><span class=p>(</span><span class=s>&#34;X&#34;</span><span class=p>);</span>
+    <span class=n>fx</span><span class=o>-&gt;</span><span class=n>Operation</span><span class=p>(</span><span class=o>--</span><span class=n>extra_state</span><span class=p>);</span>
+
+    <span class=n>FlyWeight</span> <span class=o>*</span><span class=n>fy</span> <span class=o>=</span> <span class=n>f</span><span class=o>-&gt;</span><span class=n>GetFlyWeight</span><span class=p>(</span><span class=s>&#34;Y&#34;</span><span class=p>);</span>
+    <span class=n>fy</span><span class=o>-&gt;</span><span class=n>Operation</span><span class=p>(</span><span class=o>--</span><span class=n>extra_state</span><span class=p>);</span>
+
+    <span class=n>FlyWeight</span> <span class=o>*</span><span class=n>fz</span> <span class=o>=</span> <span class=n>f</span><span class=o>-&gt;</span><span class=n>GetFlyWeight</span><span class=p>(</span><span class=s>&#34;Z&#34;</span><span class=p>);</span>
+    <span class=n>fz</span><span class=o>-&gt;</span><span class=n>Operation</span><span class=p>(</span><span class=o>--</span><span class=n>extra_state</span><span class=p>);</span>
+
+    <span class=n>UnsharedConcreteFlyWeight</span> <span class=o>*</span><span class=n>uf</span> <span class=o>=</span> <span class=k>new</span> <span class=n>UnsharedConcreteFlyWeight</span><span class=p>();</span>
+    <span class=n>uf</span><span class=o>-&gt;</span><span class=n>Operation</span><span class=p>(</span><span class=o>--</span><span class=n>extra_state</span><span class=p>);</span>
+
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：
+节约存储</p><p><strong>缺点</strong>：</p><ul><li>a. 对象太多时，会造成运行时的资源与性能损耗</li><li>b.为了使对象共享需要将一些状态外部化，使得程序的逻辑复杂化</li></ul><h2 id=26-代理模式proxy>2.6 代理模式（Proxy）</h2><p><strong>特点</strong>：</p><p>为其他对象提供一种代理以控制对这个对象的访问。</p><p><strong>应用场景</strong>：</p><ul><li>a.远程代理 为一个对象在不同的地址空间提供局部代表</li><li>b.虚代理 根据需要创建开销很大的对象</li><li>c.保护代理 控制原始对象的访问</li><li>d.智能指引 取代了简单的指针，它在访问对象时执行一些附加的操作</li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_6.png data-srcset="/images/design_pattern2_6.png, /images/design_pattern2_6.png 1.5x, /images/design_pattern2_6.png 2x" data-sizes=auto alt=/images/design_pattern2_6.png title=/images/design_pattern2_6.png></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cm>/* 代理模式 */</span>
+<span class=k>class</span> <span class=nc>Subject</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>Request</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+<span class=k>class</span> <span class=nc>RealSubject</span><span class=o>:</span> <span class=k>public</span> <span class=n>Subject</span>
+<span class=p>{</span>
+ <span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Request</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Real Request&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Proxy</span><span class=o>:</span> <span class=k>public</span> <span class=n>Subject</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>Proxy</span><span class=p>()</span> <span class=o>=</span> <span class=k>default</span><span class=p>;</span>
+    <span class=o>~</span><span class=n>Proxy</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=k>if</span><span class=p>(</span><span class=n>real_subject_</span> <span class=o>!=</span> <span class=k>nullptr</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=k>delete</span> <span class=n>real_subject_</span><span class=p>;</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>Request</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>if</span><span class=p>(</span><span class=n>real_subject_</span> <span class=o>==</span> <span class=k>nullptr</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=n>real_subject_</span> <span class=o>=</span> <span class=k>new</span> <span class=n>RealSubject</span><span class=p>();</span>
+        <span class=p>}</span>
+        <span class=n>real_subject_</span><span class=o>-&gt;</span><span class=n>Request</span><span class=p>();</span>
+    <span class=p>}</span>
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>Subject</span> <span class=o>*</span><span class=n>real_subject_</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>Proxy</span> <span class=o>*</span><span class=n>proxy</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Proxy</span><span class=p>();</span>
+    <span class=n>proxy</span><span class=o>-&gt;</span><span class=n>Request</span><span class=p>();</span>
+
+
+    <span class=k>delete</span> <span class=n>proxy</span><span class=p>;</span>
+
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li>a.远程代理可以隐藏一个对象存在于不同地址空间的事实</li><li>b.虚代理可以进行最优化，例如根据要求创建对象</li><li>c.保护代理和只能指引对允许在访问一个对象时有一些附加的内务处理</li></ul><p><strong>缺点</strong>：
 无</p><h2 id=27-外观模式facade>2.7 外观模式（Facade）</h2><p><strong>特点</strong>：
-为子系统中的一组接口提供一个一致的界面，此模式定义了一个高层接口，使得这一子系统更加容易使用</p><p><strong>应用场景</strong>：</p><ul><li>a.当需要为一个复杂的子系统提供一个简单接口时</li><li>b.客户程序</li></ul><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_7.png data-srcset="/images/design_pattern2_7.png, /images/design_pattern2_7.png 1.5x, /images/design_pattern2_7.png 2x" data-sizes=auto alt=/images/design_pattern2_7.png title=/images/design_pattern2_7.png>
-<strong>实现</strong>：
-<a href=https://gist.github.com/simonln/b61fafe2f4506d73e1d8352587b6012b#file-structuretypemode-cc-L440 target=_blank rel="noopener noreffer">FacadeMode</a></p><p><strong>优点</strong>：</p><ul><li>a.对客户屏蔽了子系统组件</li><li>b.实现了子系统与客户之间的松耦合关系</li><li>c.不限制使用子系统类</li></ul><p><strong>缺点</strong>：
-需要在系统的通用性和易用性之间做取舍</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2020-07-03</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/>基础知识</a>,&nbsp;<a href=/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/>学习笔记</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/hexo_fftw_usage/ class=prev rel=prev title=使用FFTW库><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>使用FFTW库</a>
+为子系统中的一组接口提供一个一致的界面，此模式定义了一个高层接口，使得这一子系统更加容易使用</p><p><strong>应用场景</strong>：</p><ul><li>a.当需要为一个复杂的子系统提供一个简单接口时</li><li>b.客户程序</li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern2_7.png data-srcset="/images/design_pattern2_7.png, /images/design_pattern2_7.png 1.5x, /images/design_pattern2_7.png 2x" data-sizes=auto alt=/images/design_pattern2_7.png title=/images/design_pattern2_7.png></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cm>/* 外观模式 */</span>
+<span class=k>class</span> <span class=nc>SubSystemOne</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>MethodOne</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Subsystem Function one&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>SubSystemTwo</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>MethodTwo</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Subsystem Function two&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>SubSystemThree</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>MethodThree</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Subsystem Function three&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>SubSystemFour</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>MethodFour</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Subsystem Function four&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Facade</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>Facade</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>one_</span> <span class=o>=</span> <span class=k>new</span> <span class=n>SubSystemOne</span><span class=p>();</span>
+        <span class=n>two_</span> <span class=o>=</span> <span class=k>new</span> <span class=n>SubSystemTwo</span><span class=p>();</span>
+        <span class=n>three_</span> <span class=o>=</span> <span class=k>new</span> <span class=n>SubSystemThree</span><span class=p>();</span>
+        <span class=n>four_</span> <span class=o>=</span> <span class=k>new</span> <span class=n>SubSystemFour</span><span class=p>();</span>
+    <span class=p>}</span>
+    <span class=o>~</span><span class=n>Facade</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=k>delete</span> <span class=n>one_</span><span class=p>;</span>
+        <span class=k>delete</span> <span class=n>two_</span><span class=p>;</span>
+        <span class=k>delete</span> <span class=n>three_</span><span class=p>;</span>
+        <span class=k>delete</span> <span class=n>four_</span><span class=p>;</span>
+    <span class=p>}</span>
+
+    <span class=kt>void</span> <span class=nf>MethodA</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Group A&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+        <span class=n>one_</span><span class=o>-&gt;</span><span class=n>MethodOne</span><span class=p>();</span>
+        <span class=n>two_</span><span class=o>-&gt;</span><span class=n>MethodTwo</span><span class=p>();</span>
+        <span class=n>four_</span><span class=o>-&gt;</span><span class=n>MethodFour</span><span class=p>();</span>
+    <span class=p>}</span>
+
+    <span class=kt>void</span> <span class=nf>MethodB</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Group B&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+        <span class=n>two_</span><span class=o>-&gt;</span><span class=n>MethodTwo</span><span class=p>();</span>
+        <span class=n>three_</span><span class=o>-&gt;</span><span class=n>MethodThree</span><span class=p>();</span>
+    <span class=p>}</span>
+
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>SubSystemOne</span> <span class=o>*</span><span class=n>one_</span><span class=p>;</span>
+    <span class=n>SubSystemTwo</span> <span class=o>*</span><span class=n>two_</span><span class=p>;</span>
+    <span class=n>SubSystemThree</span> <span class=o>*</span><span class=n>three_</span><span class=p>;</span>
+    <span class=n>SubSystemFour</span> <span class=o>*</span><span class=n>four_</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>Facade</span> <span class=o>*</span><span class=n>facade</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Facade</span><span class=p>();</span>
+    <span class=n>facade</span><span class=o>-&gt;</span><span class=n>MethodA</span><span class=p>();</span>
+    <span class=n>facade</span><span class=o>-&gt;</span><span class=n>MethodB</span><span class=p>();</span>
+    
+    <span class=k>delete</span> <span class=n>facade</span><span class=p>;</span>
+
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li>a.对客户屏蔽了子系统组件</li><li>b.实现了子系统与客户之间的松耦合关系</li><li>c.不限制使用子系统类</li></ul><p><strong>缺点</strong>：</p><p>需要在系统的通用性和易用性之间做取舍</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2020-07-03</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/>基础知识</a>,&nbsp;<a href=/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/>学习笔记</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/hexo_fftw_usage/ class=prev rel=prev title=使用FFTW库><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>使用FFTW库</a>
 <a href=/hexo_kmp_dfa/ class=next rel=next title=KMP算法中的DFA计算>KMP算法中的DFA计算<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":30},"comment":{},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

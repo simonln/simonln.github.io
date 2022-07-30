@@ -1,77 +1,734 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>设计模式总结一 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="设计模式总结一"><meta property="og:description" content="说起可复用的面向对象软件，我又想起了一句&#34;至理名言&rdquo;，万物基于MIUI 设计模式就是一套基于面向对象而总结出来的设计范式"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/hexo_design_mode_one/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2020-03-21T10:45:00+00:00"><meta property="article:modified_time" content="2020-03-21T10:45:00+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="设计模式总结一"><meta name=twitter:description content="说起可复用的面向对象软件，我又想起了一句&#34;至理名言&rdquo;，万物基于MIUI 设计模式就是一套基于面向对象而总结出来的设计范式"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/hexo_design_mode_one/><link rel=prev href=https://www.qingxin.org/hexo_under_panic/><link rel=next href=https://www.qingxin.org/hexo_build_tv_system/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"设计模式总结一","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/hexo_design_mode_one\/"},"genre":"posts","keywords":"基础知识, 学习笔记","wordcount":1350,"url":"https:\/\/www.qingxin.org\/hexo_design_mode_one\/","datePublished":"2020-03-21T10:45:00+00:00","dateModified":"2020-03-21T10:45:00+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>设计模式总结一 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="设计模式总结一"><meta property="og:description" content="说起可复用的面向对象软件，我又想起了一句&#34;至理名言&rdquo;，万物基于MIUI 设计模式就是一套基于面向对象而总结出来的设计范式"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/hexo_design_mode_one/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2020-03-21T10:45:00+00:00"><meta property="article:modified_time" content="2020-03-21T10:45:00+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="设计模式总结一"><meta name=twitter:description content="说起可复用的面向对象软件，我又想起了一句&#34;至理名言&rdquo;，万物基于MIUI 设计模式就是一套基于面向对象而总结出来的设计范式"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/hexo_design_mode_one/><link rel=prev href=https://www.qingxin.org/hexo_under_panic/><link rel=next href=https://www.qingxin.org/hexo_build_tv_system/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"设计模式总结一","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/hexo_design_mode_one\/"},"genre":"posts","keywords":"基础知识, 学习笔记","wordcount":2391,"url":"https:\/\/www.qingxin.org\/hexo_design_mode_one\/","datePublished":"2020-03-21T10:45:00+00:00","dateModified":"2020-03-21T10:45:00+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/about>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
-<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">设计模式总结一</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2020-03-21>2020-03-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;1350 words&nbsp;
-<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;3 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_0.jpg data-srcset="/images/design_pattern_0.jpg, /images/design_pattern_0.jpg 1.5x, /images/design_pattern_0.jpg 2x" data-sizes=auto alt=/images/design_pattern_0.jpg title=/images/design_pattern_0.jpg></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">设计模式总结一</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2020-03-21>2020-03-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;2391 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;5 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_0.jpg data-srcset="/images/design_pattern_0.jpg, /images/design_pattern_0.jpg 1.5x, /images/design_pattern_0.jpg 2x" data-sizes=auto alt=/images/design_pattern_0.jpg title=/images/design_pattern_0.jpg></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
 <span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#11-单例模式-singleton>1.1 单例模式 （Singleton）</a></li><li><a href=#12-工厂方法模式factory-method>1.2 工厂方法模式（Factory Method）</a></li><li><a href=#13-抽象工厂模式abstract-factory>1.3 抽象工厂模式（Abstract Factory）</a></li><li><a href=#14-建造者模式builder>1.4 建造者模式（Builder）</a></li><li><a href=#15-原型模式prototype>1.5 原型模式（Prototype）</a></li></ul></nav></div></div><div class=content id=content><blockquote><p>说起可复用的面向对象软件，我又想起了一句"至理名言&rdquo;，万物基于MIUI</p></blockquote><p>设计模式就是一套基于面向对象而总结出来的设计范式，它能使代码符合高内聚低耦合的目标。</p><p>设计模式的分类：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_1.png data-srcset="/images/design_pattern_1.png, /images/design_pattern_1.png 1.5x, /images/design_pattern_1.png 2x" data-sizes=auto alt=/images/design_pattern_1.png title=/images/design_pattern_1.png></p><h2 id=11-单例模式-singleton>1.1 单例模式 （Singleton）</h2><p><strong>特点</strong>：
-保证一个类只有一个实例，并提供一个访问它的全局访问点。通常我们可以让一个全局变量来控制对象的访问，但它不能防止你实例化多个对象。一个最好的方法就是，让类自身负责保存它的唯一实例。这个类可以保证没有其他实例被创建，并且它可以提供一个访问该实例的方法。
-<strong>应用场景</strong>：
-a. 当类只能有一个实例而且可以从一个众所周知的访问点访问它时。
-b.当这个唯一实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能使用一个扩展的实例时。
-<strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_2.png data-srcset="/images/design_pattern_2.png, /images/design_pattern_2.png 1.5x, /images/design_pattern_2.png 2x" data-sizes=auto alt=/images/design_pattern_2.png title=/images/design_pattern_2.png></p><p><strong>实现</strong>：
-<a href=https://gist.github.com/simonln/e06386c912fec8c79458be05d8854575 target=_blank rel="noopener noreffer">Sington.cc</a></p><p><strong>优点</strong>：
-a.对唯一实例受控访问
-b.缩小命名空间
-c.允许对操作和表示的精细化
-d.允许可变数目的实例
-e.比静态类操作更灵活</p><p><strong>缺点</strong>：无</p><h2 id=12-工厂方法模式factory-method>1.2 工厂方法模式（Factory Method）</h2><p><strong>特点</strong>：
-定义一个用于创建对象的接口，让子类决定实例化哪一个类。工厂方法使一个类的实例化延迟到其子类。
-<strong>应用场景</strong>：
-a.当一个类不知道它所必须创建的对象的类的时候
-b.当一个类希望由它的子类来指定它所创建的对象的时候
-c.当类将创建对象的职责委托给多个帮助子类中的某一个，并且希望将哪一个帮助子类是代理者这一信息局部化的时候</p><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_3.png data-srcset="/images/design_pattern_3.png, /images/design_pattern_3.png 1.5x, /images/design_pattern_3.png 2x" data-sizes=auto alt=/images/design_pattern_3.png title=/images/design_pattern_3.png></p><p><strong>实现</strong>：
-<a href=https://gist.github.com/simonln/698e6305f2e6da0adc2847e6f54bae8c target=_blank rel="noopener noreffer">FactoryMethod.cc</a></p><p><strong>优点</strong>：
-a.去除了客户端与具体产品的依赖
-b.为子类提供挂钩
-c.连接平行的类层次
-<strong>缺点</strong>：
-具体产品创建依赖于具体工厂</p><h2 id=13-抽象工厂模式abstract-factory>1.3 抽象工厂模式（Abstract Factory）</h2><p><strong>特点</strong>：
-提供一个创建一系列相关或者相互依赖对象的接口，而无需指定具体的类。
-<strong>应用场景</strong>：
-a.一个系统要独立于它的产品创建、组合和表示时
-b.一个系统要由多个产品系列中的一个来配置时
-c.当要强调一系列相关的产品对象的设计以便进行联合使用时
-d.当提供一个产品类库，而只想显示它们的接口而不是实现时</p><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_4.png data-srcset="/images/design_pattern_4.png, /images/design_pattern_4.png 1.5x, /images/design_pattern_4.png 2x" data-sizes=auto alt=/images/design_pattern_4.png title=AbstractFactory>
-<strong>实现</strong>：
-<a href=https://gist.github.com/simonln/9fb1a85fcd5654780bd6a3ced0eff875 target=_blank rel="noopener noreffer">AbstractFactory.cc</a>
-<strong>优点</strong>：
-a.分离了具体的类
-b.使得易于交换产品系列
-c.有利于产品的一致性
-<strong>缺点</strong>：
-难以支持新种类的产品</p><h2 id=14-建造者模式builder>1.4 建造者模式（Builder）</h2><p><strong>特点</strong>：
-将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。如果我们使用了建造者模式，那么用户就只需指定需要建造的类型就可以得到它们，而具体建造的过程和细节就不需要知道了。
-<strong>应用场景</strong>：
-a.当创建复杂对象的算法应该独立于该对象的组成部分以及它们的装配方式时
-b.当构造过程必须允许被构造的对象有不同的表示时</p><p><strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_5.png data-srcset="/images/design_pattern_5.png, /images/design_pattern_5.png 1.5x, /images/design_pattern_5.png 2x" data-sizes=auto alt=/images/design_pattern_5.png title=Builder>
-<strong>实现</strong>：
-<a href=https://gist.github.com/simonln/d3ae2c8fd36da6e1f28e4834c1c3dad9 target=_blank rel="noopener noreffer">Builder.cc</a>
-<strong>优点</strong>：
-a.可以改变产品的内部表示
-b.将构造代码和表示代码分开
-c.可以对构造过程进行更精细的控制
-<strong>缺点</strong>：
-暂无</p><h2 id=15-原型模式prototype>1.5 原型模式（Prototype）</h2><p><strong>特点</strong>：
-用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。
-<strong>应用场景</strong>：
-a.当一个系统应该独立于它的产品创建、构成和表示时
-b.当要实例化的实例在运行时刻指定时
-c.为了避免创建一个与产品类层次平行的工厂类层次时
-d.当一个类的实例只能有几个不同状态组合中的一种时
-<strong>UML图</strong>：
-<img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_6.png data-srcset="/images/design_pattern_6.png, /images/design_pattern_6.png 1.5x, /images/design_pattern_6.png 2x" data-sizes=auto alt=/images/design_pattern_6.png title=Prototype>
-<strong>实现</strong>：
-<a href=https://gist.github.com/simonln/57696fdc0b69ae793e1b11865704d174 target=_blank rel="noopener noreffer">Prototype.cc</a>
-<strong>优点</strong>：
-a.运行时刻增加和删除产品
-b.改变值以指定新对象
-c.改变结构以指定新对象
-d.减少子类的构造
-e.用类动态配置应用
-<strong>缺点</strong>：
-每一个Prototype子类都必须实现Clone接口，这对于有的类来说比较困难</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2020-03-21</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/>基础知识</a>,&nbsp;<a href=/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/>学习笔记</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/hexo_under_panic/ class=prev rel=prev title=疫情之下><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>疫情之下</a>
+保证一个类只有一个实例，并提供一个访问它的全局访问点。通常我们可以让一个全局变量来控制对象的访问，但它不能防止你实例化多个对象。一个最好的方法就是，让类自身负责保存它的唯一实例。这个类可以保证没有其他实例被创建，并且它可以提供一个访问该实例的方法。</p><p><strong>应用场景</strong>：</p><ul><li><p>a. 当类只能有一个实例而且可以从一个众所周知的访问点访问它时。</p></li><li><p>b.当这个唯一实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能使用一个扩展的实例时。</p></li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_2.png data-srcset="/images/design_pattern_2.png, /images/design_pattern_2.png 1.5x, /images/design_pattern_2.png 2x" data-sizes=auto alt=/images/design_pattern_2.png title=Singleton></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span><span class=cp>#include</span> <span class=cpf>&lt;thread&gt;</span><span class=cp>
+</span><span class=cp>#include</span> <span class=cpf>&lt;mutex&gt;</span><span class=cp>
+</span><span class=cp></span>
+<span class=n>std</span><span class=o>::</span><span class=n>mutex</span> <span class=n>mtx</span><span class=p>;</span>
+<span class=k>class</span> <span class=nc>Singleton</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+	<span class=k>static</span> <span class=n>Singleton</span><span class=o>*</span> <span class=n>GetInstance</span><span class=p>()</span>
+	<span class=p>{</span>
+		<span class=k>if</span><span class=p>(</span><span class=n>instance</span> <span class=o>==</span> <span class=k>nullptr</span><span class=p>)</span>
+		<span class=p>{</span>
+			<span class=p>{</span>
+				<span class=n>std</span><span class=o>::</span><span class=n>lock_guard</span><span class=o>&lt;</span><span class=n>std</span><span class=o>::</span><span class=n>mutex</span><span class=o>&gt;</span> <span class=n>lck</span><span class=p>(</span><span class=n>mtx</span><span class=p>);</span>
+				<span class=k>if</span><span class=p>(</span><span class=n>instance</span> <span class=o>==</span> <span class=k>nullptr</span><span class=p>)</span>
+				<span class=p>{</span>
+					<span class=n>instance</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Singleton</span><span class=p>();</span>
+				<span class=p>}</span>
+			<span class=p>}</span>
+			<span class=k>return</span> <span class=n>instance</span><span class=p>;</span>
+		<span class=p>}</span>
+	<span class=p>}</span>
+<span class=k>private</span><span class=o>:</span>
+	<span class=n>Singleton</span><span class=p>()</span> <span class=o>=</span> <span class=k>default</span><span class=p>;</span>
+<span class=k>private</span><span class=o>:</span>
+	<span class=k>static</span> <span class=n>Singleton</span> <span class=o>*</span><span class=n>instance</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=n>Singleton</span> <span class=o>*</span><span class=n>Singleton</span><span class=o>::</span><span class=n>instance</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+	<span class=n>Singleton</span> <span class=o>*</span><span class=n>p1</span> <span class=o>=</span> <span class=n>Singleton</span><span class=o>::</span><span class=n>GetInstance</span><span class=p>();</span>
+	<span class=n>Singleton</span> <span class=o>*</span><span class=n>p2</span> <span class=o>=</span> <span class=n>Singleton</span><span class=o>::</span><span class=n>GetInstance</span><span class=p>();</span>
+	<span class=k>if</span><span class=p>(</span><span class=n>p1</span> <span class=o>==</span> <span class=n>p2</span><span class=p>)</span>
+	<span class=p>{</span>
+	  <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Same&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+	<span class=p>}</span>
+  <span class=k>delete</span> <span class=n>p1</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li>a.对唯一实例受控访问</li><li>b.缩小命名空间</li><li>c.允许对操作和表示的精细化</li><li>d.允许可变数目的实例</li><li>e.比静态类操作更灵活</li></ul><p><strong>缺点</strong>：无</p><h2 id=12-工厂方法模式factory-method>1.2 工厂方法模式（Factory Method）</h2><p><strong>特点</strong>：</p><p>定义一个用于创建对象的接口，让子类决定实例化哪一个类。工厂方法使一个类的实例化延迟到其子类。</p><p><strong>应用场景</strong>：</p><ul><li>a.当一个类不知道它所必须创建的对象的类的时候</li><li>b.当一个类希望由它的子类来指定它所创建的对象的时候</li><li>c.当类将创建对象的职责委托给多个帮助子类中的某一个，并且希望将哪一个帮助子类是代理者这一信息局部化的时候</li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_3.png data-srcset="/images/design_pattern_3.png, /images/design_pattern_3.png 1.5x, /images/design_pattern_3.png 2x" data-sizes=auto alt=/images/design_pattern_3.png title="Factory Method"></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span><span class=cp>#include</span> <span class=cpf>&lt;string&gt;</span><span class=cp>
+</span><span class=cp></span>
+<span class=c1>//  product interface
+</span><span class=c1></span><span class=k>class</span> <span class=nc>Product</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>GetName</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=c1>// factory interface
+</span><span class=c1></span><span class=k>class</span> <span class=nc>Creator</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=n>Product</span><span class=o>*</span> <span class=n>FactoryMethod</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ProductA</span><span class=o>:</span><span class=k>public</span> <span class=n>Product</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>GetName</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=s>&#34;Product A&#34;</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+<span class=k>class</span> <span class=nc>ProductB</span><span class=o>:</span><span class=k>public</span> <span class=n>Product</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>GetName</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=s>&#34;Product B&#34;</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>CreatorA</span><span class=o>:</span><span class=k>public</span> <span class=n>Creator</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>Product</span><span class=o>*</span> <span class=n>FactoryMethod</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=nf>ProductA</span><span class=p>();</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>CreatorB</span><span class=o>:</span><span class=k>public</span> <span class=n>Creator</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>Product</span><span class=o>*</span> <span class=n>FactoryMethod</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=nf>ProductB</span><span class=p>();</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+
+	<span class=n>Creator</span> <span class=o>*</span><span class=n>factory</span> <span class=o>=</span> <span class=k>new</span> <span class=n>CreatorA</span><span class=p>();</span>
+	<span class=n>Product</span> <span class=o>*</span><span class=n>product</span> <span class=o>=</span> <span class=n>factory</span><span class=o>-&gt;</span><span class=n>FactoryMethod</span><span class=p>();</span>
+	<span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;product name: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>product</span><span class=o>-&gt;</span><span class=n>GetName</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+	<span class=k>delete</span> <span class=n>factory</span><span class=p>;</span>
+
+	<span class=n>factory</span> <span class=o>=</span> <span class=k>new</span> <span class=n>CreatorB</span><span class=p>();</span>
+	<span class=n>product</span> <span class=o>=</span> <span class=n>factory</span><span class=o>-&gt;</span><span class=n>FactoryMethod</span><span class=p>();</span>
+	<span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;product name: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>product</span><span class=o>-&gt;</span><span class=n>GetName</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+
+	<span class=k>delete</span> <span class=n>factory</span><span class=p>;</span>
+	<span class=k>delete</span> <span class=n>produtc</span><span class=p>;</span>
+	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li>a.去除了客户端与具体产品的依赖</li><li>b.为子类提供挂钩</li><li>c.连接平行的类层次</li></ul><p><strong>缺点</strong>：</p><p>具体产品创建依赖于具体工厂</p><h2 id=13-抽象工厂模式abstract-factory>1.3 抽象工厂模式（Abstract Factory）</h2><p><strong>特点</strong>：</p><p>提供一个创建一系列相关或者相互依赖对象的接口，而无需指定具体的类。</p><p><strong>应用场景</strong>：</p><ul><li>a.一个系统要独立于它的产品创建、组合和表示时</li><li>b.一个系统要由多个产品系列中的一个来配置时</li><li>c.当要强调一系列相关的产品对象的设计以便进行联合使用时</li><li>d.当提供一个产品类库，而只想显示它们的接口而不是实现时</li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_4.png data-srcset="/images/design_pattern_4.png, /images/design_pattern_4.png 1.5x, /images/design_pattern_4.png 2x" data-sizes=auto alt=/images/design_pattern_4.png title=AbstractFactory></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span><span class=cp>#include</span> <span class=cpf>&lt;string&gt;</span><span class=cp>
+</span><span class=cp></span>
+<span class=k>class</span> <span class=nc>AbstractProductA</span><span class=p>;</span>
+<span class=k>class</span> <span class=nc>AbstractProductB</span><span class=p>;</span>
+<span class=k>class</span> <span class=nc>AbstractFactory</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=n>AbstractProductA</span><span class=o>*</span> <span class=n>CreateProductA</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>virtual</span> <span class=n>AbstractProductB</span><span class=o>*</span> <span class=nf>CreateProductB</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>AbstractProductA</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>GetFirstName</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>AbstractProductB</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>GetLastName</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ProductA1</span><span class=o>:</span> <span class=k>public</span> <span class=n>AbstractProductA</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>GetFirstName</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=s>&#34;ProductA first name: 1&#34;</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+<span class=k>class</span> <span class=nc>ProductA2</span><span class=o>:</span><span class=k>public</span> <span class=n>AbstractProductA</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>GetFirstName</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=s>&#34;ProductA first name: 2&#34;</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ProductB1</span><span class=o>:</span><span class=k>public</span> <span class=n>AbstractProductB</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>GetLastName</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=s>&#34;ProdcuctB last name: 1&#34;</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ProductB2</span><span class=o>:</span><span class=k>public</span> <span class=n>AbstractProductB</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>GetLastName</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=s>&#34;ProductB last name: 2&#34;</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+
+<span class=k>class</span> <span class=nc>ConcreteFactory1</span><span class=o>:</span><span class=k>public</span> <span class=n>AbstractFactory</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>AbstractProductA</span><span class=o>*</span> <span class=n>CreateProductA</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>ProductA1</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=n>AbstractProductB</span><span class=o>*</span> <span class=nf>CreateProductB</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>ProductB1</span><span class=p>();</span>
+    <span class=p>}</span>
+								
+<span class=p>};</span>
+<span class=k>class</span> <span class=nc>ConcreteFactory2</span><span class=o>:</span><span class=k>public</span> <span class=n>AbstractFactory</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>AbstractProductA</span><span class=o>*</span> <span class=n>CreateProductA</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>ProductA2</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=n>AbstractProductB</span><span class=o>*</span> <span class=nf>CreateProductB</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>ProductB2</span><span class=p>();</span>
+    <span class=p>}</span>
+
+<span class=p>};</span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>AbstractFactory</span> <span class=o>*</span><span class=n>factory</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcreteFactory1</span><span class=p>();</span>
+    <span class=n>AbstractProductA</span> <span class=o>*</span><span class=n>pa</span> <span class=o>=</span> <span class=n>factory</span><span class=o>-&gt;</span><span class=n>CreateProductA</span><span class=p>();</span>
+    <span class=n>AbstractProductB</span> <span class=o>*</span><span class=n>pb</span> <span class=o>=</span> <span class=n>factory</span><span class=o>-&gt;</span><span class=n>CreateProductB</span><span class=p>();</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>pa</span><span class=o>-&gt;</span><span class=n>GetFirstName</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>pb</span><span class=o>-&gt;</span><span class=n>GetLastName</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+
+    <span class=k>delete</span> <span class=n>factory</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>pa</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>pb</span><span class=p>;</span>
+    
+    <span class=n>factory</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcreteFactory2</span><span class=p>();</span>
+    <span class=n>pa</span> <span class=o>=</span> <span class=n>factory</span><span class=o>-&gt;</span><span class=n>CreateProductA</span><span class=p>();</span>
+    <span class=n>pb</span> <span class=o>=</span> <span class=n>factory</span><span class=o>-&gt;</span><span class=n>CreateProductB</span><span class=p>();</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>pa</span><span class=o>-&gt;</span><span class=n>GetFirstName</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>pb</span><span class=o>-&gt;</span><span class=n>GetLastName</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    
+    <span class=k>delete</span> <span class=n>factory</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>pa</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>pb</span><span class=p>;</span>
+    
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li>a.分离了具体的类</li><li>b.使得易于交换产品系列</li><li>c.有利于产品的一致性</li></ul><p><strong>缺点</strong>：</p><p>难以支持新种类的产品</p><h2 id=14-建造者模式builder>1.4 建造者模式（Builder）</h2><p><strong>特点</strong>：</p><p>将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。如果我们使用了建造者模式，那么用户就只需指定需要建造的类型就可以得到它们，而具体建造的过程和细节就不需要知道了。</p><p><strong>应用场景</strong>：</p><ul><li>a.当创建复杂对象的算法应该独立于该对象的组成部分以及它们的装配方式时</li><li>b.当构造过程必须允许被构造的对象有不同的表示时</li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_5.png data-srcset="/images/design_pattern_5.png, /images/design_pattern_5.png 1.5x, /images/design_pattern_5.png 2x" data-sizes=auto alt=/images/design_pattern_5.png title=Builder></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span><span class=cp>#include</span> <span class=cpf>&lt;string&gt;</span><span class=cp>
+</span><span class=cp></span>
+<span class=k>class</span> <span class=nc>Product</span><span class=p>;</span>
+<span class=k>class</span> <span class=nc>Builder</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>BuildPartA</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>virtual</span> <span class=kt>void</span> <span class=nf>BuildPartB</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>virtual</span> <span class=n>Product</span><span class=o>*</span> <span class=nf>GetResult</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Product</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Add</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>part</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>name_</span> <span class=o>+=</span> <span class=n>part</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>Show</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=n>name_</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>name_</span> <span class=o>=</span> <span class=s>&#34;&#34;</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ConcreteBuilder1</span><span class=o>:</span><span class=k>public</span> <span class=n>Builder</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>ConcreteBuilder1</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>product</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Product</span><span class=p>();</span>
+    <span class=p>}</span>
+    <span class=o>~</span><span class=n>ConcreteBuilder1</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=k>delete</span> <span class=n>product</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>BuildPartA</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>product</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=s>&#34;Part A &#34;</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>BuildPartB</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>product</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=s>&#34;Part B &#34;</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>Product</span><span class=o>*</span> <span class=nf>GetResult</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>Product</span><span class=p>(</span><span class=o>*</span><span class=n>product</span><span class=p>);</span>
+    <span class=p>}</span>
+
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>Product</span> <span class=o>*</span><span class=n>product</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ConcreteBuilder2</span><span class=o>:</span><span class=k>public</span> <span class=n>Builder</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>ConcreteBuilder2</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=n>product</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Product</span><span class=p>();</span>
+    <span class=p>}</span>
+    <span class=o>~</span><span class=n>ConcreteBuilder2</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=k>delete</span> <span class=n>product</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>BuildPartA</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>product</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=s>&#34;Part 1 &#34;</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=kt>void</span> <span class=nf>BuildPartB</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=n>product</span><span class=o>-&gt;</span><span class=n>Add</span><span class=p>(</span><span class=s>&#34;Part 2 &#34;</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>Product</span><span class=o>*</span> <span class=nf>GetResult</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>Product</span><span class=p>(</span><span class=o>*</span><span class=n>product</span><span class=p>);</span>
+    <span class=p>}</span>
+
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>Product</span> <span class=o>*</span><span class=n>product</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>Director</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>void</span> <span class=n>Construct</span><span class=p>(</span><span class=n>Builder</span> <span class=o>*</span><span class=n>builder</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>builder</span><span class=o>-&gt;</span><span class=n>BuildPartA</span><span class=p>();</span>
+        <span class=n>builder</span><span class=o>-&gt;</span><span class=n>BuildPartB</span><span class=p>();</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>Director</span> <span class=o>*</span><span class=n>d</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Director</span><span class=p>();</span>
+    <span class=n>Builder</span> <span class=o>*</span><span class=n>b1</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcreteBuilder1</span><span class=p>();</span>
+    <span class=n>Builder</span> <span class=o>*</span><span class=n>b2</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcreteBuilder2</span><span class=p>();</span>
+    <span class=n>Product</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=k>nullptr</span><span class=p>;</span>
+
+    <span class=n>d</span><span class=o>-&gt;</span><span class=n>Construct</span><span class=p>(</span><span class=n>b1</span><span class=p>);</span>
+    <span class=n>p</span> <span class=o>=</span> <span class=n>b1</span><span class=o>-&gt;</span><span class=n>GetResult</span><span class=p>();</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>Show</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>p</span><span class=p>;</span>
+
+    <span class=n>d</span><span class=o>-&gt;</span><span class=n>Construct</span><span class=p>(</span><span class=n>b2</span><span class=p>);</span>
+    <span class=n>p</span> <span class=o>=</span> <span class=n>b2</span><span class=o>-&gt;</span><span class=n>GetResult</span><span class=p>();</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>Show</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>p</span><span class=p>;</span>
+
+    <span class=k>delete</span> <span class=n>d</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>b1</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>b2</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li>a.可以改变产品的内部表示</li><li>b.将构造代码和表示代码分开</li><li>c.可以对构造过程进行更精细的控制</li></ul><p><strong>缺点</strong>：</p><p>暂无</p><h2 id=15-原型模式prototype>1.5 原型模式（Prototype）</h2><p><strong>特点</strong>：</p><p>用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。</p><p><strong>应用场景</strong>：</p><ul><li>a.当一个系统应该独立于它的产品创建、构成和表示时</li><li>b.当要实例化的实例在运行时刻指定时</li><li>c.为了避免创建一个与产品类层次平行的工厂类层次时</li><li>d.当一个类的实例只能有几个不同状态组合中的一种时</li></ul><p><strong>UML图</strong>：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/design_pattern_6.png data-srcset="/images/design_pattern_6.png, /images/design_pattern_6.png 1.5x, /images/design_pattern_6.png 2x" data-sizes=auto alt=/images/design_pattern_6.png title=Prototype></p><p><strong>实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=k>class</span> <span class=nc>Prototype</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>Prototype</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>id</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=k>this</span><span class=o>-&gt;</span><span class=n>id</span> <span class=o>=</span> <span class=n>id</span><span class=p>;</span>
+    <span class=p>};</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>id</span><span class=p>;</span>
+    <span class=k>virtual</span> <span class=n>Prototype</span><span class=o>*</span> <span class=nf>Clone</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>};</span>
+
+<span class=k>class</span> <span class=nc>ConcretePrototype</span><span class=o>:</span> <span class=k>public</span> <span class=n>Prototype</span>
+<span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>ConcretePrototype</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>id</span><span class=p>)</span>
+        <span class=o>:</span><span class=n>Prototype</span><span class=p>(</span><span class=n>id</span><span class=p>)</span>
+    <span class=p>{</span>
+    <span class=p>}</span>
+    <span class=n>Prototype</span><span class=o>*</span> <span class=nf>Clone</span><span class=p>()</span> <span class=k>override</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>ConcretePrototype</span><span class=p>(</span><span class=o>*</span><span class=k>this</span><span class=p>);</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>ConcretePrototype</span> <span class=o>*</span><span class=n>p1</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ConcretePrototype</span><span class=p>(</span><span class=s>&#34;1&#34;</span><span class=p>);</span>
+    <span class=n>ConcretePrototype</span> <span class=o>*</span><span class=n>p2</span> <span class=o>=</span> <span class=p>(</span><span class=n>ConcretePrototype</span><span class=o>*</span><span class=p>)(</span><span class=n>p1</span><span class=o>-&gt;</span><span class=n>Clone</span><span class=p>());</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Cloned: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>p2</span><span class=o>-&gt;</span><span class=n>id</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+
+    <span class=k>delete</span> <span class=n>p1</span><span class=p>;</span>
+    <span class=k>delete</span> <span class=n>p2</span><span class=p>;</span>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p><strong>优点</strong>：</p><ul><li>a.运行时刻增加和删除产品</li><li>b.改变值以指定新对象</li><li>c.改变结构以指定新对象</li><li>d.减少子类的构造</li><li>e.用类动态配置应用</li></ul><p><strong>缺点</strong>：</p><p>每一个Prototype子类都必须实现Clone接口，这对于有的类来说比较困难</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2020-03-21</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/>基础知识</a>,&nbsp;<a href=/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/>学习笔记</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/hexo_under_panic/ class=prev rel=prev title=疫情之下><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>疫情之下</a>
 <a href=/hexo_build_tv_system/ class=next rel=next title=点播或直播系统搭建>点播或直播系统搭建<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":30},"comment":{},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
