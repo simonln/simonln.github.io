@@ -1,0 +1,256 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>RSA加解密 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="RSA加解密"><meta property="og:description" content="1.背景 在常用的公开环境中，我们可能想说一些不想公开的悄悄话，这时候可能需要将悄悄话进行加密然后发送给对方。 这时候我们可以使用一种大家都知道"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/hexo_rsa_algorithm/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2023-04-05T13:14:53+00:00"><meta property="article:modified_time" content="2023-04-05T13:14:53+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="RSA加解密"><meta name=twitter:description content="1.背景 在常用的公开环境中，我们可能想说一些不想公开的悄悄话，这时候可能需要将悄悄话进行加密然后发送给对方。 这时候我们可以使用一种大家都知道"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/hexo_rsa_algorithm/><link rel=prev href=https://www.qingxin.org/hexo_unittest_hook/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"RSA加解密","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/hexo_rsa_algorithm\/"},"genre":"posts","keywords":"算法","wordcount":2656,"url":"https:\/\/www.qingxin.org\/hexo_rsa_algorithm\/","datePublished":"2023-04-05T13:14:53+00:00","dateModified":"2023-04-05T13:14:53+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/about>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">RSA加解密</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2023-04-05>2023-04-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;2656 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;6 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/rsa_algorithm_0.png data-srcset="/images/rsa_algorithm_0.png, /images/rsa_algorithm_0.png 1.5x, /images/rsa_algorithm_0.png 2x" data-sizes=auto alt=/images/rsa_algorithm_0.png title=/images/rsa_algorithm_0.png></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#1背景>1.背景</a></li><li><a href=#2用法>2.用法</a><ul><li><a href=#21-生成密钥>2.1 生成密钥</a></li><li><a href=#21-加密和解密>2.1 加密和解密</a></li><li><a href=#签名和校验>签名和校验</a></li></ul></li><li><a href=#3原理>3.原理</a></li><li><a href=#4实现>4.实现</a></li><li><a href=#5引用>5.引用</a></li></ul></nav></div></div><div class=content id=content><h2 id=1背景>1.背景</h2><p>在常用的公开环境中，我们可能想说一些不想公开的悄悄话，这时候可能需要将悄悄话进行加密然后发送给对方。</p><p>这时候我们可以使用一种大家都知道的加密方式，并配置一个只有沟通双方知道的加密密钥。
+这里加密方只需要提供待加密的数据和加密密钥，最后就会得到一串加密数据。解密方只需要拿到加密的数据然后使用加密密钥就能将数据解出来
+过程如下：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/rsa_algorithm_1.png data-srcset="/images/rsa_algorithm_1.png, /images/rsa_algorithm_1.png 1.5x, /images/rsa_algorithm_1.png 2x" data-sizes=auto alt=/images/rsa_algorithm_1.png title=/images/rsa_algorithm_1.png></p><p>这时候我们会发现，加密数据和加密密钥都需要通过一定的方法告诉解密方，如果有人在中间横插一杠偷偷拿到密钥怎么办？又或者是解密方拿着密钥冒充原始加密方怎么办？有没有一种方式可以不公开自己的加密密钥又能使得解密方能够解密呢？</p><p>当然有啦，公开密钥加密（也叫非对称加密）就是解决这些问题的。前面的加密方式称之为<strong>对称加密</strong>（即双方用一样的密钥，既能做加密方也能做解密方），参考<a href=https://en.wikipedia.org/wiki/Symmetric-key_algorithm target=_blank rel="noopener noreffer">对称加密</a></p><p>与之相对应的就是<strong>非对称加密</strong>，就是双方拿的密钥不同，加解密角色也不同。密钥分为两种，私钥和公钥。顾名思义私钥就是自己私藏的密钥，只用来解密用的；公钥就是可以公开的密钥，用来加密数据。当然反过来也是可以的，即用私钥加密数据，使用公钥解开。参考<a href=https://en.wikipedia.org/wiki/Public-key_cryptography target=_blank rel="noopener noreffer">公开密钥加密</a></p><h2 id=2用法>2.用法</h2><h3 id=21-生成密钥>2.1 生成密钥</h3><p>首先得生成密钥，即公钥和私钥。通过openssl工具我们很容易实现</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-BASH data-lang=BASH>openssl genrsa -out private_key.pem 2048
+openssl rsa -in private_key.pem -pubout -out public_key.pem
+</code></pre></td></tr></table></div></div><h3 id=21-加密和解密>2.1 加密和解密</h3><p>这时候就可以使用公钥加密数据，然后使用私钥进行解密了</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-BASH data-lang=BASH><span class=nb>echo</span> <span class=s1>&#39;hello world!&#39;</span> <span class=p>|</span> openssl rsautl -encrypt -inkey public_key.pem -pubin -out encrypt_data.bin
+</code></pre></td></tr></table></div></div><p>我们这里把"hello world!&ldquo;这条消息使用公钥加密一下，然后保存到encrypt_data.bin文件中，再使用私钥解密该文件</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-BASH data-lang=BASH>openssl rsautl -decrypt -inkey private_key.pem -in encrypt_data.bin
+</code></pre></td></tr></table></div></div><p>得到的结果：</p><blockquote><p>hello world!</p></blockquote><h3 id=签名和校验>签名和校验</h3><p>有时候我们并不需要将数据全部加密，因为这样效率有点低。例如两个人沟通其实并不需要多私密，只需要确定这句话是对方说的，且没有第三个人做了添油加醋即可。这样就可以不用带“翻译”，省去中间解密翻译的过程。</p><p>例如路人甲可以使用私钥对发的消息进行签名表明这条消息确实是他发的，然后把消息和消息签名一并告诉路人乙。路人乙拿到消息和消息签名，使用公钥校验一下这条消息的签名，确认无误后则相信路人甲确实发过这条消息。</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/rsa_algorithm_2.png data-srcset="/images/rsa_algorithm_2.png, /images/rsa_algorithm_2.png 1.5x, /images/rsa_algorithm_2.png 2x" data-sizes=auto alt=/images/rsa_algorithm_2.png title=/images/rsa_algorithm_2.png></p><h2 id=3原理>3.原理</h2><p>计算机算法的终点其实就是数学。当我第一次翻开《算法导论》这本书的时候，我翻开前几页我就看不下去了，因为我对数学并不感冒。上来就做数学公式的推导，本想着后面可能会讲到算法之类的，但是翻完后发现还是在做数学公式推导和证明。至此我坚信计算机算法都是数学在计算机领域的特定实现</p><p>公开密钥加密（非对称加密）的数学理论基础就是质数分解</p><p>加密就是：c(m) = m ^ e mod n</p><p>解密就是：m(c) = c ^ d mod n</p><p>这个过程中的公钥就是(n, e), 私钥就是(n, d)</p><p>n, e, d的计算过程如下：</p><ol><li><p>选择两个不同的质数p和q。
+一般选择比较大的增加暴力破解的难度，一般为512bit、1024bit或2048bit。为了方便计算，这里选择两个比较小的p=61, q=53</p></li><li><p>计算 n = p * q, 即n=3233</p></li><li><p>计算 l = lcm(p -1, q - 1), lcm为求最小公倍数， l= lcm(60, 52) = 780</p></li><li><p>确定 e 的值，这里取e = 17。其必须满足两个条件：</p><ul><li>1 &lt; e &lt; l, 即 1 &lt; e &lt; 780</li><li>e 和 l互为质数，即它们两最大公约数为1</li></ul></li><li><p>计算 d 的值，d = 413。其也必须满足两个条件：</p><ul><li>1 &lt; d &lt; l, 即 1 &lt; e &lt; 780</li><li>e * d mod l = 1, 即 (17 * 413) mode 780 = 1</li></ul></li><li><p>结果就是私钥为(n=3233, d=413),公钥为(n=3233, e=17)</p></li></ol><p>我们使用这对密钥来尝试一下加解密数据， 例如我们需要加密的数据m=65:</p><p>加密后得到的数据为c = 65 ^ 17 mod 3233 = 2790</p><p>将密文c = 2790解密后， m = 2790 ^ 413 mod 3233 = 65</p><p>公式的证明过程可以参考引用里面的链接1</p><h2 id=4实现>4.实现</h2><p>涉及到加解密的实现那当然还得是openssl啦
+rsa加解密入口在源码文件 <a href=https://github.com/openssl/openssl/blob/master/apps/rsautl.c#L244 target=_blank rel="noopener noreffer">apps/rsautl.c</a>中：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=c1>// openssl 
+</span><span class=c1></span>    <span class=k>switch</span> <span class=p>(</span><span class=n>rsa_mode</span><span class=p>)</span> <span class=p>{</span>
+
+    <span class=k>case</span> <span class=nl>RSA_VERIFY</span><span class=p>:</span>
+        <span class=n>rsa_outlen</span> <span class=o>=</span> <span class=n>RSA_public_decrypt</span><span class=p>(</span><span class=n>rsa_inlen</span><span class=p>,</span> <span class=n>rsa_in</span><span class=p>,</span> <span class=n>rsa_out</span><span class=p>,</span> <span class=n>rsa</span><span class=p>,</span> <span class=n>pad</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+
+    <span class=k>case</span> <span class=nl>RSA_SIGN</span><span class=p>:</span>
+        <span class=n>rsa_outlen</span> <span class=o>=</span>
+            <span class=n>RSA_private_encrypt</span><span class=p>(</span><span class=n>rsa_inlen</span><span class=p>,</span> <span class=n>rsa_in</span><span class=p>,</span> <span class=n>rsa_out</span><span class=p>,</span> <span class=n>rsa</span><span class=p>,</span> <span class=n>pad</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+
+    <span class=k>case</span> <span class=nl>RSA_ENCRYPT</span><span class=p>:</span>
+        <span class=n>rsa_outlen</span> <span class=o>=</span> <span class=n>RSA_public_encrypt</span><span class=p>(</span><span class=n>rsa_inlen</span><span class=p>,</span> <span class=n>rsa_in</span><span class=p>,</span> <span class=n>rsa_out</span><span class=p>,</span> <span class=n>rsa</span><span class=p>,</span> <span class=n>pad</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+
+    <span class=k>case</span> <span class=nl>RSA_DECRYPT</span><span class=p>:</span>
+        <span class=n>rsa_outlen</span> <span class=o>=</span>
+            <span class=n>RSA_private_decrypt</span><span class=p>(</span><span class=n>rsa_inlen</span><span class=p>,</span> <span class=n>rsa_in</span><span class=p>,</span> <span class=n>rsa_out</span><span class=p>,</span> <span class=n>rsa</span><span class=p>,</span> <span class=n>pad</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+    <span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>分别是RSA校验，签名，加密，解密。签名校验原理上和加解密一致，只是使用的密钥不一样，所以我们只需要看加密和解密函数即可</p><p>参数默认情况的情况下，RSA_public_encrypt方式调用的是rsa_ossl_public_encrypt接口,实现如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=k>static</span> <span class=kt>int</span> <span class=nf>rsa_ossl_public_encrypt</span><span class=p>(</span><span class=kt>int</span> <span class=n>flen</span><span class=p>,</span> <span class=k>const</span> <span class=kt>unsigned</span> <span class=kt>char</span> <span class=o>*</span><span class=n>from</span><span class=p>,</span>
+                                  <span class=kt>unsigned</span> <span class=kt>char</span> <span class=o>*</span><span class=n>to</span><span class=p>,</span> <span class=n>RSA</span> <span class=o>*</span><span class=n>rsa</span><span class=p>,</span> <span class=kt>int</span> <span class=n>padding</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=c1>// 检查公钥的n值
+</span><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>BN_num_bits</span><span class=p>(</span><span class=n>rsa</span><span class=o>-&gt;</span><span class=n>n</span><span class=p>)</span> <span class=o>&gt;</span> <span class=n>OPENSSL_RSA_MAX_MODULUS_BITS</span><span class=p>)</span> <span class=p>{</span>
+            <span class=n>RSAerr</span><span class=p>(</span><span class=n>RSA_F_RSA_OSSL_PUBLIC_ENCRYPT</span><span class=p>,</span> <span class=n>RSA_R_MODULUS_TOO_LARGE</span><span class=p>);</span>
+            <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+
+    <span class=c1>// 检查公钥的e值
+</span><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>BN_ucmp</span><span class=p>(</span><span class=n>rsa</span><span class=o>-&gt;</span><span class=n>n</span><span class=p>,</span> <span class=n>rsa</span><span class=o>-&gt;</span><span class=n>e</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>RSAerr</span><span class=p>(</span><span class=n>RSA_F_RSA_OSSL_PUBLIC_ENCRYPT</span><span class=p>,</span> <span class=n>RSA_R_BAD_E_VALUE</span><span class=p>);</span>
+        <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+    <span class=p>}</span>
+
+    <span class=cm>/* for large moduli, enforce exponent limit */</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>BN_num_bits</span><span class=p>(</span><span class=n>rsa</span><span class=o>-&gt;</span><span class=n>n</span><span class=p>)</span> <span class=o>&gt;</span> <span class=n>OPENSSL_RSA_SMALL_MODULUS_BITS</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>BN_num_bits</span><span class=p>(</span><span class=n>rsa</span><span class=o>-&gt;</span><span class=n>e</span><span class=p>)</span> <span class=o>&gt;</span> <span class=n>OPENSSL_RSA_MAX_PUBEXP_BITS</span><span class=p>)</span> <span class=p>{</span>
+            <span class=n>RSAerr</span><span class=p>(</span><span class=n>RSA_F_RSA_OSSL_PUBLIC_ENCRYPT</span><span class=p>,</span> <span class=n>RSA_R_BAD_E_VALUE</span><span class=p>);</span>
+            <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+    <span class=c1>// ... 省略 
+</span><span class=c1></span>    <span class=c1>// 对需要加密的内容进行填充，使其和密钥长度一致，方便加密
+</span><span class=c1></span>    <span class=k>switch</span> <span class=p>(</span><span class=n>padding</span><span class=p>)</span> <span class=p>{</span>
+    <span class=k>case</span> <span class=nl>RSA_PKCS1_PADDING</span><span class=p>:</span>
+        <span class=n>i</span> <span class=o>=</span> <span class=n>RSA_padding_add_PKCS1_type_2</span><span class=p>(</span><span class=n>buf</span><span class=p>,</span> <span class=n>num</span><span class=p>,</span> <span class=n>from</span><span class=p>,</span> <span class=n>flen</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+    <span class=k>case</span> <span class=nl>RSA_PKCS1_OAEP_PADDING</span><span class=p>:</span>
+        <span class=n>i</span> <span class=o>=</span> <span class=n>RSA_padding_add_PKCS1_OAEP</span><span class=p>(</span><span class=n>buf</span><span class=p>,</span> <span class=n>num</span><span class=p>,</span> <span class=n>from</span><span class=p>,</span> <span class=n>flen</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+    <span class=k>case</span> <span class=nl>RSA_SSLV23_PADDING</span><span class=p>:</span>
+        <span class=n>i</span> <span class=o>=</span> <span class=n>RSA_padding_add_SSLv23</span><span class=p>(</span><span class=n>buf</span><span class=p>,</span> <span class=n>num</span><span class=p>,</span> <span class=n>from</span><span class=p>,</span> <span class=n>flen</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+    <span class=k>case</span> <span class=nl>RSA_NO_PADDING</span><span class=p>:</span>
+        <span class=n>i</span> <span class=o>=</span> <span class=n>RSA_padding_add_none</span><span class=p>(</span><span class=n>buf</span><span class=p>,</span> <span class=n>num</span><span class=p>,</span> <span class=n>from</span><span class=p>,</span> <span class=n>flen</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+    <span class=k>default</span><span class=o>:</span>
+        <span class=n>RSAerr</span><span class=p>(</span><span class=n>RSA_F_RSA_OSSL_PUBLIC_ENCRYPT</span><span class=p>,</span> <span class=n>RSA_R_UNKNOWN_PADDING_TYPE</span><span class=p>);</span>
+        <span class=k>goto</span> <span class=n>err</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=c1>// ... 省略
+</span><span class=c1></span>    <span class=c1>// 将填充好的二进制数据转换成大整数(big number)
+</span><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>BN_bin2bn</span><span class=p>(</span><span class=n>buf</span><span class=p>,</span> <span class=n>num</span><span class=p>,</span> <span class=n>f</span><span class=p>)</span> <span class=o>==</span> <span class=nb>NULL</span><span class=p>)</span>
+        <span class=k>goto</span> <span class=n>err</span><span class=p>;</span>
+    <span class=c1>// ... 省略
+</span><span class=c1></span>
+    <span class=c1>// 计算密文， 加密方式：c(m) = m ^ e mod n
+</span><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>rsa</span><span class=o>-&gt;</span><span class=n>meth</span><span class=o>-&gt;</span><span class=n>bn_mod_exp</span><span class=p>(</span><span class=n>ret</span><span class=p>,</span> <span class=n>f</span><span class=p>,</span> <span class=n>rsa</span><span class=o>-&gt;</span><span class=n>e</span><span class=p>,</span> <span class=n>rsa</span><span class=o>-&gt;</span><span class=n>n</span><span class=p>,</span> <span class=n>ctx</span><span class=p>,</span>
+                               <span class=n>rsa</span><span class=o>-&gt;</span><span class=n>_method_mod_n</span><span class=p>))</span>
+        <span class=k>goto</span> <span class=n>err</span><span class=p>;</span>
+    <span class=c1>// ... 省略
+</span><span class=c1></span><span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>可以发现数据在进行加密的过程进行了填充，是因为：</p><ol><li>解决数据不足一定长度的问题</li></ol><p>RSA加密算法的核心是对明文进行幂运算，而每次幂运算的结果都只能是小于模数N的整数。因此，在明文长度小于N时，需要进行填充以保证明文长度满足加密要求。</p><ol start=2><li>防止明文被猜测或者攻击</li></ol><p>由于RSA加密算法是公开的，攻击者可以通过分析加密结果来推断出明文信息。为了防止这种情况的发生，必须在加密前对明文进行填充，增加其复杂度，使得攻击者无法轻易地破解加密结果。</p><ol start=3><li>避免加密前后数据的长度不一致</li></ol><p>在RSA加密过程中，如果明文没有进行填充，则加密后密文的长度通常会比明文短，这就会导致在传输过程中出现数据长度不一致的问题。为了避免这种情况的发生，需要对明文进行填充，以保证加密前后数据长度一致。</p><p>填充算法的实现可以参考RFC的文档，即引用链接3</p><p>再来看看解密函数RSA_private_decrypt， 即rsa_ossl_private_decrypt， 实现如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=k>static</span> <span class=kt>int</span> <span class=nf>rsa_ossl_private_decrypt</span><span class=p>(</span><span class=kt>int</span> <span class=n>flen</span><span class=p>,</span> <span class=k>const</span> <span class=kt>unsigned</span> <span class=kt>char</span> <span class=o>*</span><span class=n>from</span><span class=p>,</span>
+                                   <span class=kt>unsigned</span> <span class=kt>char</span> <span class=o>*</span><span class=n>to</span><span class=p>,</span> <span class=n>RSA</span> <span class=o>*</span><span class=n>rsa</span><span class=p>,</span> <span class=kt>int</span> <span class=n>padding</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=c1>// ... 省略
+</span><span class=c1></span>    <span class=cm>/* make data into a big number */</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>BN_bin2bn</span><span class=p>(</span><span class=n>from</span><span class=p>,</span> <span class=p>(</span><span class=kt>int</span><span class=p>)</span><span class=n>flen</span><span class=p>,</span> <span class=n>f</span><span class=p>)</span> <span class=o>==</span> <span class=nb>NULL</span><span class=p>)</span>
+        <span class=k>goto</span> <span class=n>err</span><span class=p>;</span>
+
+    <span class=k>if</span> <span class=p>(</span><span class=n>BN_ucmp</span><span class=p>(</span><span class=n>f</span><span class=p>,</span> <span class=n>rsa</span><span class=o>-&gt;</span><span class=n>n</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>RSAerr</span><span class=p>(</span><span class=n>RSA_F_RSA_OSSL_PRIVATE_DECRYPT</span><span class=p>,</span>
+               <span class=n>RSA_R_DATA_TOO_LARGE_FOR_MODULUS</span><span class=p>);</span>
+        <span class=k>goto</span> <span class=n>err</span><span class=p>;</span>
+    <span class=p>}</span>
+
+    <span class=c1>//...省略
+</span><span class=c1></span>    <span class=c1>// 解密数据，m(c) = c ^ d mod n 
+</span><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>rsa</span><span class=o>-&gt;</span><span class=n>meth</span><span class=o>-&gt;</span><span class=n>bn_mod_exp</span><span class=p>(</span><span class=n>ret</span><span class=p>,</span> <span class=n>f</span><span class=p>,</span> <span class=n>d</span><span class=p>,</span> <span class=n>rsa</span><span class=o>-&gt;</span><span class=n>n</span><span class=p>,</span> <span class=n>ctx</span><span class=p>,</span>
+                            <span class=n>rsa</span><span class=o>-&gt;</span><span class=n>_method_mod_n</span><span class=p>))</span> <span class=p>{</span>
+        <span class=n>BN_free</span><span class=p>(</span><span class=n>d</span><span class=p>);</span>
+        <span class=k>goto</span> <span class=n>err</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=c1>// ... 省略
+</span><span class=c1></span>    <span class=c1>// 将解密后的大整数转换成字节形式
+</span><span class=c1></span>    <span class=n>j</span> <span class=o>=</span> <span class=n>BN_bn2binpad</span><span class=p>(</span><span class=n>ret</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>num</span><span class=p>);</span>
+
+    <span class=c1>// 检查填充及去除填充
+</span><span class=c1></span>    <span class=k>switch</span> <span class=p>(</span><span class=n>padding</span><span class=p>)</span> <span class=p>{</span>
+    <span class=k>case</span> <span class=nl>RSA_PKCS1_PADDING</span><span class=p>:</span>
+        <span class=n>r</span> <span class=o>=</span> <span class=n>RSA_padding_check_PKCS1_type_2</span><span class=p>(</span><span class=n>to</span><span class=p>,</span> <span class=n>num</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>num</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+    <span class=k>case</span> <span class=nl>RSA_PKCS1_OAEP_PADDING</span><span class=p>:</span>
+        <span class=n>r</span> <span class=o>=</span> <span class=n>RSA_padding_check_PKCS1_OAEP</span><span class=p>(</span><span class=n>to</span><span class=p>,</span> <span class=n>num</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>num</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+    <span class=k>case</span> <span class=nl>RSA_SSLV23_PADDING</span><span class=p>:</span>
+        <span class=n>r</span> <span class=o>=</span> <span class=n>RSA_padding_check_SSLv23</span><span class=p>(</span><span class=n>to</span><span class=p>,</span> <span class=n>num</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>num</span><span class=p>);</span>
+        <span class=k>break</span><span class=p>;</span>
+    <span class=k>case</span> <span class=nl>RSA_NO_PADDING</span><span class=p>:</span>
+        <span class=n>memcpy</span><span class=p>(</span><span class=n>to</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=p>(</span><span class=n>r</span> <span class=o>=</span> <span class=n>j</span><span class=p>));</span>
+        <span class=k>break</span><span class=p>;</span>
+    <span class=k>default</span><span class=o>:</span>
+        <span class=n>RSAerr</span><span class=p>(</span><span class=n>RSA_F_RSA_OSSL_PRIVATE_DECRYPT</span><span class=p>,</span> <span class=n>RSA_R_UNKNOWN_PADDING_TYPE</span><span class=p>);</span>
+        <span class=k>goto</span> <span class=n>err</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=c1>//... 省略
+</span><span class=c1></span><span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>解密的过程其实和加密的过程是反过来的，只是使用的密钥及公式不同</p><h2 id=5引用>5.引用</h2><p>1.<a href=https://en.wikipedia.org/wiki/RSA_%28cryptosystem%29 target=_blank rel="noopener noreffer">RSA</a></p><p>2.<a href=https://zhuanlan.zhihu.com/p/436455172 target=_blank rel="noopener noreffer">图文解释非对称加密</a></p><p>3.<a href=https://www.rfc-editor.org/rfc/rfc3447 target=_blank rel="noopener noreffer">公开密钥加密表示实现</a></p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2023-04-05</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E7%AE%97%E6%B3%95/>算法</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/hexo_unittest_hook/ class=prev rel=prev title=单元测试中的插桩技术><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>单元测试中的插桩技术</a></div></div></article></div></main></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":30},"comment":{},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
