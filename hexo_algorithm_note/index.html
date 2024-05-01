@@ -1,0 +1,518 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>算法备忘 - qingxin's blog</title><meta name=Description content="清新的博客"><meta property="og:title" content="算法备忘"><meta property="og:description" content="读完《剑指offer》之后发现有一些算法题有点不理解，故在此记录一下解题思路和代码 1.矩阵中的路径 请设计一函数，用来判断再一个矩阵中是否存在"><meta property="og:type" content="article"><meta property="og:url" content="https://www.qingxin.org/hexo_algorithm_note/"><meta property="og:image" content="https://www.qingxin.org/logo.png"><meta property="article:published_time" content="2024-02-24T00:00:00+00:00"><meta property="article:modified_time" content="2024-02-24T00:00:00+00:00"><meta property="og:site_name" content="清新的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.qingxin.org/logo.png"><meta name=twitter:title content="算法备忘"><meta name=twitter:description content="读完《剑指offer》之后发现有一些算法题有点不理解，故在此记录一下解题思路和代码 1.矩阵中的路径 请设计一函数，用来判断再一个矩阵中是否存在"><meta name=application-name content="qingxin's blog"><meta name=apple-mobile-web-app-title content="qingxin's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.qingxin.org/hexo_algorithm_note/><link rel=prev href=https://www.qingxin.org/hexo_zhuhai_island/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"算法备忘","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.qingxin.org\/hexo_algorithm_note\/"},"genre":"posts","keywords":"算法","wordcount":4893,"url":"https:\/\/www.qingxin.org\/hexo_algorithm_note\/","datePublished":"2024-02-24T00:00:00+00:00","dateModified":"2024-02-24T00:00:00+00:00","publisher":{"@type":"Organization","name":"qingxin"},"author":{"@type":"Person","name":"qingxin"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/about>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="qingxin's blog">野生纯逗</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/about>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">算法备忘</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>qingxin</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2024-02-24>2024-02-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;4893 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;10 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src=/images/algorithm_note_0.jpg data-srcset="/images/algorithm_note_0.jpg, /images/algorithm_note_0.jpg 1.5x, /images/algorithm_note_0.jpg 2x" data-sizes=auto alt=/images/algorithm_note_0.jpg title=/images/algorithm_note_0.jpg></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#1矩阵中的路径>1.矩阵中的路径</a></li><li><a href=#2-1n-整数中1出现的次数>2. 1~n 整数中1出现的次数</a></li><li><a href=#3-把数字翻译成字符串>3. 把数字翻译成字符串</a></li><li><a href=#4-数组中的逆序对>4. 数组中的逆序对</a></li><li><a href=#5-队列的最大值>5. 队列的最大值</a></li><li><a href=#6-n个骰子的点数>6. n个骰子的点数</a></li></ul></nav></div></div><div class=content id=content><p>读完《剑指offer》之后发现有一些算法题有点不理解，故在此记录一下解题思路和代码</p><h2 id=1矩阵中的路径>1.矩阵中的路径</h2><blockquote><p>请设计一函数，用来判断再一个矩阵中是否存在一条包含某个字符串所有字符的路径。路径可以从矩阵中的任意一格开始，没异步可以再矩阵中向左、右、上、下移动一格。如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子</p></blockquote><p>这个问题可以使用回溯法来解决，即先找到待匹配字符串的第一个字符，然后再从上下左右分别确认第二个字符是否相同，依次类推。如果发现已经匹配到第n个字符，从它的上下左右匹配第n+1个字符的时候发现无法匹配，那么就回退到已匹配第n-1个字符的点继续匹配。</p><p>回溯法三部曲：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>void backtracking(参数) {
+    if (终止条件) {
+        存放结果;
+        return;
+    }
+
+    for (从本层集合中遍历元素) {
+        处理选择的元素节点；
+        backtracking(路径, 选择下一层列表)；
+        回溯，撤销处理结果；
+    }
+}
+</code></pre></td></tr></table></div></div><p>回溯法能解决的问题：</p><ul><li>组合问题：N个数里面按一定规则找出k个数的集合</li><li>排列问题：N个数按一定规则全排列，有几种排列方式</li><li>切割问题：一个字符串按一定规则有几种切割方式</li><li>子集问题：一个N个数的集合里有多要符合条件的子集</li><li>棋盘问题：N皇后，解数独等等</li></ul><p>代码实现如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
+<span class=k>public</span><span class=o>:</span>
+    <span class=kt>bool</span> <span class=n>exist</span><span class=p>(</span><span class=n>vector</span><span class=o>&lt;</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>char</span><span class=o>&gt;&gt;&amp;</span> <span class=n>board</span><span class=p>,</span> <span class=n>string</span> <span class=n>word</span><span class=p>)</span> <span class=p>{</span>
+        <span class=c1>// 假定矩阵大小最大为6*6
+</span><span class=c1></span>        <span class=kt>bool</span> <span class=n>visited</span><span class=p>[</span><span class=mi>6</span><span class=o>*</span><span class=mi>6</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+        <span class=n>memset</span><span class=p>(</span><span class=n>visited</span><span class=p>,</span> <span class=mi>0</span> <span class=p>,</span> <span class=mi>6</span> <span class=o>*</span> <span class=mi>6</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>bool</span><span class=p>));</span>
+        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>board</span><span class=p>.</span><span class=n>size</span><span class=p>();</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span> <span class=p>{</span>
+            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>board</span><span class=p>[</span><span class=mi>0</span><span class=p>].</span><span class=n>size</span><span class=p>();</span> <span class=o>++</span><span class=n>j</span><span class=p>)</span> <span class=p>{</span>
+                <span class=k>if</span> <span class=p>(</span><span class=n>hasPath</span><span class=p>(</span><span class=n>board</span><span class=p>,</span> <span class=n>word</span><span class=p>.</span><span class=n>c_str</span><span class=p>(),</span> <span class=n>visited</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>))</span> <span class=p>{</span>
+                    <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>
+                <span class=p>}</span>
+            <span class=p>}</span>
+        <span class=p>}</span>
+        <span class=k>return</span> <span class=nb>false</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=kt>bool</span> <span class=nf>hasPath</span><span class=p>(</span><span class=n>vector</span><span class=o>&lt;</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>char</span><span class=o>&gt;&gt;</span> <span class=o>&amp;</span><span class=n>board</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>str</span><span class=p>,</span> <span class=kt>bool</span> <span class=o>*</span><span class=n>visited</span><span class=p>,</span> <span class=kt>int</span> <span class=n>row</span><span class=p>,</span> <span class=kt>int</span> <span class=n>col</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=o>*</span><span class=n>str</span> <span class=o>==</span> <span class=sc>&#39;\0&#39;</span><span class=p>)</span>
+            <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>
+
+        <span class=k>const</span> <span class=kt>int</span> <span class=n>cols</span> <span class=o>=</span> <span class=n>board</span><span class=p>[</span><span class=mi>0</span><span class=p>].</span><span class=n>size</span><span class=p>();</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>col</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=o>||</span> <span class=n>col</span> <span class=o>&gt;=</span> <span class=n>cols</span><span class=p>)</span> <span class=p>{</span>
+            <span class=k>return</span> <span class=nb>false</span><span class=p>;</span>
+        <span class=p>}</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>row</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=o>||</span> <span class=n>row</span> <span class=o>&gt;=</span> <span class=n>board</span><span class=p>.</span><span class=n>size</span><span class=p>())</span> <span class=p>{</span>
+            <span class=k>return</span> <span class=nb>false</span><span class=p>;</span>
+        <span class=p>}</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>visited</span><span class=p>[</span><span class=n>cols</span> <span class=o>*</span> <span class=n>row</span> <span class=o>+</span> <span class=n>col</span><span class=p>]</span> <span class=o>||</span> <span class=n>board</span><span class=p>[</span><span class=n>row</span><span class=p>][</span><span class=n>col</span><span class=p>]</span> <span class=o>!=</span> <span class=o>*</span><span class=n>str</span><span class=p>)</span> <span class=p>{</span>
+            <span class=k>return</span> <span class=nb>false</span><span class=p>;</span>
+        <span class=p>}</span>
+        <span class=n>str</span><span class=o>++</span><span class=p>;</span>
+        <span class=n>visited</span><span class=p>[</span><span class=n>cols</span> <span class=o>*</span> <span class=n>row</span> <span class=o>+</span> <span class=n>col</span><span class=p>]</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+
+        <span class=c1>// left right top bottom
+</span><span class=c1></span>        <span class=kt>bool</span> <span class=n>has</span> <span class=o>=</span> <span class=n>hasPath</span><span class=p>(</span><span class=n>board</span><span class=p>,</span> <span class=n>str</span><span class=p>,</span> <span class=n>visited</span><span class=p>,</span> <span class=n>row</span><span class=p>,</span> <span class=n>col</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span>
+                <span class=o>||</span> <span class=n>hasPath</span><span class=p>(</span><span class=n>board</span><span class=p>,</span> <span class=n>str</span><span class=p>,</span> <span class=n>visited</span><span class=p>,</span> <span class=n>row</span><span class=p>,</span> <span class=n>col</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span>
+                <span class=o>||</span> <span class=n>hasPath</span><span class=p>(</span><span class=n>board</span><span class=p>,</span> <span class=n>str</span><span class=p>,</span> <span class=n>visited</span><span class=p>,</span> <span class=n>row</span> <span class=o>-</span> <span class=mi>1</span><span class=p>,</span> <span class=n>col</span><span class=p>)</span>
+                <span class=o>||</span> <span class=n>hasPath</span><span class=p>(</span><span class=n>board</span><span class=p>,</span> <span class=n>str</span><span class=p>,</span> <span class=n>visited</span><span class=p>,</span> <span class=n>row</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=n>col</span><span class=p>);</span>
+        
+        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>has</span><span class=p>)</span> <span class=p>{</span>
+            <span class=c1>// back to last
+</span><span class=c1></span>            <span class=n>visited</span><span class=p>[</span><span class=n>cols</span> <span class=o>*</span> <span class=n>row</span> <span class=o>+</span> <span class=n>col</span><span class=p>]</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+            <span class=n>str</span><span class=o>--</span><span class=p>;</span>
+        <span class=p>}</span>
+        <span class=k>return</span> <span class=n>has</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+</code></pre></td></tr></table></div></div><h2 id=2-1n-整数中1出现的次数>2. 1~n 整数中1出现的次数</h2><blockquote><p>输入一个整数n, 求1 ~ n这n个整数的十进制表示中1出现的次数.例如,输入12, 1 ~ 12这些整数中包含1的数字有 1,10,11和12,1一共出现5次</p></blockquote><p>可以分开看,即1出现在每一位上的次数.例如n是一个3位数,那么1出现的次数就是1出现在个位上的次数加上1出现在十位上的次数再加上1出现再百位上的次数.</p><p>例如1 ~ 3012:
+如果个位固定为1, 高位就可以在[0, 301]这个范围内取值即1 ~ 3011共302个1(高位的1先不计算,只计算个位出现的1), 那么就是301 + 1</p><p>十位固定为1的话,高位就可以在[0, 29]这个范围内取值即10 ~ 2919共30*10个1, 然后还剩余3010,3011,3012三个数共3个1</p><p>百位固定为1的话,高位就可以在[0, 2]这个范围取值即100 ~ 1199共3*100个1</p><p>所以规律总结起来就是:
+当前位的值=0, 那么1出现的次数为 (high + 1) * rank</p><p>当前位的值=1, 那么1在当前位出现的次数为 high * rank + low + 1</p><p>当前位的值>1, 那么1在当前位出现的次数为 high * rank + 1</p><p><em>high为当前位之前的数字, rank为当前位的数量级(个位为1,十位为10,百位为100,依次类推), low为当前位之后的数字</em></p><p>实现:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=kt>int</span> <span class=nf>count_times_other</span><span class=p>(</span><span class=kt>int</span> <span class=n>num</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>cnt</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>base</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>  <span class=c1>// 当前位的数量级
+</span><span class=c1></span>    <span class=k>while</span> <span class=p>(</span><span class=n>base</span> <span class=o>&lt;=</span> <span class=n>num</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=kt>int</span> <span class=n>low</span> <span class=o>=</span> <span class=n>num</span> <span class=o>%</span> <span class=n>base</span><span class=p>;</span>
+        <span class=kt>int</span> <span class=n>cur</span> <span class=o>=</span> <span class=p>(</span><span class=n>num</span> <span class=o>/</span> <span class=n>base</span><span class=p>)</span> <span class=o>%</span> <span class=mi>10</span><span class=p>;</span>
+        <span class=kt>int</span> <span class=n>high</span> <span class=o>=</span> <span class=n>num</span> <span class=o>/</span> <span class=p>(</span><span class=n>base</span> <span class=o>*</span> <span class=mi>10</span><span class=p>);</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>cur</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+            <span class=n>cnt</span> <span class=o>+=</span> <span class=n>high</span> <span class=o>*</span> <span class=n>base</span><span class=p>;</span>
+        <span class=p>}</span>
+        <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>cur</span> <span class=o>==</span> <span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+            <span class=n>cnt</span> <span class=o>+=</span> <span class=n>high</span> <span class=o>*</span> <span class=n>base</span> <span class=o>+</span> <span class=n>low</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span>
+        <span class=p>}</span>
+        <span class=k>else</span> <span class=p>{</span>
+            <span class=n>cnt</span> <span class=o>+=</span> <span class=p>(</span><span class=n>high</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span> <span class=o>*</span> <span class=n>base</span><span class=p>;</span>
+        <span class=p>}</span>
+        <span class=n>base</span> <span class=o>*=</span> <span class=mi>10</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=n>cnt</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><h2 id=3-把数字翻译成字符串>3. 把数字翻译成字符串</h2><blockquote><p>给定一个数字，我们按照如下规则把它翻译成字符串：0-a, 1-b &mldr; 25-z。一个数字可能有多个翻译，例如12258有5中不同的翻译，分别是bccfi, bwfi,bczi,mcfi,mzi。请编程实现一个函数，用来计算一个数字有多少种不同的翻译</p></blockquote><p>这题和青蛙跳类似，一次可以取一位数字，也可以取两位数字，只是取两位数字需要满足一定的条件。
+如果第i位和第i-1位数字组合起来落在[10, 25]这个区间那么，那么第i位的翻译需要分两种情况来讨论，即单独翻译第i位数字或者将第i位和第i-1位组合起来翻译。定义f(i)为i位长度的数字总共的翻译方法数量，那么f(i) = f(i - 1) + f(i - 2)
+如果第i位和第i-1位数字组合起来没有落在[10, 25]这个区间，那么第i位只能单独翻译了，那么f(i) = f(i - 1)</p><p>代码实现有两种方式：
+方式1：将数字转换成字符串，方便取值计算</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=kt>int</span> <span class=nf>translate_number_count</span><span class=p>(</span><span class=kt>int</span> <span class=n>num</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>first</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span> <span class=n>second</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span> <span class=n>cnt</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=kt>char</span> <span class=p>[</span><span class=mi>16</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+    <span class=kt>int</span> <span class=n>len</span> <span class=o>=</span> <span class=n>snprintf</span><span class=p>(</span><span class=n>str</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>str</span><span class=p>)</span> <span class=o>-</span> <span class=mi>1</span><span class=p>,</span> <span class=s>&#34;%d&#34;</span><span class=p>,</span> <span class=n>num</span><span class=p>);</span>
+    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>len</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span> <span class=p>{</span>
+        <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>str</span><span class=p>[</span><span class=n>i</span> <span class=o>-</span> <span class=mi>1</span><span class=p>]</span> <span class=o>-</span> <span class=sc>&#39;0&#39;</span><span class=p>;</span>
+        <span class=n>n</span> <span class=o>+=</span> <span class=p>(</span><span class=n>str</span><span class=p>[</span><span class=n>i</span> <span class=o>-</span> <span class=mi>2</span><span class=p>]</span> <span class=o>-</span> <span class=sc>&#39;0&#39;</span><span class=p>)</span> <span class=o>*</span> <span class=mi>10</span><span class=p>;</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>&gt;=</span> <span class=mi>10</span> <span class=o>&amp;&amp;</span> <span class=n>n</span> <span class=o>&lt;=</span> <span class=mi>25</span><span class=p>)</span> <span class=p>{</span>
+            <span class=n>first</span> <span class=o>=</span> <span class=n>first</span> <span class=o>+</span> <span class=n>second</span><span class=p>;</span> <span class=c1>// 当前长度的统计数量, f(i) = f(i-1) + f(i-2)
+</span><span class=c1></span>            <span class=n>second</span> <span class=o>=</span> <span class=n>first</span> <span class=o>-</span> <span class=n>second</span><span class=p>;</span>   <span class=c1>// 上一个长度的统计数量, f(i-1) = f(i) - f(i - 2)
+</span><span class=c1></span>        <span class=p>}</span>
+        <span class=k>else</span> <span class=p>{</span>
+            <span class=n>second</span> <span class=o>=</span> <span class=n>first</span><span class=p>;</span> <span class=c1>// 只有一种翻译方式，所以不变, f(i-1) = f(i)
+</span><span class=c1></span>        <span class=p>}</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=n>first</span><span class=p>;</span>   <span class=c1>// f(i)
+</span><span class=c1></span><span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>方式2：直接使用数字</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=kt>int</span> <span class=nf>translate_number_count_other</span><span class=p>(</span><span class=kt>int</span> <span class=n>num</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>first</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span> <span class=n>second</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>one</span> <span class=o>=</span> <span class=n>num</span> <span class=o>%</span> <span class=mi>10</span><span class=p>;</span> <span class=c1>// 个位数字
+</span><span class=c1></span>    <span class=kt>int</span> <span class=n>two</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>        <span class=c1>// 十位数字
+</span><span class=c1></span>    <span class=k>while</span> <span class=p>(</span><span class=n>num</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>num</span> <span class=o>/=</span> <span class=mi>10</span><span class=p>;</span>
+        <span class=n>two</span> <span class=o>=</span> <span class=n>num</span> <span class=o>%</span> <span class=mi>10</span><span class=p>;</span>
+        <span class=kt>int</span> <span class=n>tmp</span> <span class=o>=</span> <span class=n>two</span> <span class=o>*</span> <span class=mi>10</span> <span class=o>+</span> <span class=n>one</span><span class=p>;</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>tmp</span> <span class=o>&gt;=</span> <span class=mi>10</span> <span class=o>&amp;&amp;</span> <span class=n>tmp</span> <span class=o>&lt;=</span> <span class=mi>25</span><span class=p>)</span> <span class=p>{</span>
+            <span class=n>first</span> <span class=o>=</span> <span class=n>first</span> <span class=o>+</span> <span class=n>second</span><span class=p>;</span>     <span class=c1>// f(i) = f(i-1) ++ f(i-2)
+</span><span class=c1></span>            <span class=n>second</span> <span class=o>=</span> <span class=n>first</span> <span class=o>-</span> <span class=n>second</span><span class=p>;</span>    <span class=c1>// f(i - 1) = f(i) - f(i-2)
+</span><span class=c1></span>        <span class=p>}</span>
+        <span class=k>else</span> <span class=p>{</span>
+            <span class=n>second</span> <span class=o>=</span> <span class=n>first</span><span class=p>;</span>             <span class=c1>// f(i-1) = f(i)
+</span><span class=c1></span>        <span class=p>}</span>
+        <span class=n>one</span> <span class=o>=</span> <span class=n>two</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=n>first</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>复杂度计算:
+第一种实现方式中因为只和数字的十进制位数有关,所以时间复杂度位O(logN), 动态申请的字符串也是和数字长度有关,所以空间复杂度为O(logN).</p><p>第二种实现方式和第一种方式一样,所以时间复杂度为O(logN), 但是空间复杂度为O(1)</p><h2 id=4-数组中的逆序对>4. 数组中的逆序对</h2><blockquote><p>在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数</p></blockquote><p>暴力的方法就是依次扫描每个数字，然后与其后面的数字比较大小。这样的时间复杂度是O(N^2).</p><p>更简单的方法应该是比较相邻的数字，然后确定逆序对的数量。使用归并排序的思想来进行比较相邻的数字，这样就能比较快的统计出逆序对的总数，归并排序的复杂度是O(NlogN)</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/algorithm_note_1.png data-srcset="/images/algorithm_note_1.png, /images/algorithm_note_1.png 1.5x, /images/algorithm_note_1.png 2x" data-sizes=auto alt=/images/algorithm_note_1.png title=/images/algorithm_note_1.png></p><p>代码实现：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=kt>int</span> <span class=nf>inverse_pairs_core</span><span class=p>(</span><span class=kt>int</span> <span class=o>*</span><span class=n>data</span><span class=p>,</span> <span class=kt>int</span> <span class=o>*</span><span class=n>copy</span><span class=p>,</span> <span class=kt>int</span> <span class=n>start</span><span class=p>,</span> <span class=kt>int</span> <span class=n>end</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>end</span> <span class=o>&lt;=</span> <span class=n>start</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>copy</span><span class=p>[</span><span class=n>start</span><span class=p>]</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>start</span><span class=p>];</span>
+        <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=p>}</span>
+
+    <span class=kt>int</span> <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>mid</span> <span class=o>=</span> <span class=p>(</span><span class=n>start</span> <span class=o>+</span> <span class=n>end</span><span class=p>)</span> <span class=o>/</span> <span class=mi>2</span><span class=p>;</span>
+    <span class=n>count</span> <span class=o>+=</span> <span class=n>inverse_pairs_core</span><span class=p>(</span><span class=n>copy</span><span class=p>,</span> <span class=n>data</span><span class=p>,</span> <span class=n>start</span><span class=p>,</span> <span class=n>mid</span><span class=p>);</span>
+    <span class=n>count</span> <span class=o>+=</span> <span class=n>inverse_pairs_core</span><span class=p>(</span><span class=n>copy</span><span class=p>,</span> <span class=n>data</span><span class=p>,</span> <span class=n>mid</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=n>end</span><span class=p>);</span>
+
+    <span class=kt>int</span> <span class=n>left</span> <span class=o>=</span> <span class=n>mid</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>right</span> <span class=o>=</span> <span class=n>end</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>index</span> <span class=o>=</span> <span class=n>end</span><span class=p>;</span>
+    <span class=k>while</span> <span class=p>(</span><span class=n>left</span> <span class=o>&gt;=</span> <span class=n>start</span> <span class=o>&amp;&amp;</span> <span class=n>right</span> <span class=o>&gt;=</span> <span class=p>(</span><span class=n>mid</span> <span class=o>+</span> <span class=mi>1</span><span class=p>))</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>data</span><span class=p>[</span><span class=n>left</span><span class=p>]</span> <span class=o>&gt;=</span> <span class=n>data</span><span class=p>[</span><span class=n>right</span><span class=p>])</span> <span class=p>{</span>
+            <span class=n>count</span> <span class=o>+=</span> <span class=n>right</span> <span class=o>-</span> <span class=n>mid</span><span class=p>;</span>  <span class=c1>// 右边当前元素之前的全部比左边当前元素小
+</span><span class=c1></span>            <span class=n>copy</span><span class=p>[</span><span class=n>index</span><span class=o>--</span><span class=p>]</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>left</span><span class=o>--</span><span class=p>];</span>
+        <span class=p>}</span>
+        <span class=k>else</span> <span class=p>{</span>
+            <span class=n>copy</span><span class=p>[</span><span class=n>index</span><span class=o>--</span><span class=p>]</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>right</span><span class=o>--</span><span class=p>];</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+
+    <span class=c1>// 复制左边剩余元素，右边所有元素都比左边的大，所以左边剩余的元素都比右边的小
+</span><span class=c1></span>    <span class=k>while</span> <span class=p>(</span><span class=n>left</span> <span class=o>&gt;=</span> <span class=n>start</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>copy</span><span class=p>[</span><span class=n>index</span><span class=o>--</span><span class=p>]</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>left</span><span class=o>--</span><span class=p>];</span>
+    <span class=p>}</span>
+
+    <span class=c1>// 复制右边元素，左边元素都比右边的大
+</span><span class=c1></span>    <span class=k>while</span> <span class=p>(</span><span class=n>right</span> <span class=o>&gt;=</span> <span class=p>(</span><span class=n>mid</span> <span class=o>+</span> <span class=mi>1</span><span class=p>))</span> <span class=p>{</span>
+        <span class=c1>//  已经计算过一次了，不用重复计算， 直接拷贝
+</span><span class=c1></span>        <span class=n>copy</span><span class=p>[</span><span class=n>index</span><span class=o>--</span><span class=p>]</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>right</span><span class=o>--</span><span class=p>];</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=n>count</span><span class=p>;</span>  
+<span class=p>}</span>
+<span class=kt>int</span> <span class=nf>inverse_pairs</span><span class=p>(</span><span class=kt>int</span> <span class=o>*</span><span class=n>data</span><span class=p>,</span> <span class=kt>int</span> <span class=n>length</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>data</span> <span class=o>||</span> <span class=n>length</span> <span class=o>&lt;=</span> <span class=mi>1</span><span class=p>)</span>
+        <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+
+    <span class=kt>int</span> <span class=o>*</span><span class=n>copy</span> <span class=o>=</span> <span class=k>new</span> <span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>nothrow</span><span class=p>)</span> <span class=kt>int</span><span class=p>[</span><span class=n>length</span><span class=p>];</span>
+    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>copy</span><span class=p>)</span>
+        <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+
+    <span class=n>memcpy</span><span class=p>(</span><span class=n>copy</span><span class=p>,</span> <span class=n>data</span><span class=p>,</span> <span class=n>length</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+
+    <span class=k>return</span> <span class=n>inverse_pairs_core</span><span class=p>(</span><span class=n>data</span><span class=p>,</span> <span class=n>copy</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>length</span> <span class=o>-</span> <span class=mi>1</span><span class=p>);</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>归并排序的时间复杂度为O(NlogN), 这里使用到了一个辅助数组，所以空间复杂度为O(N)</p><h2 id=5-队列的最大值>5. 队列的最大值</h2><blockquote><p>给定一个数组的滑动窗口的大小，请找出所有滑动窗口历的最大值。例如，输出数组{2，3，4，2，6，2，5，1},以及滑动窗口大小3， 它们的最大值分别为{4，4，6，6，6，5}</p></blockquote><p>常规方法的话就是遍历数组，然后根据窗口大小找到当前窗口中的最大值，其时间复杂度为O(NK), k为窗口大小。还有一种改良方法就是，滑动的时候如果最大值没有滑出当前窗口那么就无需再重新遍历当前窗口了，否则的话就需要遍历当前窗口，其平均时间复杂度优于前一种方式。
+还一种方式就是使用双向队列记录滑动窗口中的最大值，队列的头为窗口中的最值，其他为次大值。如果将要滑入窗口的数比当前窗口中的最大值大那么就将该值放入队列头部；如果小，那么将队列中比它小的数全部删除。</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/algorithm_note_2.png data-srcset="/images/algorithm_note_2.png, /images/algorithm_note_2.png 1.5x, /images/algorithm_note_2.png 2x" data-sizes=auto alt=/images/algorithm_note_2.png title=/images/algorithm_note_2.png></p><p>实现如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>window_max_value</span><span class=p>(</span><span class=k>const</span> <span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=o>&amp;</span><span class=n>data</span><span class=p>,</span> <span class=kt>int</span> <span class=n>window</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>data</span><span class=p>.</span><span class=n>empty</span><span class=p>()</span> <span class=o>||</span> <span class=n>window</span> <span class=o>&lt;</span> <span class=mi>1</span> <span class=o>||</span> <span class=n>data</span><span class=p>.</span><span class=n>size</span><span class=p>()</span> <span class=o>&lt;</span> <span class=n>window</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>();</span>
+
+    <span class=c1>// 最大值队列， 只保存下标值
+</span><span class=c1></span>    <span class=n>deque</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>index</span><span class=p>;</span>
+
+    <span class=c1>// 先将 窗口大小的数据入列
+</span><span class=c1></span>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>window</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>while</span> <span class=p>(</span><span class=o>!</span><span class=n>index</span><span class=p>.</span><span class=n>empty</span><span class=p>()</span> <span class=o>&amp;&amp;</span> <span class=n>data</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;=</span> <span class=n>data</span><span class=p>[</span><span class=n>index</span><span class=p>.</span><span class=n>back</span><span class=p>()])</span> <span class=p>{</span>
+            <span class=n>index</span><span class=p>.</span><span class=n>pop_back</span><span class=p>();</span>  <span class=c1>//将队尾其他小的值从队列中删除
+</span><span class=c1></span>        <span class=p>}</span>
+        <span class=n>index</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=n>i</span><span class=p>);</span> <span class=c1>// 将最大值放入队列或者将比当前小的值放入队尾
+</span><span class=c1></span>    <span class=p>}</span>
+    <span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>ret</span><span class=p>;</span> <span class=c1>// 返回结果
+</span><span class=c1></span>    <span class=n>ret</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=n>data</span><span class=p>[</span><span class=n>index</span><span class=p>.</span><span class=n>front</span><span class=p>()]);</span>
+
+    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>window</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>data</span><span class=p>.</span><span class=n>size</span><span class=p>();</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>i</span> <span class=o>-</span> <span class=n>index</span><span class=p>.</span><span class=n>front</span><span class=p>()</span> <span class=o>&gt;=</span> <span class=n>window</span><span class=p>)</span> <span class=p>{</span>
+            <span class=n>index</span><span class=p>.</span><span class=n>pop_front</span><span class=p>();</span>
+        <span class=p>}</span>
+        <span class=k>while</span> <span class=p>(</span><span class=o>!</span><span class=n>index</span><span class=p>.</span><span class=n>empty</span><span class=p>()</span> <span class=o>&amp;&amp;</span> <span class=n>data</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;=</span> <span class=n>data</span><span class=p>[</span><span class=n>index</span><span class=p>.</span><span class=n>back</span><span class=p>()])</span> <span class=p>{</span>
+            <span class=n>index</span><span class=p>.</span><span class=n>pop_back</span><span class=p>();</span>  <span class=c1>//将队尾其他小的值从队列中删除
+</span><span class=c1></span>        <span class=p>}</span>
+        <span class=n>index</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=n>i</span><span class=p>);</span>
+        <span class=n>ret</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=n>data</span><span class=p>[</span><span class=n>index</span><span class=p>.</span><span class=n>front</span><span class=p>()]);</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=n>ret</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><h2 id=6-n个骰子的点数>6. n个骰子的点数</h2><blockquote><p>把n个骰子扔再地上，所有骰子朝上的点数之和为s。 输入n, 打印出s的所有可能的出现的概率</p></blockquote><p>题目需要我们求出所有点数出现的概率，根据概率出现的计算公式，点数 k 出现概率计算公式为：</p><blockquote><p>P(k)= k出现次数 / 总次数</p></blockquote><p>投掷 n 个骰子，所有点数出现的总次数是 6^n，因为一共有 n 枚骰子，每枚骰子的点数都有 6 种可能出现的情况。我们的目的就是 计算出投掷完 n 枚骰子后每个点数出现的次数。</p><p>使用递归造成重复计算的问题</p><p>单纯使用递归搜索解空间的时间复杂度为 6^n，会造成超时错误，因为存在重复子结构。解释如下：</p><p>我们使用递归函数 getCount (n，k) 来表示投掷 n 枚骰子，点数 k 出现的次数。</p><p>为了简化分析，我们以投掷 2 枚骰子为例。</p><p>我们来模拟计算点数 4 和点数 6，这两种点数各自出现的次数。也就是计算 getCOunt (2，4) 和 getCount (2，6)。</p><p>他们的计算公式为：</p><blockquote><p>getCount(2,4) = getCount(1,1) + getCount(1,2) + getCount(1,3)
+getCount(2,6) = getCount(1,1) + getCount(1,2) + getCount(1,3) + getCount(1,4) + getCount(1,5)</p></blockquote><p>我们发现递归统计这两种点数的出现次数时，重复计算了 getCount(1,1) + getCount(1,2) + getCount(1,3)</p><p>这些子结构，计算其它点数的次数时同样存在大量的重复计算。</p><p><a href=https://learnku.com/articles/47970 target=_blank rel="noopener noreffer">参考链接</a></p><p><strong>动态规划</strong>
+动态规划解决问题一般分为三步：</p><p>1.表示状态</p><p>2.找出状态转移方程，即递推关系式</p><p>3.边界处理</p><p><strong>表示状态</strong></p><p>分析问题的状态时，不要分析整体，只分析最后一个阶段即可！因为动态规划问题都是划分为多个阶段的，各个阶段的状态表示都是一样，而我们的最终答案就是在最后一个阶段。</p><p>对于这道题，最后一个阶段是什么呢？</p><p>通过题目我们知道一共投掷 n 枚骰子，那最后一个阶段很显然就是：当投掷完 n 枚骰子后，各个点数出现的次数。</p><p><em>注意：这里的点数指的是前 n 枚骰子的点数和，而不是第 n 枚骰子的点数，下文同理。</em></p><p>找出了最后一个阶段，那状态表示就简单了。</p><p>首先用数组的第一维来表示阶段，也就是投掷完了几枚骰子。
+然后用第二维来表示投掷完这些骰子后，可能出现的点数。
+数组的值就表示，该阶段各个点数出现的次数。
+所以状态表示就是这样的 dp [i][j]，表示投掷完 i 枚骰子后，点数 j 的出现次数。</p><p><strong>找出状态转移方程</strong></p><p>找状态转移方程也就是找各个阶段之间的转化关系，同样我们还是只需分析最后一个阶段，分析它的状态是如何做到的。</p><p>最后一个阶段也就是投掷完 n 枚骰子后的这个阶段，我们用 dp [n][j] 来表示最后一个阶段点数 j 出现的次数。</p><p>单单看第 n 枚骰子，它的点数可能为 1，2，3，4，5，6，因为投掷完 n 枚骰子后点数 j 出现的次数，可以由投掷完 n-1 枚骰子后，对应点数 j-1，j-2，j-3，j-4，j-5，j-6 出现的次数转化过来。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>for (第n枚骰子的点数 i = 1; i &lt;= 6; i ++) {
+    dp[n][j] += dp[n-1][j - i]
+}
+</code></pre></td></tr></table></div></div><p>写成数学公式是这样的：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>          6
+dp[n][j]= ∑  dp[n−1][j−i]
+         i=1    
+</code></pre></td></tr></table></div></div><p>n 表示阶段，j 表示投掷完 n 枚骰子后的点数和，i 表示第 n 枚骰子会出现的六个点数。</p><p><strong>边界处理</strong></p><p>这里的边界处理很简单，只要我们把可以直接知道的状态初始化就好了。</p><p>我们可以直接指导的状态是啥，就是第一阶段的状态：投掷完 1 枚骰子后，它的可能点数分别为 1，2，3，4，5，6，并且每个点数出现的次数都是 1.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>for (int i = 1; i &lt;= 6; i ++) {
+    dp[1][i] = 1;
+}
+</code></pre></td></tr></table></div></div><p>代码实现为：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=c1>// 求出n个骰子所有点数和的概率
+</span><span class=c1></span><span class=kt>void</span> <span class=nf>print_probability</span><span class=p>(</span><span class=k>const</span> <span class=kt>int</span> <span class=n>num</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>num</span> <span class=o>&lt;</span> <span class=mi>1</span><span class=p>)</span>
+        <span class=k>return</span><span class=p>;</span>
+    
+    <span class=c1>// int[i][j], i为骰子个数，j为i个骰子点数和为j出现的次数
+</span><span class=c1></span>    <span class=c1>// max(i) = num + 1, max(j) = (num + 1) * 6
+</span><span class=c1></span>    <span class=k>const</span> <span class=kt>int</span> <span class=n>maxi</span> <span class=o>=</span> <span class=n>num</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=k>const</span> <span class=kt>int</span> <span class=n>maxj</span> <span class=o>=</span> <span class=p>(</span><span class=n>num</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span> <span class=o>*</span> <span class=mi>6</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=o>*</span><span class=n>dp</span> <span class=o>=</span> <span class=p>(</span><span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=n>malloc</span><span class=p>(</span><span class=n>maxj</span> <span class=o>*</span> <span class=n>maxi</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>dp</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
+
+    <span class=n>memset</span><span class=p>(</span><span class=n>dp</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>maxj</span> <span class=o>*</span> <span class=n>maxi</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+
+    <span class=c1>// 初始状态， 1个骰子
+</span><span class=c1></span>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=mi>6</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+        <span class=o>*</span><span class=p>(</span><span class=n>dp</span> <span class=o>+</span> <span class=mi>1</span><span class=o>*</span><span class=n>maxj</span> <span class=o>+</span> <span class=n>i</span><span class=p>)</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>  <span class=c1>// dp[1][i] = 1;
+</span><span class=c1></span>    <span class=p>}</span>
+
+    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=n>num</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>i</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;=</span> <span class=mi>6</span> <span class=o>*</span> <span class=n>i</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>x</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> <span class=n>x</span> <span class=o>&lt;=</span> <span class=mi>6</span><span class=p>;</span> <span class=n>x</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+                <span class=k>if</span> <span class=p>(</span><span class=n>j</span> <span class=o>-</span> <span class=n>x</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+                    <span class=k>break</span><span class=p>;</span> <span class=c1>// 单个点数还没总点数多，所以后面的就不用计算了
+</span><span class=c1></span>                <span class=p>}</span>
+                <span class=c1>// dp[i][j] += dp[i - 1][j - x];
+</span><span class=c1></span>                <span class=o>*</span><span class=p>(</span><span class=n>dp</span> <span class=o>+</span> <span class=p>(</span><span class=n>i</span> <span class=o>*</span> <span class=n>maxj</span><span class=p>)</span> <span class=o>+</span> <span class=n>j</span><span class=p>)</span> <span class=o>+=</span> <span class=o>*</span><span class=p>(</span><span class=n>dp</span> <span class=o>+</span> <span class=p>((</span><span class=n>i</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=o>*</span> <span class=n>maxj</span><span class=p>)</span> <span class=o>+</span> <span class=n>j</span> <span class=o>-</span> <span class=n>x</span><span class=p>);</span>
+            <span class=p>}</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+    
+    <span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=n>pow</span><span class=p>(</span><span class=mi>6</span><span class=p>,</span> <span class=n>num</span><span class=p>);</span> <span class=c1>// 所有点数出现的总次数，[num, 6*num]
+</span><span class=c1></span>    <span class=c1>// 计算概率
+</span><span class=c1></span>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>num</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;=</span> <span class=mi>6</span> <span class=o>*</span> <span class=n>num</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+        <span class=kt>int</span> <span class=n>cnt</span> <span class=o>=</span> <span class=o>*</span><span class=p>(</span><span class=n>dp</span> <span class=o>+</span> <span class=n>num</span> <span class=o>*</span> <span class=n>maxj</span> <span class=o>+</span> <span class=n>j</span><span class=p>);</span> <span class=c1>// dp[num][j]
+</span><span class=c1></span>        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;P(%d)=%f &#34;</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>cnt</span> <span class=o>*</span> <span class=mf>1.0</span> <span class=o>/</span> <span class=n>total</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+
+    <span class=n>free</span><span class=p>(</span><span class=n>dp</span><span class=p>);</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>其实上述实现还可以进一步优化，从递推关系式dp[i][j] += dp[i - 1][j - x]可以知道，i个骰子的点数和只和i-1个骰子的点数和有关，所以没有必要保存所有的骰子的点数和，只需要保存本次和上一轮的骰子点数和即可。</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2024-02-24</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/%E7%AE%97%E6%B3%95/>算法</a></section><section><span><a href=javascript:void(0); onclick=window.history.back();>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/hexo_zhuhai_island/ class=prev rel=prev title=珠海海岛游记><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>珠海海岛游记</a></div></div></article></div></main></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":30},"comment":{},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
